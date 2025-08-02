@@ -134,6 +134,7 @@ class TOCManager {
     this.generateTOC();
     this.setupEventListeners();
     this.initScrollTracking();
+    this.setInitialState();
     console.log('TOC Manager initialized successfully');
   }
 
@@ -224,6 +225,9 @@ class TOCManager {
       if (window.innerWidth >= 1024 && this.isOpen) {
         this.tocOverlay.classList.remove('visible');
       }
+      
+      // Handle default state changes when transitioning between viewport sizes
+      this.handleViewportChange();
     });
   }
 
@@ -341,6 +345,32 @@ class TOCManager {
     }
 
     this.activeHeading = headingId;
+  }
+
+  isDesktop() {
+    return window.innerWidth >= 1024;
+  }
+
+  setInitialState() {
+    // Open TOC by default on desktop, closed on mobile/tablet
+    if (this.isDesktop()) {
+      console.log('Desktop detected - opening TOC by default');
+      this.openTOC();
+    } else {
+      console.log('Mobile/tablet detected - keeping TOC closed by default');
+      // TOC is already closed by default (this.isOpen = false in constructor)
+    }
+  }
+
+  handleViewportChange() {
+    // Auto-open TOC when switching to desktop, auto-close when switching to mobile
+    if (this.isDesktop() && !this.isOpen) {
+      console.log('Switched to desktop viewport - opening TOC');
+      this.openTOC();
+    } else if (!this.isDesktop() && this.isOpen) {
+      console.log('Switched to mobile/tablet viewport - closing TOC');
+      this.closeTOC();
+    }
   }
 }
 
