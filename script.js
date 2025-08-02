@@ -5,8 +5,6 @@ class ThemeManager {
   constructor() {
     this.themeToggle = null;
     this.toggleSlider = null;
-    this.sunIcon = null;
-    this.moonIcon = null;
     this.currentTheme = 'light';
     this.init();
   }
@@ -22,8 +20,6 @@ class ThemeManager {
   setup() {
     this.themeToggle = document.getElementById('theme-toggle');
     this.toggleSlider = document.getElementById('toggle-slider');
-    this.sunIcon = document.getElementById('sun-icon');
-    this.moonIcon = document.getElementById('moon-icon');
 
     if (!this.themeToggle) {
       console.warn('Theme toggle button not found');
@@ -76,18 +72,14 @@ class ThemeManager {
   }
 
   updateToggleUI(isDark) {
-    if (!this.toggleSlider || !this.sunIcon || !this.moonIcon) return;
+    if (!this.toggleSlider) return;
 
     if (isDark) {
       this.toggleSlider.classList.remove('translate-x-1');
       this.toggleSlider.classList.add('translate-x-6');
-      this.sunIcon.classList.add('hidden');
-      this.moonIcon.classList.remove('hidden');
     } else {
       this.toggleSlider.classList.remove('translate-x-6');
       this.toggleSlider.classList.add('translate-x-1');
-      this.sunIcon.classList.remove('hidden');
-      this.moonIcon.classList.add('hidden');
     }
   }
 }
