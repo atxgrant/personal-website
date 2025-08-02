@@ -145,7 +145,7 @@ class TOCManager {
       return;
     }
 
-    this.headings = postContent.querySelectorAll('h2, h3, h4, h5, h6');
+    this.headings = postContent.querySelectorAll('h2');
     
     if (this.headings.length === 0) {
       this.tocToggle.style.display = 'none';

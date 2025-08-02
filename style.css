@@ -390,6 +390,10 @@ h6 {
   font-family: Georgia, Times New Roman, serif;
 }
 
+h2 {
+  font-weight: bold;
+}
+
 .academic-link {
   color: hsl(var(--link));
   text-decoration-line: underline;
