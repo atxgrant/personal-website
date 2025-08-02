@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grant Heimbach</title>
+    <meta name="description" content="Grant Heimbach - Personal Website" />
+    <meta name="author" content="Grant Heimbach" />
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="root">
+        <div class="min-h-screen bg-background">
+            <div class="max-w-2xl mx-auto px-6 py-8 sm:py-12">
+                
+                <!-- Header with Name and Dark Mode Toggle -->
+                <header class="flex items-center justify-between mb-8 sm:mb-12">
+                    <h1 class="text-3xl sm:text-4xl font-serif text-foreground">
+                        Grant Heimbach
+                    </h1>
+                    
+                    <!-- Dark Mode Toggle Button -->
+                    <button
+                        id="theme-toggle"
+                        class="relative inline-flex h-6 w-11 items-center rounded-full bg-muted transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                        aria-label="Toggle dark mode"
+                    >
+                        <span id="toggle-slider" class="inline-block h-4 w-4 transform rounded-full bg-foreground transition duration-200 translate-x-1">
+                            <svg id="sun-icon" class="h-3 w-3 text-background m-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                            </svg>
+                            <svg id="moon-icon" class="h-3 w-3 text-background m-0.5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                            </svg>
+                        </span>
+                    </button>
+                </header>
+                
+                <!-- Bio Section -->
+                <section class="content-section">
+                    <div class="prose prose-lg max-w-none text-foreground leading-relaxed">
+                        <p class="mb-4">
+                            Your Name is a [Your Title] at 
+                            <a href="https://yourcompany.com" target="_blank" rel="noopener noreferrer" class="academic-link">
+                                Your Company
+                            </a>, a [company description]. You are passionate about [your field] and dedicated to [your mission].
+                        </p>
+                        
+                        <p class="mb-4">
+                            Previously, you served as [Previous Role] at [Previous Company], where you [key achievements]. 
+                            You have expertise in [your specialties] and have contributed to [notable projects or research].
+                        </p>
+                        
+                        <p>
+                            You earned your [degree] from [University] and have been recognized for [achievements or awards].
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Short Posts Section -->
+                <section class="content-section">
+                    <h2 class="text-xl font-serif mb-4 text-foreground">
+                        Short posts
+                    </h2>
+                    <div class="academic-list">
+                        <div>
+                            <a href="/post/hello-world" class="academic-link">
+                                Hello World!
+                            </a>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            
+            <!-- Footer -->
+            <footer class="flex justify-center py-8">
+                <a
+                    href="https://www.linkedin.com/in/grantheimbach/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-muted-foreground hover:text-link transition-colors duration-200"
+                    aria-label="LinkedIn Profile"
+                >
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                    </svg>
+                </a>
+            </footer>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html> 
