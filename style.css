@@ -675,3 +675,230 @@ h6 {
     line-height: 2.5rem;
   }
 } 
+/* ===== TABLE OF CONTENTS (TOC) STYLES ===== */
+
+/* TOC Toggle Button Base Styles */
+.toc-toggle {
+  position: fixed;
+  z-index: 1000;
+  width: 2.5rem;
+  height: 2.5rem;
+  background-color: hsl(var(--background));
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.375rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.toc-toggle:hover {
+  background-color: hsl(var(--accent));
+  border-color: hsl(var(--accent-foreground));
+}
+
+.toc-toggle:focus {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+/* Desktop: Top-left positioning */
+@media (min-width: 1024px) {
+  .toc-toggle {
+    top: 2rem;
+    left: 2rem;
+    width: 3rem;
+    height: 3rem;
+  }
+}
+
+/* Mobile and Tablet: Hide fixed button, show in header */
+@media (max-width: 1023px) {
+  .toc-toggle {
+    position: relative;
+    top: auto;
+    left: auto;
+    width: 2rem;
+    height: 2rem;
+    box-shadow: none;
+    border: none;
+    background: transparent;
+  }
+  
+  .post-header .toc-toggle {
+    order: -1;
+    margin-right: 0.5rem;
+  }
+}
+
+/* Hamburger Icon Animation */
+.toc-icon {
+  position: relative;
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.hamburger-line {
+  width: 1.25rem;
+  height: 2px;
+  background-color: hsl(var(--foreground));
+  transition: all 0.3s ease;
+  transform-origin: center;
+}
+
+/* Close Icon (X) */
+.close-line {
+  position: absolute;
+  width: 1.25rem;
+  height: 2px;
+  background-color: hsl(var(--foreground));
+  transition: all 0.3s ease;
+}
+
+.close-line:first-child {
+  transform: rotate(45deg);
+}
+
+.close-line:last-child {
+  transform: rotate(-45deg);
+}
+
+/* TOC Panel */
+.toc-panel {
+  position: fixed;
+  z-index: 999;
+  background-color: hsl(var(--background));
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  padding: 1.5rem;
+  max-height: 70vh;
+  overflow-y: auto;
+  transition: all 0.3s ease;
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.toc-panel.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Desktop TOC Panel */
+@media (min-width: 1024px) {
+  .toc-panel {
+    top: 6rem;
+    left: 2rem;
+    width: 16rem;
+  }
+}
+
+/* Mobile/Tablet TOC Panel */
+@media (max-width: 1023px) {
+  .toc-panel {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 24rem;
+  }
+  
+  .toc-panel.visible {
+    transform: translate(-50%, -50%);
+  }
+}
+
+/* TOC Header */
+.toc-header {
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid hsl(var(--border));
+}
+
+.toc-header h3 {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: hsl(var(--foreground));
+}
+
+/* TOC List */
+.toc-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.toc-list li {
+  margin: 0;
+}
+
+.toc-list a {
+  display: block;
+  padding: 0.5rem 0;
+  color: hsl(var(--muted-foreground));
+  text-decoration: none;
+  border-radius: 0.25rem;
+  transition: all 0.2s ease;
+  font-size: 0.875rem;
+  line-height: 1.25;
+}
+
+.toc-list a:hover {
+  color: hsl(var(--foreground));
+  background-color: hsl(var(--accent));
+  padding-left: 0.5rem;
+}
+
+/* Active section highlighting */
+.toc-list a.active {
+  color: hsl(var(--foreground));
+  font-weight: 700;
+  background-color: hsl(var(--accent));
+  color: hsl(var(--accent-foreground));
+  padding-left: 0.5rem;
+}
+
+/* Nested headings indentation */
+.toc-list .toc-h3 { padding-left: 1rem; }
+.toc-list .toc-h4 { padding-left: 2rem; }
+.toc-list .toc-h5 { padding-left: 3rem; }
+.toc-list .toc-h6 { padding-left: 4rem; }
+
+/* TOC Overlay for mobile */
+.toc-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 998;
+  transition: opacity 0.3s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.toc-overlay.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Hide overlay on desktop */
+@media (min-width: 1024px) {
+  .toc-overlay {
+    display: none;
+  }
+}
+
+/* Hidden utility class */
+.hidden {
+  display: none !important;
+}
