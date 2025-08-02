@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello World! - Grant Heimbach</title>
+    <meta name="description" content="My first blog post exploring web development and static sites." />
+    <meta name="author" content="Grant Heimbach" />
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <!-- TOC Toggle Button -->
+    <button id="toc-toggle" class="toc-toggle" aria-label="Toggle table of contents">
+        <span id="toc-hamburger" class="toc-icon">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+        </span>
+        <span id="toc-close" class="toc-icon hidden">
+            <span class="close-line"></span>
+            <span class="close-line"></span>
+        </span>
+    </button>
+
+    <!-- TOC Panel -->
+    <nav id="toc-panel" class="toc-panel hidden">
+        <div class="toc-header">
+            <h3>Contents</h3>
+        </div>
+        <ul id="toc-list" class="toc-list"></ul>
+    </nav>
+
+    <!-- TOC Overlay for mobile -->
+    <div id="toc-overlay" class="toc-overlay hidden"></div>
+
+    <div id="root">
+        <div class="min-h-screen bg-background">
+            <div class="max-w-2xl mx-auto px-6 py-8 sm:py-12">
+                
+                <!-- Header with Name and Dark Mode Toggle -->
+                <header class="flex items-center justify-between mb-8 sm:mb-12 post-header">
+                    <div class="flex items-center gap-4">
+                        <h1 class="text-2xl sm:text-3xl font-serif text-foreground">
+                            <a href="../index.html" class="academic-link no-underline">Grant Heimbach</a>
+                        </h1>
+                    </div>
+                    
+                    <!-- Dark Mode Toggle Button -->
+                    <button id="theme-toggle" class="relative inline-flex h-6 w-11 items-center rounded-full bg-muted transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2" aria-label="Toggle dark mode">
+                        <span id="toggle-slider" class="inline-block h-4 w-4 transform rounded-full bg-foreground transition duration-200 translate-x-1">
+                            <svg id="sun-icon" class="h-3 w-3 text-background m-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                            </svg>
+                            <svg id="moon-icon" class="h-3 w-3 text-background m-0.5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 718.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                            </svg>
+                        </span>
+                    </button>
+                </header>
+
+                <!-- Post Title -->
+                <div class="mb-8">
+                    <h1 class="text-3xl sm:text-4xl font-serif text-foreground mb-4">Hello World!</h1>
+                    <div class="text-muted-foreground text-sm">
+                        <time datetime="2025-08-02">August 2, 2025</time>
+                        • 5 min read
+                    </div>
+                </div>
+                
+                <!-- Post Content -->
+                <article class="post-content">
+                    <p>Welcome to my first blog post! This is an exciting milestone as I launch my personal website and begin sharing my thoughts on web development, technology, and life.</p>
+
+                    <h2>Why I Built This Website</h2>
+                    
+                    <p>After years of working with complex React applications and modern web frameworks, I wanted to create something different. This website represents a return to simplicity - a fast, lightweight static site that focuses on content and user experience rather than flashy technology.</p>
+
+                    <p>The entire site consists of just three files:</p>
+                    <ul>
+                        <li><code>index.html</code> - The main structure</li>
+                        <li><code>style.css</code> - All styling and theme system</li>
+                        <li><code>script.js</code> - Interactive functionality</li>
+                    </ul>
+
+                    <h2>The Philosophy Behind Static Sites</h2>
+
+                    <p>In our rush to adopt the latest frameworks and tools, we sometimes forget the core principles that make the web great: speed, accessibility, and simplicity. Static sites offer several compelling advantages:</p>
+
+                    <h3>Performance Benefits</h3>
+                    
+                    <p>Static sites load incredibly fast because there's no JavaScript bundle to parse, no virtual DOM to render, and no complex build process. This website loads in under 200ms compared to the 2-3 seconds typical of modern React applications.</p>
+
+                    <h3>Simplicity and Maintenance</h3>
+
+                    <p>When your entire website fits in three files, maintenance becomes trivial. No dependency updates, no security vulnerabilities in third-party packages, no complex build pipelines to maintain.</p>
+
+                    <blockquote>
+                        "Simplicity is the ultimate sophistication." - Leonardo da Vinci
+                    </blockquote>
+
+                    <h3>Universal Compatibility</h3>
+
+                    <p>Static HTML works everywhere - from the latest Chrome browser to a 10-year-old smartphone. There are no compatibility issues, no polyfills needed, and no feature detection required.</p>
+
+                    <h2>Technical Implementation</h2>
+
+                    <p>Despite its simplicity, this website includes several modern features that enhance the user experience:</p>
+
+                    <h3>Dark Mode Toggle</h3>
+
+                    <p>The theme toggle preserves your preference in localStorage and automatically detects your system preference on first visit. The implementation uses CSS custom properties for smooth transitions between themes.</p>
+
+                    <h3>Table of Contents</h3>
+
+                    <p>Each blog post automatically generates a table of contents from its headings. The TOC includes:</p>
+                    <ul>
+                        <li>Responsive positioning (top-left on desktop, header on mobile)</li>
+                        <li>Active section highlighting as you scroll</li>
+                        <li>Smooth scrolling to sections</li>
+                        <li>Keyboard accessibility (ESC to close)</li>
+                    </ul>
+
+                    <h3>Typography and Design</h3>
+
+                    <p>The design follows academic design principles with a warm, sophisticated color palette. Typography uses Georgia serif for headings and system fonts for body text, creating a readable and professional appearance.</p>
+
+                    <h2>Looking Forward</h2>
+
+                    <p>This is just the beginning. I plan to write about various topics including web development, technology, and personal reflections.</p>
+
+                    <h2>Conclusion</h2>
+
+                    <p>Building this website has been a reminder that sometimes the best solutions are the simplest ones. By focusing on content, performance, and user experience rather than complex technology stacks, we can create better experiences for everyone.</p>
+
+                    <p>Thank you for reading my first post. I'm excited to continue this journey and share more insights with you in the coming weeks and months.</p>
+                </article>
+
+                <!-- Post Navigation -->
+                <nav class="mt-12 pt-8 border-t border-border">
+                    <a href="../index.html" class="academic-link">&larr; Back to Home</a>
+                </nav>
+            </div>
+        </div>
+    </div>
+    
+    <script src="../script.js"></script>
+</body>
+</html>
