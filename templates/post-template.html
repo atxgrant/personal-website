@@ -10,18 +10,7 @@
     <link rel="stylesheet" href="../style.css">
 </head>
 <body>
-    <!-- TOC Toggle Button (Desktop: top-left, Mobile/Tablet: in header) -->
-    <button id="toc-toggle" class="toc-toggle" aria-label="Toggle table of contents">
-        <span id="toc-hamburger" class="toc-icon">
-            <span class="hamburger-line"></span>
-            <span class="hamburger-line"></span>
-            <span class="hamburger-line"></span>
-        </span>
-        <span id="toc-close" class="toc-icon hidden">
-            <span class="close-line"></span>
-            <span class="close-line"></span>
-        </span>
-    </button>
+
 
     <!-- TOC Panel -->
     <nav id="toc-panel" class="toc-panel hidden">
@@ -42,21 +31,36 @@
             <div class="max-w-2xl mx-auto px-6 py-8 sm:py-12">
                 
                 <!-- Header with Name and Dark Mode Toggle -->
-                <header class="flex items-center justify-between mb-8 sm:mb-12">
+                <header class="post-header flex items-center justify-between mb-8 sm:mb-12">
                     <h1 class="text-3xl sm:text-4xl font-serif text-foreground">
                         <a href="../index.html" class="academic-link" style="text-decoration: none; color: #c96442;">Grant Heimbach</a>
                     </h1>
                     
-                    <!-- Dark Mode Toggle Button -->
-                    <button
-                        id="theme-toggle"
-                        class="relative inline-flex h-6 w-11 items-center rounded-full bg-muted transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                        aria-label="Toggle dark mode"
-                    >
-                        <span id="toggle-slider" class="inline-block h-4 w-4 transform rounded-full bg-foreground transition duration-200 translate-x-1">
+                    <div class="flex items-center gap-4">
+                        <!-- TOC Toggle Button -->
+                        <button id="toc-toggle" class="toc-toggle" aria-label="Toggle table of contents">
+                            <span id="toc-hamburger" class="toc-icon">
+                                <span class="hamburger-line"></span>
+                                <span class="hamburger-line"></span>
+                                <span class="hamburger-line"></span>
+                            </span>
+                            <span id="toc-close" class="toc-icon hidden">
+                                <span class="close-line"></span>
+                                <span class="close-line"></span>
+                            </span>
+                        </button>
+                        
+                        <!-- Dark Mode Toggle Button -->
+                        <button
+                            id="theme-toggle"
+                            class="relative inline-flex h-6 w-11 items-center rounded-full bg-muted transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                            aria-label="Toggle dark mode"
+                        >
+                            <span id="toggle-slider" class="inline-block h-4 w-4 transform rounded-full bg-foreground transition duration-200 translate-x-1">
 
-                        </span>
-                    </button>
+                            </span>
+                        </button>
+                    </div>
                 </header>
 
                 <!-- Post Title -->
