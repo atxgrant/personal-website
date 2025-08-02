@@ -1,20 +1,17 @@
 /**
  * Theme Manager - Handles dark/light mode toggle
- * Converted from React DarkModeToggle component to vanilla JavaScript
  */
 class ThemeManager {
   constructor() {
-    this.isDark = false;
-    this.toggleBtn = null;
-    this.slider = null;
+    this.themeToggle = null;
+    this.toggleSlider = null;
     this.sunIcon = null;
     this.moonIcon = null;
-    
+    this.currentTheme = 'light';
     this.init();
   }
 
   init() {
-    // Wait for DOM to be ready
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', () => this.setup());
     } else {
@@ -23,195 +20,336 @@ class ThemeManager {
   }
 
   setup() {
-    // Get DOM elements
-    this.toggleBtn = document.getElementById('theme-toggle');
-    this.slider = document.getElementById('toggle-slider');
+    this.themeToggle = document.getElementById('theme-toggle');
+    this.toggleSlider = document.getElementById('toggle-slider');
     this.sunIcon = document.getElementById('sun-icon');
     this.moonIcon = document.getElementById('moon-icon');
 
-    if (!this.toggleBtn) {
-      console.error('Theme toggle button not found');
+    if (!this.themeToggle) {
+      console.warn('Theme toggle button not found');
       return;
     }
 
-    // Check for saved theme preference or detect system preference
-    const savedTheme = localStorage.getItem('darkMode');
-    let isDarkMode = false;
-
-    if (savedTheme !== null) {
-      // Use saved preference
-      isDarkMode = savedTheme === 'true';
-    } else {
-      // Detect system preference
-      isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    }
-
-    // Set initial theme
-    this.setTheme(isDarkMode);
-
-    // Add click event listener
-    this.toggleBtn.addEventListener('click', () => this.toggleTheme());
-
-    // Listen for system theme changes
-    if (window.matchMedia) {
-      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-        // Only auto-switch if no manual preference is saved
-        if (localStorage.getItem('darkMode') === null) {
-          this.setTheme(e.matches);
-        }
-      });
-    }
-
-    // Prevent flashing by removing any transition delays on initial load
-    document.body.style.transition = 'none';
-    setTimeout(() => {
-      document.body.style.transition = '';
-    }, 100);
+    this.initializeTheme();
+    this.setupEventListeners();
   }
 
-  setTheme(isDark) {
-    this.isDark = isDark;
+  initializeTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     
-    // Update DOM and localStorage
-    if (isDark) {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('darkMode', 'true');
-    } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('darkMode', 'false');
-    }
+    this.currentTheme = savedTheme || systemTheme;
+    this.applyTheme(this.currentTheme);
+  }
 
-    // Update toggle button appearance
-    this.updateToggleButton();
+  setupEventListeners() {
+    this.themeToggle.addEventListener('click', () => {
+      this.toggleTheme();
+    });
+
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+      if (!localStorage.getItem('theme')) {
+        this.currentTheme = e.matches ? 'dark' : 'light';
+        this.applyTheme(this.currentTheme);
+      }
+    });
   }
 
   toggleTheme() {
-    this.setTheme(!this.isDark);
+    this.currentTheme = this.currentTheme === 'light' ? 'dark' : 'light';
+    this.applyTheme(this.currentTheme);
+    localStorage.setItem('theme', this.currentTheme);
   }
 
-  updateToggleButton() {
-    if (!this.slider || !this.sunIcon || !this.moonIcon) return;
+  applyTheme(theme) {
+    const html = document.documentElement;
+    
+    if (theme === 'dark') {
+      html.classList.add('dark');
+      this.updateToggleUI(true);
+    } else {
+      html.classList.remove('dark');
+      this.updateToggleUI(false);
+    }
+    
+    this.currentTheme = theme;
+  }
 
-    if (this.isDark) {
-      // Dark mode: slide right, show moon icon
-      this.slider.classList.remove('translate-x-1');
-      this.slider.classList.add('translate-x-6');
+  updateToggleUI(isDark) {
+    if (!this.toggleSlider || !this.sunIcon || !this.moonIcon) return;
+
+    if (isDark) {
+      this.toggleSlider.classList.remove('translate-x-1');
+      this.toggleSlider.classList.add('translate-x-6');
       this.sunIcon.classList.add('hidden');
       this.moonIcon.classList.remove('hidden');
-      this.toggleBtn.setAttribute('aria-label', 'Switch to light mode');
     } else {
-      // Light mode: slide left, show sun icon
-      this.slider.classList.remove('translate-x-6');
-      this.slider.classList.add('translate-x-1');
+      this.toggleSlider.classList.remove('translate-x-6');
+      this.toggleSlider.classList.add('translate-x-1');
       this.sunIcon.classList.remove('hidden');
       this.moonIcon.classList.add('hidden');
-      this.toggleBtn.setAttribute('aria-label', 'Switch to dark mode');
     }
   }
 }
 
 /**
- * Smooth Scrolling for anchor links (if any are added later)
+ * Table of Contents Manager - Handles TOC generation and navigation
  */
-function initSmoothScrolling() {
-  const links = document.querySelectorAll('a[href^="#"]');
-  
-  links.forEach(link => {
-    link.addEventListener('click', function(e) {
-      const targetId = this.getAttribute('href');
-      const targetElement = document.querySelector(targetId);
+class TOCManager {
+  constructor() {
+    this.tocToggle = null;
+    this.tocPanel = null;
+    this.tocOverlay = null;
+    this.tocList = null;
+    this.tocHamburger = null;
+    this.tocClose = null;
+    this.isOpen = false;
+    this.headings = [];
+    this.activeHeading = null;
+    this.init();
+  }
+
+  init() {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => this.setup());
+    } else {
+      this.setup();
+    }
+  }
+
+  setup() {
+    this.tocToggle = document.getElementById('toc-toggle');
+    this.tocPanel = document.getElementById('toc-panel');
+    this.tocOverlay = document.getElementById('toc-overlay');
+    this.tocList = document.getElementById('toc-list');
+    this.tocHamburger = document.getElementById('toc-hamburger');
+    this.tocClose = document.getElementById('toc-close');
+
+    if (!this.tocToggle || !this.tocPanel) {
+      console.log('TOC elements not found - likely not on a blog post page');
+      return;
+    }
+
+    console.log('TOC Manager initializing...');
+    this.generateTOC();
+    this.setupEventListeners();
+    this.initScrollTracking();
+    console.log('TOC Manager initialized successfully');
+  }
+
+  generateTOC() {
+    const postContent = document.querySelector('.post-content');
+    if (!postContent) {
+      console.warn('Post content not found');
+      return;
+    }
+
+    this.headings = postContent.querySelectorAll('h2, h3, h4, h5, h6');
+    
+    if (this.headings.length === 0) {
+      this.tocToggle.style.display = 'none';
+      console.log('No headings found for TOC');
+      return;
+    }
+
+    console.log(`Found ${this.headings.length} headings for TOC`);
+    this.tocList.innerHTML = '';
+
+    this.headings.forEach((heading, index) => {
+      if (!heading.id) {
+        heading.id = this.generateHeadingId(heading.textContent, index);
+      }
+
+      const li = document.createElement('li');
+      const a = document.createElement('a');
       
-      if (targetElement) {
-        e.preventDefault();
-        targetElement.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        });
-      }
+      a.href = `#${heading.id}`;
+      a.textContent = heading.textContent;
+      a.setAttribute('data-heading-id', heading.id);
+      a.className = `toc-${heading.tagName.toLowerCase()}`;
+      
+      li.appendChild(a);
+      this.tocList.appendChild(li);
     });
-  });
-}
+  }
 
-/**
- * Enhanced link interactions
- */
-function initLinkInteractions() {
-  // Add subtle hover effects to external links
-  const externalLinks = document.querySelectorAll('a[target="_blank"]');
-  
-  externalLinks.forEach(link => {
-    // Add external link indicator (optional)
-    link.addEventListener('mouseenter', function() {
-      // Could add hover effects here if desired
-    });
-  });
-}
+  generateHeadingId(text, index) {
+    let id = text
+      .toLowerCase()
+      .replace(/[^\w\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/--+/g, '-')
+      .trim()
+      .substring(0, 50);
 
-/**
- * Keyboard navigation support
- */
-function initKeyboardNavigation() {
-  document.addEventListener('keydown', function(e) {
-    // Support Escape key for any future modals/overlays
-    if (e.key === 'Escape') {
-      // Handle escape key if needed
+    if (!id || document.getElementById(id)) {
+      id = `heading-${index}`;
     }
     
-    // Support theme toggle with keyboard shortcut (Ctrl/Cmd + Shift + T)
-    if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'T') {
+    return id;
+  }
+
+  setupEventListeners() {
+    this.tocToggle.addEventListener('click', (e) => {
       e.preventDefault();
-      if (window.themeManager) {
-        window.themeManager.toggleTheme();
+      console.log('TOC toggle clicked');
+      this.toggleTOC();
+    });
+
+    if (this.tocOverlay) {
+      this.tocOverlay.addEventListener('click', () => {
+        this.closeTOC();
+      });
+    }
+
+    this.tocList.addEventListener('click', (e) => {
+      if (e.target.tagName === 'A') {
+        e.preventDefault();
+        const headingId = e.target.getAttribute('data-heading-id');
+        this.scrollToHeading(headingId);
+        
+        if (window.innerWidth < 1024) {
+          this.closeTOC();
+        }
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && this.isOpen) {
+        this.closeTOC();
+      }
+    });
+
+    window.addEventListener('resize', () => {
+      if (window.innerWidth >= 1024 && this.isOpen) {
+        this.tocOverlay.classList.remove('visible');
+      }
+    });
+  }
+
+  toggleTOC() {
+    console.log('Toggling TOC, currently open:', this.isOpen);
+    if (this.isOpen) {
+      this.closeTOC();
+    } else {
+      this.openTOC();
+    }
+  }
+
+  openTOC() {
+    console.log('Opening TOC');
+    this.isOpen = true;
+    this.tocPanel.classList.remove('hidden');
+    this.tocPanel.classList.add('visible');
+    
+    this.tocHamburger.classList.add('hidden');
+    this.tocClose.classList.remove('hidden');
+    
+    if (window.innerWidth < 1024) {
+      this.tocOverlay.classList.remove('hidden');
+      this.tocOverlay.classList.add('visible');
+    }
+
+    this.tocToggle.setAttribute('aria-expanded', 'true');
+  }
+
+  closeTOC() {
+    console.log('Closing TOC');
+    this.isOpen = false;
+    this.tocPanel.classList.remove('visible');
+    
+    this.tocHamburger.classList.remove('hidden');
+    this.tocClose.classList.add('hidden');
+    
+    this.tocOverlay.classList.remove('visible');
+    this.tocToggle.setAttribute('aria-expanded', 'false');
+
+    setTimeout(() => {
+      if (!this.isOpen) {
+        this.tocPanel.classList.add('hidden');
+        this.tocOverlay.classList.add('hidden');
+      }
+    }, 300);
+  }
+
+  scrollToHeading(headingId) {
+    const heading = document.getElementById(headingId);
+    if (heading) {
+      const yOffset = -20;
+      const y = heading.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      
+      window.scrollTo({
+        top: y,
+        behavior: 'smooth'
+      });
+    }
+  }
+
+  initScrollTracking() {
+    let scrollTimeout;
+    window.addEventListener('scroll', () => {
+      if (scrollTimeout) {
+        clearTimeout(scrollTimeout);
+      }
+      scrollTimeout = setTimeout(() => {
+        this.updateActiveHeading();
+      }, 50);
+    });
+
+    this.updateActiveHeading();
+  }
+
+  updateActiveHeading() {
+    if (this.headings.length === 0) return;
+
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const windowHeight = window.innerHeight;
+    
+    let activeId = null;
+
+    for (let i = 0; i < this.headings.length; i++) {
+      const heading = this.headings[i];
+      const rect = heading.getBoundingClientRect();
+      
+      if (rect.top <= windowHeight * 0.3) {
+        activeId = heading.id;
+      } else {
+        break;
       }
     }
-  });
-}
 
-/**
- * Performance optimization: Reduce layout thrashing
- */
-function initPerformanceOptimizations() {
-  // Throttle scroll events if any scroll handlers are added later
-  let scrollTimeout;
-  
-  window.addEventListener('scroll', function() {
-    if (scrollTimeout) {
-      clearTimeout(scrollTimeout);
+    if (!activeId && scrollTop < 200 && this.headings.length > 0) {
+      activeId = this.headings[0].id;
     }
-    
-    scrollTimeout = setTimeout(function() {
-      // Handle scroll events here if needed
-    }, 16); // ~60fps
-  });
+
+    this.setActiveHeading(activeId);
+  }
+
+  setActiveHeading(headingId) {
+    if (this.activeHeading === headingId) return;
+
+    const prevActive = this.tocList.querySelector('.active');
+    if (prevActive) {
+      prevActive.classList.remove('active');
+    }
+
+    if (headingId) {
+      const newActive = this.tocList.querySelector(`a[data-heading-id="${headingId}"]`);
+      if (newActive) {
+        newActive.classList.add('active');
+      }
+    }
+
+    this.activeHeading = headingId;
+  }
 }
 
-/**
- * Analytics/tracking (placeholder for future use)
- */
-function initAnalytics() {
-  // Placeholder for analytics initialization
-  // Could track theme toggle usage, link clicks, etc.
-}
-
-/**
- * Initialize all functionality
- */
 function initializeApp() {
-  // Initialize theme manager (most important)
   window.themeManager = new ThemeManager();
+  window.tocManager = new TOCManager();
   
-  // Initialize other features
-  initSmoothScrolling();
-  initLinkInteractions();
-  initKeyboardNavigation();
-  initPerformanceOptimizations();
-  initAnalytics();
-
-  // Add loaded class to body for CSS animations
   document.body.classList.add('loaded');
-  
   console.log('Static website initialized successfully');
 }
 
-// Start the app
-initializeApp(); 
+initializeApp();
