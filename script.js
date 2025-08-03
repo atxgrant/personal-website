@@ -1,3 +1,6 @@
+// Console welcome message
+console.log("If you're curious about if we might enjoy interacting,\nreach out.\n\nit's just my full name at gmail");
+
 /**
  * Theme Manager - Handles dark/light mode toggle
  */
