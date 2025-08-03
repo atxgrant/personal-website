@@ -918,3 +918,82 @@ h2 {
 .hidden {
   display: none !important;
 }
+
+/* ===== MOBILE BIO COLLAPSE FUNCTIONALITY ===== */
+
+/* Desktop - show full content by default */
+.bio-content {
+  position: relative;
+}
+
+.bio-expanded {
+  display: inline;
+}
+
+.bio-ellipsis,
+.bio-expand-btn {
+  display: none;
+}
+
+.bio-break {
+  display: block;
+  margin: 1rem 0;
+  content: "";
+}
+
+/* Mobile and Tablet - collapse content by default */
+@media (max-width: 768px) {
+  /* Hide expanded content when not expanded */
+  .bio-content:not(.expanded) .bio-expanded {
+    display: none;
+  }
+  
+  /* Show ellipsis when collapsed */
+  .bio-content:not(.expanded) .bio-ellipsis {
+    display: inline;
+  }
+  
+  /* Style and show the expand button when collapsed */
+  .bio-content:not(.expanded) .bio-expand-btn {
+    display: inline-block;
+    background: none;
+    border: none;
+    color: hsl(var(--link));
+    cursor: pointer;
+    font-size: inherit;
+    font-family: inherit;
+    margin-left: 0.5em;
+    padding: 0;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    transition: color 0.2s ease;
+  }
+  
+  .bio-content:not(.expanded) .bio-expand-btn:hover {
+    color: hsl(var(--link-hover));
+  }
+  
+  .bio-content:not(.expanded) .bio-expand-btn:focus {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+  
+  /* When expanded, hide ellipsis and button */
+  .bio-content.expanded .bio-ellipsis,
+  .bio-content.expanded .bio-expand-btn {
+    display: none;
+  }
+  
+  /* When expanded, show the content inline */
+  .bio-content.expanded .bio-expanded {
+    display: inline;
+  }
+  
+  /* In mobile expanded state, convert breaks to proper spacing */
+  .bio-content.expanded .bio-break {
+    display: block;
+    margin: 1rem 0;
+    content: "";
+  }
+}

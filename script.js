@@ -369,9 +369,69 @@ class TOCManager {
   }
 }
 
+/**
+ * Bio Collapse Manager - Handles mobile bio expand/collapse functionality
+ */
+class BioCollapseManager {
+  constructor() {
+    this.bioContent = null;
+    this.expandButton = null;
+    this.init();
+  }
+
+  init() {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => this.setup());
+    } else {
+      this.setup();
+    }
+  }
+
+  setup() {
+    this.bioContent = document.querySelector('.bio-content');
+    this.expandButton = document.querySelector('.bio-expand-btn');
+
+    if (!this.bioContent || !this.expandButton) {
+      console.log('Bio collapse elements not found - bio collapse functionality disabled');
+      return;
+    }
+
+    console.log('Bio Collapse Manager initializing...');
+    this.setupEventListeners();
+    console.log('Bio Collapse Manager initialized successfully');
+  }
+
+  setupEventListeners() {
+    this.expandButton.addEventListener('click', (e) => {
+      e.preventDefault();
+      this.expandBio();
+    });
+
+    // Optional: Handle window resize to reset state if needed
+    window.addEventListener('resize', () => {
+      this.handleViewportChange();
+    });
+  }
+
+  expandBio() {
+    if (this.bioContent) {
+      this.bioContent.classList.add('expanded');
+      console.log('Bio expanded');
+    }
+  }
+
+  handleViewportChange() {
+    // Reset to collapsed state when switching to desktop
+    if (window.innerWidth > 768 && this.bioContent) {
+      this.bioContent.classList.remove('expanded');
+    }
+  }
+}
+
 function initializeApp() {
   window.themeManager = new ThemeManager();
   window.tocManager = new TOCManager();
+  window.bioCollapseManager = new BioCollapseManager();
   
   document.body.classList.add('loaded');
   console.log('Static website initialized successfully');
