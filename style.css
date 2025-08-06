@@ -1050,10 +1050,11 @@ h2 {
 
 /* Duplicate styles removed - now handled above */
 
-/* Desktop layout - always reserve space for TOC */
+/* Desktop layout - only reserve space for TOC on pages that have one */
 @media (min-width: 1024px) {
-  #root {
-    margin-left: 20rem; /* Always allocate space for TOC */
+  /* Only apply margin when TOC panel exists (blog post pages) */
+  body:has(#toc-panel) #root {
+    margin-left: 20rem; /* Allocate space for TOC sidebar */
     transition: none; /* No animation needed since space is always reserved */
   }
   
