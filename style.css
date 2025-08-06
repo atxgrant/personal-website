@@ -631,7 +631,7 @@ h2 {
 
 /* Enhanced styling for lists with strong elements (like your AI categories) */
 .post-content li strong {
-  color: hsl(var(--accent));
+  color: #c96442;
   font-weight: 700;
 }
 
