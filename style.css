@@ -952,14 +952,13 @@ h2 {
   transform: rotate(-45deg);
 }
 
-/* TOC Panel */
+/* TOC Panel - Mobile Full-Screen by default */
 .toc-panel {
   position: fixed;
   z-index: 999;
   background-color: hsl(var(--background));
   border: none;
   border-radius: 0;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
   padding: 0;
   top: 0;
   left: 0;
@@ -977,6 +976,33 @@ h2 {
   flex-direction: column;
 }
 
+/* Desktop TOC - Persistent Sidebar */
+@media (min-width: 1024px) {
+  .toc-panel {
+    top: 6rem;
+    left: 2rem;
+    right: auto;
+    bottom: 2rem;
+    width: 16rem;
+    height: auto;
+    max-height: calc(100vh - 8rem);
+    min-height: auto;
+    border: 1px solid hsl(var(--border));
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    opacity: 1;
+    transform: translateY(0);
+    display: block;
+    overflow-y: auto;
+    padding: 1.5rem;
+  }
+  
+  .toc-panel.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .toc-panel.visible {
   opacity: 1;
   transform: translateY(0);
@@ -984,18 +1010,41 @@ h2 {
 
 
 
-/* TOC header positioning for all devices */
+/* Mobile TOC header positioning */
 .toc-panel .toc-header {
   padding: 5rem 1.5rem 1.5rem 1.5rem;
   margin-bottom: 0;
   flex-shrink: 0;
 }
 
-/* TOC list container for all devices */
+/* Mobile TOC list container */
 .toc-panel .toc-list {
   padding: 0 1.5rem 2rem 1.5rem;
   flex-grow: 1;
   overflow-y: auto;
+}
+
+/* Desktop TOC styling */
+@media (min-width: 1024px) {
+  .toc-toggle {
+    display: none;
+  }
+  
+  .toc-panel .toc-header {
+    padding: 0 0 1rem 0;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid hsl(var(--border));
+  }
+  
+  .toc-panel .toc-list {
+    padding: 0;
+    flex-grow: unset;
+    overflow-y: visible;
+  }
+  
+  .toc-overlay {
+    display: none;
+  }
 }
 
 /* TOC Header */
