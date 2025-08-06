@@ -566,7 +566,7 @@ h2 {
 }
 
 .prose-lg {
-  font-size: 1.125rem;
+  font-size: 1.25rem; /* 20px */
   line-height: 1.75rem;
 }
 
@@ -576,7 +576,7 @@ h2 {
 
 /* Blog Post Content Typography */
 .post-content {
-  font-size: 1.125rem;
+  font-size: 1.25rem; /* 20px */
   line-height: 1.75;
   color: hsl(var(--foreground));
   max-width: 70ch; /* Optimal reading line length */
@@ -734,7 +734,7 @@ h2 {
   margin: 1.5rem 0;
   padding-left: 1.5rem;
   list-style-type: disc;
-  font-size: 1.125rem;
+  font-size: 1.25rem; /* 20px */
 }
 
 .posts-list li {
