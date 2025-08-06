@@ -217,16 +217,33 @@ class TOCManager {
     });
 
     let resizeTimeout;
+    let lastViewportType = this.isDesktop() ? 'desktop' : 'mobile';
+    
     window.addEventListener('resize', () => {
+      const currentViewportType = window.innerWidth >= 1024 ? 'desktop' : 'mobile';
+      
+      // If switching from desktop to mobile and TOC is open, hide it immediately
+      if (lastViewportType === 'desktop' && currentViewportType === 'mobile' && this.isOpen) {
+        this.tocPanel.style.opacity = '0';
+        this.tocPanel.style.pointerEvents = 'none';
+      }
+      
+      // If switching from mobile to desktop, prepare for desktop layout
+      if (lastViewportType === 'mobile' && currentViewportType === 'desktop') {
+        this.tocPanel.style.opacity = '';
+        this.tocPanel.style.pointerEvents = '';
+      }
+      
       if (window.innerWidth >= 1024 && this.isOpen) {
         this.tocOverlay.classList.remove('visible');
       }
       
-      // Debounce viewport change handling to prevent flash during resize
+      // Debounce viewport change handling
       clearTimeout(resizeTimeout);
       resizeTimeout = setTimeout(() => {
+        lastViewportType = currentViewportType;
         this.handleViewportChange();
-      }, 150); // Wait for resize to finish
+      }, 50); // Shorter delay for quicker response
     });
   }
 
@@ -260,6 +277,10 @@ class TOCManager {
     console.log('Closing TOC');
     this.isOpen = false;
     this.tocPanel.classList.remove('visible');
+    
+    // Reset any inline styles that might have been set during resize
+    this.tocPanel.style.opacity = '';
+    this.tocPanel.style.pointerEvents = '';
     
     this.tocHamburger.classList.remove('hidden');
     this.tocClose.classList.add('hidden');
