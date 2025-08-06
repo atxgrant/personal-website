@@ -216,34 +216,34 @@ class TOCManager {
       }
     });
 
+    // Professional viewport management inspired by sites like Dario's
     let resizeTimeout;
-    let lastViewportType = this.isDesktop() ? 'desktop' : 'mobile';
+    let currentViewportState = this.isDesktop() ? 'desktop' : 'mobile';
     
     window.addEventListener('resize', () => {
-      const currentViewportType = window.innerWidth >= 1024 ? 'desktop' : 'mobile';
+      const newViewportState = window.innerWidth >= 1024 ? 'desktop' : 'mobile';
       
-      // If switching from desktop to mobile and TOC is open, hide it immediately
-      if (lastViewportType === 'desktop' && currentViewportType === 'mobile' && this.isOpen) {
-        this.tocPanel.style.opacity = '0';
-        this.tocPanel.style.pointerEvents = 'none';
+      // Only act if viewport actually changed
+      if (currentViewportState !== newViewportState) {
+        // Immediate state management - prevent flash by managing visibility
+        if (newViewportState === 'mobile' && this.isOpen) {
+          // Close TOC immediately when switching to mobile to prevent full-screen flash
+          this.closeTOC();
+        }
+        
+        if (newViewportState === 'desktop') {
+          // Remove mobile overlay when switching to desktop
+          this.tocOverlay.classList.remove('visible');
+        }
+        
+        currentViewportState = newViewportState;
       }
       
-      // If switching from mobile to desktop, prepare for desktop layout
-      if (lastViewportType === 'mobile' && currentViewportType === 'desktop') {
-        this.tocPanel.style.opacity = '';
-        this.tocPanel.style.pointerEvents = '';
-      }
-      
-      if (window.innerWidth >= 1024 && this.isOpen) {
-        this.tocOverlay.classList.remove('visible');
-      }
-      
-      // Debounce viewport change handling
+      // Debounced cleanup and final state handling
       clearTimeout(resizeTimeout);
       resizeTimeout = setTimeout(() => {
-        lastViewportType = currentViewportType;
         this.handleViewportChange();
-      }, 50); // Shorter delay for quicker response
+      }, 50);
     });
   }
 
@@ -278,22 +278,19 @@ class TOCManager {
     this.isOpen = false;
     this.tocPanel.classList.remove('visible');
     
-    // Reset any inline styles that might have been set during resize
-    this.tocPanel.style.opacity = '';
-    this.tocPanel.style.pointerEvents = '';
-    
     this.tocHamburger.classList.remove('hidden');
     this.tocClose.classList.add('hidden');
     
     this.tocOverlay.classList.remove('visible');
     this.tocToggle.setAttribute('aria-expanded', 'false');
 
+    // Clean timeout for hidden class
     setTimeout(() => {
       if (!this.isOpen) {
         this.tocPanel.classList.add('hidden');
         this.tocOverlay.classList.add('hidden');
       }
-    }, 300);
+    }, 150); // Shorter delay to match transition
   }
 
   scrollToHeading(headingId) {

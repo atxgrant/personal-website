@@ -960,7 +960,7 @@ h2 {
   transform: rotate(-45deg);
 }
 
-/* Unified TOC Panel - Smooth transitions for all viewports */
+/* Base TOC Panel - Hidden by default, only shown when .visible class is added */
 .toc-panel {
   position: fixed;
   z-index: 999;
@@ -968,8 +968,9 @@ h2 {
   border: none;
   border-radius: 0;
   padding: 0;
-  transition: opacity 0.15s ease;
   opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.15s ease, visibility 0.15s ease;
   
   /* Mobile layout by default */
   top: 0;
@@ -983,11 +984,13 @@ h2 {
   flex-direction: column;
 }
 
+/* Show TOC when visible class is present - works for both mobile and desktop */
 .toc-panel.visible {
   opacity: 1;
+  visibility: visible;
 }
 
-/* Desktop adjustments - minimal changes */
+/* Desktop layout adjustments - but NEVER override visibility/opacity */
 @media (min-width: 1024px) {
   .toc-panel {
     top: 2rem;
@@ -998,17 +1001,13 @@ h2 {
     height: auto;
     max-height: calc(100vh - 4rem);
     overflow-y: auto;
-    opacity: 1; /* Always visible on desktop */
-    display: block; /* Override mobile flex */
+    display: block;
     flex-direction: unset;
-  }
-  
-  .toc-panel:not(.visible) {
-    opacity: 0;
+    /* NO opacity or visibility rules here - let .visible class control it */
   }
 }
 
-/* Mobile TOC styling */
+/* Mobile TOC content styling */
 .toc-panel .toc-header {
   padding: 5rem 1.5rem 1.5rem 1.5rem;
   margin-bottom: 0;
@@ -1021,7 +1020,7 @@ h2 {
   overflow-y: auto;
 }
 
-/* Desktop TOC styling adjustments */
+/* Desktop TOC content styling adjustments */
 @media (min-width: 1024px) {
   .toc-panel .toc-header {
     padding: 0 0 1rem 0;
