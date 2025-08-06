@@ -1060,9 +1060,11 @@ h2 {
 
 .toc-header h3 {
   margin: 0;
-  font-size: 1.125rem;
+  font-size: 0.875rem;
   font-weight: 600;
-  color: hsl(var(--foreground));
+  color: hsl(var(--muted-foreground));
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
 }
 
 /* TOC List */
@@ -1083,8 +1085,9 @@ h2 {
   text-decoration: none;
   border-radius: 0.25rem;
   transition: all 0.2s ease;
-  font-size: 0.875rem;
-  line-height: 1.25;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  font-weight: 400;
 }
 
 .toc-list a:hover {
