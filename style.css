@@ -1024,8 +1024,27 @@ h2 {
   overflow-y: auto;
 }
 
-/* Desktop TOC styling */
+/* Desktop TOC styling - Dario's approach: always reserve space */
 @media (min-width: 1024px) {
+  /* Always reserve space for TOC on desktop */
+  #root {
+    margin-left: 20rem; /* Always allocate space for TOC */
+    transition: none; /* No animation needed since space is always reserved */
+  }
+  
+  .toc-panel {
+    left: 2rem; /* Position in the reserved space */
+    width: 16rem;
+    opacity: 1; /* Always visible by default */
+    transform: translateX(0); /* No transform animations */
+  }
+  
+  /* Hide TOC by sliding it left when closed */
+  .toc-panel:not(.visible) {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  
   .toc-panel .toc-header {
     padding: 0 0 1rem 0;
     margin-bottom: 1rem;
@@ -1040,20 +1059,6 @@ h2 {
   
   .toc-overlay {
     display: none;
-  }
-  
-  /* Adjust main content to avoid TOC overlap when visible */
-  .toc-panel.visible ~ div #root,
-  .toc-panel.visible ~ #root {
-    margin-left: 20rem; /* TOC width (16rem) + gap (4rem) */
-    transition: margin-left 0.3s ease;
-  }
-  
-  /* More specific targeting for the content container */
-  .toc-panel.visible ~ div .max-w-2xl,
-  .toc-panel.visible ~ #root .max-w-2xl {
-    margin-left: 4rem; /* Additional spacing from TOC */
-    max-width: calc(42rem - 4rem); /* Adjust max-width to account for TOC */
   }
 }
 
