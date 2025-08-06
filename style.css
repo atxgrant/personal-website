@@ -580,6 +580,14 @@ h2 {
   text-align: left;
 }
 
+/* Responsive Blog Post Title - Dario-style fluid typography */
+.post-meta h1 {
+  font-size: clamp(1.75rem, 4vw + 1rem, 3rem) !important;
+  line-height: 1.2;
+  font-weight: 400;
+  margin-bottom: 1rem;
+}
+
 .post-content p {
   margin-bottom: 1.5rem;
   line-height: 1.75;
