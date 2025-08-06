@@ -583,12 +583,19 @@ h2 {
   text-align: left;
 }
 
-/* Responsive Blog Post Title - Dario-style fluid typography */
+/* Responsive Blog Post Title - Two breakpoint system */
 .post-meta h1 {
-  font-size: clamp(1.75rem, 4vw + 1rem, 3rem) !important;
+  font-size: 3rem; /* 48px mobile default */
   line-height: 1.2;
   font-weight: 400;
   margin-bottom: 1rem;
+}
+
+/* Tablet and larger - 62px */
+@media (min-width: 768px) {
+  .post-meta h1 {
+    font-size: 3.875rem; /* 62px */
+  }
 }
 
 .post-content p {
