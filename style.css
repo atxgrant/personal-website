@@ -1026,10 +1026,6 @@ h2 {
 
 /* Desktop TOC styling */
 @media (min-width: 1024px) {
-  .toc-toggle {
-    display: none;
-  }
-  
   .toc-panel .toc-header {
     padding: 0 0 1rem 0;
     margin-bottom: 1rem;
