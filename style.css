@@ -987,9 +987,9 @@ h2 {
     height: auto;
     max-height: calc(100vh - 8rem);
     min-height: auto;
-    border: 1px solid hsl(var(--border));
-    border-radius: 0.5rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
     opacity: 1;
     transform: translateY(0);
     display: block;
