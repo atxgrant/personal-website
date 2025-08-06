@@ -707,6 +707,86 @@ h2 {
   text-align: center;
 }
 
+/* Homepage Posts List Styling */
+.posts-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.post-item {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.5rem;
+  background-color: hsl(var(--background));
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.post-item:hover {
+  border-color: var(--link);
+  box-shadow: 0 2px 8px rgba(201, 100, 66, 0.1);
+  transform: translateY(-1px);
+}
+
+.post-item:last-child {
+  margin-bottom: 0;
+}
+
+.post-item .post-content {
+  width: 100%;
+}
+
+.post-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.4;
+  margin-bottom: 0.75rem;
+  display: block;
+  text-decoration: none;
+}
+
+.post-title:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.post-excerpt {
+  color: hsl(var(--muted-foreground));
+  line-height: 1.6;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+}
+
+.post-meta-home {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.875rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.post-date {
+  font-weight: 500;
+}
+
+.post-meta-home .reading-time {
+  color: hsl(var(--muted-foreground));
+  font-size: 0.875rem;
+}
+
+/* Add subtle list marker using CSS */
+.post-item::before {
+  content: "•";
+  color: var(--link);
+  font-weight: bold;
+  position: absolute;
+  left: 0.5rem;
+  top: 1.75rem;
+  font-size: 1.2rem;
+}
+
 /* Dark Mode Toggle Styles */
 .relative {
   position: relative;
