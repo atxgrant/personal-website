@@ -381,6 +381,9 @@ body {
   color: hsl(var(--foreground));
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Font loading optimizations to prevent flash */
+  font-display: swap;
+  font-optical-sizing: auto;
 }
 
 h1,

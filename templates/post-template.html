@@ -7,10 +7,15 @@
     <meta name="description" content="{{POST_DESCRIPTION}}" />
     <meta name="author" content="Grant Heimbach" />
     
-    <!-- Font Preloading for Performance -->
+    <!-- Font Optimization: Preload + Preconnect + Subset -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&display=swap">
+    
+    <!-- Preload the specific font files we need most -->
+    <link rel="preload" href="https://fonts.gstatic.com/s/newsreader/v19/cY9qfjWCX1kCwDFVMBY0pWr0R6e9cPnXsFFUZzE.woff2" as="font" type="font/woff2" crossorigin>
+    
+    <!-- Load optimized font subset for better performance -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:wght@400;600&display=swap&subset=latin">
     
     <link rel="stylesheet" href="../style.css">
 </head>
