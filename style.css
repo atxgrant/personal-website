@@ -992,7 +992,12 @@ h2 {
     width: 100%;
     max-width: none;
     height: 100vh;
+    max-height: 100vh;
+    min-height: 100vh;
     border-radius: 0;
+    border: none;
+    padding: 0;
+    overflow-y: hidden;
     transform: translateY(-10px);
     display: flex;
     flex-direction: column;
