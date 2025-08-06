@@ -960,7 +960,7 @@ h2 {
   transform: rotate(-45deg);
 }
 
-/* TOC Panel - Mobile Full-Screen by default */
+/* Unified TOC Panel - Smooth transitions for all viewports */
 .toc-panel {
   position: fixed;
   z-index: 999;
@@ -968,23 +968,26 @@ h2 {
   border: none;
   border-radius: 0;
   padding: 0;
+  transition: opacity 0.15s ease;
+  opacity: 0;
+  
+  /* Mobile layout by default */
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   width: 100%;
   height: 100vh;
-  max-height: 100vh;
-  min-height: 100vh;
   overflow-y: hidden;
-  transition: opacity 0.3s ease, transform 0.3s ease;
-  opacity: 0;
-  transform: translateY(-10px);
   display: flex;
   flex-direction: column;
 }
 
-/* Desktop TOC - Persistent Sidebar */
+.toc-panel.visible {
+  opacity: 1;
+}
+
+/* Desktop adjustments - minimal changes */
 @media (min-width: 1024px) {
   .toc-panel {
     top: 2rem;
@@ -994,36 +997,37 @@ h2 {
     width: 16rem;
     height: auto;
     max-height: calc(100vh - 4rem);
-    min-height: auto;
-    border: none;
-    border-radius: 0;
-    box-shadow: none;
-    opacity: 1;
-    transform: translateX(0);
-    display: block;
     overflow-y: auto;
-    padding: 0;
-    transition: opacity 0.15s ease;
-    /* Override mobile transform transition to prevent flash */
+    opacity: 1; /* Always visible on desktop */
+    display: block; /* Override mobile flex */
+    flex-direction: unset;
   }
   
-  /* Hide TOC with subtle fade when closed */
   .toc-panel:not(.visible) {
     opacity: 0;
   }
-  
-  .toc-panel.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  
-  /* Desktop TOC header - ensure it's visible and properly styled */
+}
+
+/* Mobile TOC styling */
+.toc-panel .toc-header {
+  padding: 5rem 1.5rem 1.5rem 1.5rem;
+  margin-bottom: 0;
+  flex-shrink: 0;
+}
+
+.toc-panel .toc-list {
+  padding: 0 1.5rem 2rem 1.5rem;
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+/* Desktop TOC styling adjustments */
+@media (min-width: 1024px) {
   .toc-panel .toc-header {
     padding: 0 0 1rem 0;
     margin-bottom: 1rem;
     border-bottom: none;
     flex-shrink: unset;
-    display: block; /* Ensure it's visible */
   }
   
   .toc-panel .toc-list {
@@ -1033,26 +1037,9 @@ h2 {
   }
 }
 
-.toc-panel.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
 
 
-
-/* Mobile TOC header positioning */
-.toc-panel .toc-header {
-  padding: 5rem 1.5rem 1.5rem 1.5rem;
-  margin-bottom: 0;
-  flex-shrink: 0;
-}
-
-/* Mobile TOC list container */
-.toc-panel .toc-list {
-  padding: 0 1.5rem 2rem 1.5rem;
-  flex-grow: 1;
-  overflow-y: auto;
-}
+/* Duplicate styles removed - now handled above */
 
 /* Desktop layout - always reserve space for TOC */
 @media (min-width: 1024px) {
