@@ -1053,7 +1053,7 @@ h2 {
 @media (min-width: 1024px) {
   /* Only apply margin when TOC panel exists (blog post pages) */
   body:has(#toc-panel) #root {
-    margin-left: 20rem; /* Allocate space for TOC sidebar */
+    margin-left: 19rem; /* Tighter spacing - matches Dario's layout */
     transition: none; /* No animation needed since space is always reserved */
   }
   
