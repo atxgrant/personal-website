@@ -1,3 +1,6 @@
+/* Google Fonts Import */
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&display=swap');
+
 /* CSS Reset and Base Styles */
 *,
 *:before,
@@ -375,7 +378,7 @@ video {
 
 body {
   background-color: hsl(var(--background));
-  font-family: Georgia, Times New Roman, serif;
+  font-family: "Newsreader", Georgia, Times New Roman, serif;
   color: hsl(var(--foreground));
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -387,7 +390,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: Georgia, Times New Roman, serif;
+  font-family: "Newsreader", Georgia, Times New Roman, serif;
 }
 
 h2 {
@@ -530,7 +533,7 @@ h2 {
 }
 
 .font-serif {
-  font-family: Georgia, Times New Roman, serif;
+  font-family: "Newsreader", Georgia, Times New Roman, serif;
 }
 
 .text-foreground {
