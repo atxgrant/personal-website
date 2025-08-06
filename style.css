@@ -305,22 +305,22 @@ video {
 /* Theme Variables - Light and Dark Mode */
 :root {
   /* Academic portfolio color scheme - warm, sophisticated */
-  --background: 43 13% 94%; /* Warm cream background */
+  --background: 49 22% 93%; /* Warm cream background (#F0EEE6) */
   --foreground: 20 5% 12%; /* Very dark brown text (#1F1E1D) */
-  --card: 43 13% 94%;
+  --card: 49 22% 93%;
   --card-foreground: 20 5% 12%;
-  --popover: 43 13% 94%;
+  --popover: 49 22% 93%;
   --popover-foreground: 20 5% 12%;
   --primary: 20 5% 12%; /* Very dark brown for primary elements */
-  --primary-foreground: 43 13% 94%;
+  --primary-foreground: 49 22% 93%;
   --secondary: 43 8% 88%; /* Slightly darker cream */
   --secondary-foreground: 20 5% 12%;
   --muted: 43 8% 88%;
   --muted-foreground: 25 15% 45%; /* Medium brown for muted text */
   --accent: 200 50% 40%; /* Subtle blue for links */
-  --accent-foreground: 43 13% 94%;
+  --accent-foreground: 49 22% 93%;
   --destructive: 0 84.2% 60.2%;
-  --destructive-foreground: 43 13% 94%;
+  --destructive-foreground: 49 22% 93%;
   --border: 43 8% 85%;
   --input: 43 8% 88%;
   --ring: 25 25% 25%;
