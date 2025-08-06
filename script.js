@@ -330,22 +330,33 @@ class TOCManager {
 
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     const windowHeight = window.innerHeight;
+    const docHeight = document.documentElement.scrollHeight;
     
     let activeId = null;
 
-    for (let i = 0; i < this.headings.length; i++) {
-      const heading = this.headings[i];
-      const rect = heading.getBoundingClientRect();
-      
-      if (rect.top <= windowHeight * 0.3) {
-        activeId = heading.id;
-      } else {
-        break;
+    // Check if we're near the bottom of the page (within 100px)
+    const isNearBottom = (scrollTop + windowHeight) >= (docHeight - 100);
+    
+    if (isNearBottom) {
+      // When near bottom, always highlight the last heading
+      activeId = this.headings[this.headings.length - 1].id;
+    } else {
+      // Normal logic for middle of page
+      for (let i = 0; i < this.headings.length; i++) {
+        const heading = this.headings[i];
+        const rect = heading.getBoundingClientRect();
+        
+        if (rect.top <= windowHeight * 0.3) {
+          activeId = heading.id;
+        } else {
+          break;
+        }
       }
-    }
 
-    if (!activeId && scrollTop < 200 && this.headings.length > 0) {
-      activeId = this.headings[0].id;
+      // Fallback for top of page
+      if (!activeId && scrollTop < 200 && this.headings.length > 0) {
+        activeId = this.headings[0].id;
+      }
     }
 
     this.setActiveHeading(activeId);
