@@ -1041,6 +1041,20 @@ h2 {
   .toc-overlay {
     display: none;
   }
+  
+  /* Adjust main content to avoid TOC overlap when visible */
+  .toc-panel.visible ~ div #root,
+  .toc-panel.visible ~ #root {
+    margin-left: 20rem; /* TOC width (16rem) + gap (4rem) */
+    transition: margin-left 0.3s ease;
+  }
+  
+  /* More specific targeting for the content container */
+  .toc-panel.visible ~ div .max-w-2xl,
+  .toc-panel.visible ~ #root .max-w-2xl {
+    margin-left: 4rem; /* Additional spacing from TOC */
+    max-width: calc(42rem - 4rem); /* Adjust max-width to account for TOC */
+  }
 }
 
 /* TOC Header */
