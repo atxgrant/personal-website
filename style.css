@@ -1012,7 +1012,7 @@ h2 {
   .toc-panel .toc-header {
     padding: 0 0 1rem 0;
     margin-bottom: 1rem;
-    border-bottom: 1px solid hsl(var(--border));
+    border-bottom: none;
     flex-shrink: unset;
     display: block; /* Ensure it's visible */
   }
