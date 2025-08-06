@@ -1037,13 +1037,13 @@ h2 {
     width: 16rem;
     opacity: 1; /* Always visible by default */
     transform: translateX(0);
-    transition: transform 0.3s ease, opacity 0.3s ease; /* Smooth slide animation */
+    transition: opacity 0.15s ease; /* Subtle fade like Dario's site */
   }
   
-  /* Hide TOC by sliding it left when closed */
+  /* Hide TOC with subtle fade when closed */
   .toc-panel:not(.visible) {
-    transform: translateX(-100%);
     opacity: 0;
+    /* No transform - just fade in place like Dario's */
   }
   
   .toc-panel .toc-header {
