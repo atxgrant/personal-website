@@ -1036,7 +1036,8 @@ h2 {
     left: 2rem; /* Position in the reserved space */
     width: 16rem;
     opacity: 1; /* Always visible by default */
-    transform: translateX(0); /* No transform animations */
+    transform: translateX(0);
+    transition: transform 0.3s ease, opacity 0.3s ease; /* Smooth slide animation */
   }
   
   /* Hide TOC by sliding it left when closed */
