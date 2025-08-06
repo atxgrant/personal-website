@@ -991,15 +991,36 @@ h2 {
     border-radius: 0;
     box-shadow: none;
     opacity: 1;
-    transform: translateY(0);
+    transform: translateX(0);
     display: block;
     overflow-y: auto;
     padding: 0;
+    transition: opacity 0.15s ease;
+  }
+  
+  /* Hide TOC with subtle fade when closed */
+  .toc-panel:not(.visible) {
+    opacity: 0;
   }
   
   .toc-panel.visible {
     opacity: 1;
     transform: translateY(0);
+  }
+  
+  /* Desktop TOC header - ensure it's visible and properly styled */
+  .toc-panel .toc-header {
+    padding: 0 0 1rem 0;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid hsl(var(--border));
+    flex-shrink: unset;
+    display: block; /* Ensure it's visible */
+  }
+  
+  .toc-panel .toc-list {
+    padding: 0;
+    flex-grow: unset;
+    overflow-y: visible;
   }
 }
 
@@ -1024,38 +1045,11 @@ h2 {
   overflow-y: auto;
 }
 
-/* Desktop TOC styling - Dario's approach: always reserve space */
+/* Desktop layout - always reserve space for TOC */
 @media (min-width: 1024px) {
-  /* Always reserve space for TOC on desktop */
   #root {
     margin-left: 20rem; /* Always allocate space for TOC */
     transition: none; /* No animation needed since space is always reserved */
-  }
-  
-  .toc-panel {
-    left: 2rem; /* Position in the reserved space */
-    width: 16rem;
-    opacity: 1; /* Always visible by default */
-    transform: translateX(0);
-    transition: opacity 0.15s ease; /* Subtle fade like Dario's site */
-  }
-  
-  /* Hide TOC with subtle fade when closed */
-  .toc-panel:not(.visible) {
-    opacity: 0;
-    /* No transform - just fade in place like Dario's */
-  }
-  
-  .toc-panel .toc-header {
-    padding: 0 0 1rem 0;
-    margin-bottom: 1rem;
-    border-bottom: 1px solid hsl(var(--border));
-  }
-  
-  .toc-panel .toc-list {
-    padding: 0;
-    flex-grow: unset;
-    overflow-y: visible;
   }
   
   .toc-overlay {
