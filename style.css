@@ -993,13 +993,13 @@ h2 {
 /* Desktop layout adjustments - but NEVER override visibility/opacity */
 @media (min-width: 1024px) {
   .toc-panel {
-    top: 2rem;
+    top: 8rem;
     left: 2rem;
     right: auto;
     bottom: 2rem;
     width: 16rem;
     height: auto;
-    max-height: calc(100vh - 4rem);
+    max-height: calc(100vh - 10rem);
     overflow-y: auto;
     display: block;
     flex-direction: unset;
