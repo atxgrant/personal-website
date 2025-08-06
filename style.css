@@ -1053,9 +1053,13 @@ h2 {
 @media (min-width: 1024px) {
   /* Only apply margin when TOC panel exists (blog post pages) */
   body:has(#toc-panel) #root {
-    margin-left: 0; /* No margin - let content center naturally */
-    padding-left: 19rem; /* TOC space (18rem) + 1rem gap = 19rem */
+    margin-left: 0; /* No margin - content centers naturally like homepage */
     transition: none; /* No animation needed since space is always reserved */
+  }
+  
+  /* Position TOC in the content's natural left margin space */
+  body:has(#toc-panel) .toc-panel {
+    left: calc(50vw - 21rem - 16rem - 1rem); /* 50vw - half content - TOC width - gap */
   }
 
   
