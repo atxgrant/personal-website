@@ -861,8 +861,8 @@ h2 {
 }
 
 .toc-toggle:hover {
-  background-color: hsl(var(--accent));
-  border-color: hsl(var(--accent-foreground));
+  background-color: #c96442;
+  border-color: #c96442;
 }
 
 .toc-toggle:focus {
@@ -902,8 +902,8 @@ h2 {
   }
   
   .post-header .toc-toggle:hover {
-    background-color: hsl(var(--accent));
-    border-color: hsl(var(--accent-foreground));
+    background-color: #c96442;
+    border-color: #c96442;
   }
 }
 
@@ -1027,16 +1027,15 @@ h2 {
 
 .toc-list a:hover {
   color: hsl(var(--foreground));
-  background-color: hsl(var(--accent));
+  background-color: #c96442;
   padding-left: 0.5rem;
 }
 
 /* Active section highlighting */
 .toc-list a.active {
-  color: hsl(var(--foreground));
+  color: white;
   font-weight: 700;
-  background-color: hsl(var(--accent));
-  color: hsl(var(--accent-foreground));
+  background-color: #c96442;
   padding-left: 0.5rem;
 }
 
