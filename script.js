@@ -216,13 +216,17 @@ class TOCManager {
       }
     });
 
+    let resizeTimeout;
     window.addEventListener('resize', () => {
       if (window.innerWidth >= 1024 && this.isOpen) {
         this.tocOverlay.classList.remove('visible');
       }
       
-      // Handle default state changes when transitioning between viewport sizes
-      this.handleViewportChange();
+      // Debounce viewport change handling to prevent flash during resize
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        this.handleViewportChange();
+      }, 150); // Wait for resize to finish
     });
   }
 
