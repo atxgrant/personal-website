@@ -307,14 +307,19 @@ class TOCManager {
   }
 
   initScrollTracking() {
-    let scrollTimeout;
+    let isThrottled = false;
+    
     window.addEventListener('scroll', () => {
-      if (scrollTimeout) {
-        clearTimeout(scrollTimeout);
-      }
-      scrollTimeout = setTimeout(() => {
+      if (!isThrottled) {
         this.updateActiveHeading();
-      }, 50);
+        isThrottled = true;
+        
+        setTimeout(() => {
+          isThrottled = false;
+          // Update one more time in case we missed the final position
+          this.updateActiveHeading();
+        }, 16); // ~60fps for smooth tracking
+      }
     });
 
     this.updateActiveHeading();
