@@ -323,8 +323,8 @@ video {
   --ring: 25 25% 25%;
   --radius: 0.25rem; /* Minimal border radius for clean look */
   /* Academic link colors */
-  --link: 200 50% 40%;
-  --link-hover: 200 60% 35%;
+  --link: #c96442;
+  --link-hover: #b8592e;
   --sidebar-background: 0 0% 98%;
   --sidebar-foreground: 240 5.3% 26.1%;
   --sidebar-primary: 240 5.9% 10%;
@@ -357,8 +357,8 @@ video {
   --input: 25 12% 15%;
   --ring: 43 20% 90%;
   /* Dark mode link colors */
-  --link: 200 60% 60%;
-  --link-hover: 200 70% 65%;
+  --link: #c96442;
+  --link-hover: #e67b4f;
   --sidebar-background: 240 5.9% 10%;
   --sidebar-foreground: 240 4.8% 95.9%;
   --sidebar-primary: 224.3 76.3% 48%;
@@ -395,7 +395,7 @@ h2 {
 }
 
 .academic-link {
-  color: hsl(var(--link));
+  color: var(--link);
   text-decoration-line: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 4px;
@@ -406,7 +406,7 @@ h2 {
 }
 
 .academic-link:hover {
-  color: hsl(var(--link-hover));
+  color: var(--link-hover);
 }
 
 .content-section {
@@ -800,7 +800,7 @@ h2 {
 }
 
 .hover\:text-link:hover {
-  color: hsl(var(--link));
+  color: var(--link);
 }
 
 .m-0\.5 {
@@ -1098,7 +1098,7 @@ h2 {
     display: inline-block;
     background: none;
     border: none;
-    color: hsl(var(--link));
+    color: var(--link);
     cursor: pointer;
     font-size: inherit;
     font-family: inherit;
@@ -1110,7 +1110,7 @@ h2 {
   }
   
   .bio-content:not(.expanded) .bio-expand-btn:hover {
-    color: hsl(var(--link-hover));
+    color: var(--link-hover);
   }
   
   .bio-content:not(.expanded) .bio-expand-btn:focus {
