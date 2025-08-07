@@ -2,15 +2,206 @@
 console.log("If you're curious about if we might enjoy interacting,\nreach out.\n\nit's just my full name at gmail");
 
 /**
+ * Browser Environment - Abstracts DOM and Window APIs for testability
+ * Provides a clean interface for browser dependencies that can be easily mocked
+ */
+class BrowserEnvironment {
+  /**
+   * Create a BrowserEnvironment instance
+   * @param {Document} [doc=document] - Document object to use
+   * @param {Window} [win=window] - Window object to use
+   * @constructor
+   */
+  constructor(doc = document, win = window) {
+    this.document = doc;
+    this.window = win;
+  }
+
+  /**
+   * Get element by ID
+   * @param {string} id - Element ID
+   * @returns {Element|null} Found element or null
+   * @public
+   */
+  getElementById(id) {
+    return this.document.getElementById(id);
+  }
+
+  /**
+   * Query selector
+   * @param {string} selector - CSS selector
+   * @returns {Element|null} Found element or null
+   * @public
+   */
+  querySelector(selector) {
+    return this.document.querySelector(selector);
+  }
+
+  /**
+   * Query all elements matching selector
+   * @param {string} selector - CSS selector
+   * @returns {NodeList} Found elements
+   * @public
+   */
+  querySelectorAll(selector) {
+    return this.document.querySelectorAll(selector);
+  }
+
+  /**
+   * Create element
+   * @param {string} tagName - Tag name
+   * @returns {Element} Created element
+   * @public
+   */
+  createElement(tagName) {
+    return this.document.createElement(tagName);
+  }
+
+  /**
+   * Add event listener to document
+   * @param {string} event - Event name
+   * @param {Function} handler - Event handler
+   * @public
+   */
+  addDocumentListener(event, handler) {
+    this.document.addEventListener(event, handler);
+  }
+
+  /**
+   * Add event listener to window
+   * @param {string} event - Event name
+   * @param {Function} handler - Event handler
+   * @public
+   */
+  addWindowListener(event, handler) {
+    this.window.addEventListener(event, handler);
+  }
+
+  /**
+   * Get window inner width
+   * @returns {number} Window width
+   * @public
+   */
+  getWindowWidth() {
+    return this.window.innerWidth;
+  }
+
+  /**
+   * Get window inner height
+   * @returns {number} Window height
+   * @public
+   */
+  getWindowHeight() {
+    return this.window.innerHeight;
+  }
+
+  /**
+   * Get page Y offset
+   * @returns {number} Scroll position
+   * @public
+   */
+  getPageYOffset() {
+    return this.window.pageYOffset || this.document.documentElement.scrollTop;
+  }
+
+  /**
+   * Get document height
+   * @returns {number} Document height
+   * @public
+   */
+  getDocumentHeight() {
+    return this.document.documentElement.scrollHeight;
+  }
+
+  /**
+   * Scroll to position
+   * @param {Object} options - Scroll options
+   * @public
+   */
+  scrollTo(options) {
+    this.window.scrollTo(options);
+  }
+
+  /**
+   * Get media query match
+   * @param {string} query - Media query string
+   * @returns {MediaQueryList} Media query list
+   * @public
+   */
+  matchMedia(query) {
+    return this.window.matchMedia(query);
+  }
+
+  /**
+   * Get document ready state
+   * @returns {string} Ready state
+   * @public
+   */
+  getReadyState() {
+    return this.document.readyState;
+  }
+
+  /**
+   * Get document element
+   * @returns {Element} Document element
+   * @public
+   */
+  getDocumentElement() {
+    return this.document.documentElement;
+  }
+
+  /**
+   * Get document body
+   * @returns {Element} Document body
+   * @public
+   */
+  getBody() {
+    return this.document.body;
+  }
+
+  /**
+   * Request animation frame
+   * @param {Function} callback - Callback function
+   * @returns {number} Request ID
+   * @public
+   */
+  requestAnimationFrame(callback) {
+    return this.window.requestAnimationFrame(callback);
+  }
+
+  /**
+   * Set timeout
+   * @param {Function} callback - Callback function
+   * @param {number} delay - Delay in milliseconds
+   * @returns {number} Timeout ID
+   * @public
+   */
+  setTimeout(callback, delay) {
+    return this.window.setTimeout(callback, delay);
+  }
+
+  /**
+   * Clear timeout
+   * @param {number} id - Timeout ID
+   * @public
+   */
+  clearTimeout(id) {
+    this.window.clearTimeout(id);
+  }
+}
+
+/**
  * Theme Manager - Handles dark/light mode toggle functionality
  * Provides automatic theme detection, manual toggle, and persistent storage
  */
 class ThemeManager {
   /**
    * Create a ThemeManager instance
+   * @param {BrowserEnvironment} [browser] - Browser environment for DOM/Window access
    * @constructor
    */
-  constructor() {
+  constructor(browser = new BrowserEnvironment()) {
+    this.browser = browser;
     this.themeToggle = null;
     this.toggleSlider = null;
     this.currentTheme = 'light';
@@ -18,16 +209,16 @@ class ThemeManager {
   }
 
   init() {
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', () => this.setup());
+    if (this.browser.getReadyState() === 'loading') {
+      this.browser.addDocumentListener('DOMContentLoaded', () => this.setup());
     } else {
       this.setup();
     }
   }
 
   setup() {
-    this.themeToggle = document.getElementById('theme-toggle');
-    this.toggleSlider = document.getElementById('toggle-slider');
+    this.themeToggle = this.browser.getElementById('theme-toggle');
+    this.toggleSlider = this.browser.getElementById('toggle-slider');
 
     if (!this.themeToggle) {
       console.warn('Theme toggle button not found');
@@ -40,7 +231,7 @@ class ThemeManager {
 
   initializeTheme() {
     const savedTheme = localStorage.getItem('theme');
-    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    const systemTheme = this.browser.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     
     this.currentTheme = savedTheme || systemTheme;
     this.applyTheme(this.currentTheme);
@@ -51,7 +242,7 @@ class ThemeManager {
       this.toggleTheme();
     });
 
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+    this.browser.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
       if (!localStorage.getItem('theme')) {
         this.currentTheme = e.matches ? 'dark' : 'light';
         this.applyTheme(this.currentTheme);
@@ -77,7 +268,7 @@ class ThemeManager {
    * @public
    */
   applyTheme(theme) {
-    const html = document.documentElement;
+    const html = this.browser.getDocumentElement();
     
     if (theme === 'dark') {
       html.classList.add('dark');
@@ -115,9 +306,11 @@ class ThemeManager {
 class HeadingGenerator {
   /**
    * Create a HeadingGenerator instance
+   * @param {BrowserEnvironment} [browser] - Browser environment for DOM access
    * @constructor
    */
-  constructor() {
+  constructor(browser = new BrowserEnvironment()) {
+    this.browser = browser;
     this.headings = [];
   }
 
@@ -128,7 +321,7 @@ class HeadingGenerator {
    * @public
    */
   generateTOC(tocList) {
-    const postContent = document.querySelector('.post-content');
+    const postContent = this.browser.querySelector('.post-content');
     if (!postContent) {
       console.warn('Post content not found');
       return [];
@@ -149,8 +342,8 @@ class HeadingGenerator {
         heading.id = this.generateHeadingId(heading.textContent, index);
       }
 
-      const li = document.createElement('li');
-      const a = document.createElement('a');
+      const li = this.browser.createElement('li');
+      const a = this.browser.createElement('a');
       
       a.href = `#${heading.id}`;
       a.textContent = heading.textContent;
@@ -180,7 +373,7 @@ class HeadingGenerator {
       .trim()
       .substring(0, 50);
 
-    if (!id || document.getElementById(id)) {
+    if (!id || this.browser.getElementById(id)) {
       id = `heading-${index}`;
     }
     
@@ -206,11 +399,13 @@ class ScrollTracker {
    * Create a ScrollTracker instance
    * @param {Element[]} headings - Array of heading elements to track
    * @param {Element} tocList - TOC list element for updating active states
+   * @param {BrowserEnvironment} [browser] - Browser environment for DOM/Window access
    * @constructor
    */
-  constructor(headings, tocList) {
+  constructor(headings, tocList, browser = new BrowserEnvironment()) {
     this.headings = headings || [];
     this.tocList = tocList;
+    this.browser = browser;
     this.activeHeading = null;
   }
 
@@ -221,12 +416,12 @@ class ScrollTracker {
   initScrollTracking() {
     let isThrottled = false;
     
-    window.addEventListener('scroll', () => {
+    this.browser.addWindowListener('scroll', () => {
       if (!isThrottled) {
         this.updateActiveHeading();
         isThrottled = true;
         
-        setTimeout(() => {
+        this.browser.setTimeout(() => {
           isThrottled = false;
           // Update one more time in case we missed the final position
           this.updateActiveHeading();
@@ -244,9 +439,9 @@ class ScrollTracker {
   updateActiveHeading() {
     if (this.headings.length === 0) return;
 
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    const windowHeight = window.innerHeight;
-    const docHeight = document.documentElement.scrollHeight;
+    const scrollTop = this.browser.getPageYOffset();
+    const windowHeight = this.browser.getWindowHeight();
+    const docHeight = this.browser.getDocumentHeight();
     
     let activeId = null;
 
@@ -318,9 +513,11 @@ class ScrollTracker {
 class TOCManager {
   /**
    * Create a TOCManager instance
+   * @param {BrowserEnvironment} [browser] - Browser environment for DOM/Window access
    * @constructor
    */
-  constructor() {
+  constructor(browser = new BrowserEnvironment()) {
+    this.browser = browser;
     this.tocToggle = null;
     this.tocPanel = null;
     this.tocOverlay = null;
@@ -329,28 +526,28 @@ class TOCManager {
     this.tocClose = null;
     this.isOpen = false;
     
-    // Initialize helper classes
-    this.headingGenerator = new HeadingGenerator();
+    // Initialize helper classes with shared browser environment
+    this.headingGenerator = new HeadingGenerator(browser);
     this.scrollTracker = null; // Will be initialized after headings are generated
     
     this.init();
   }
 
   init() {
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', () => this.setup());
+    if (this.browser.getReadyState() === 'loading') {
+      this.browser.addDocumentListener('DOMContentLoaded', () => this.setup());
     } else {
       this.setup();
     }
   }
 
   setup() {
-    this.tocToggle = document.getElementById('toc-toggle');
-    this.tocPanel = document.getElementById('toc-panel');
-    this.tocOverlay = document.getElementById('toc-overlay');
-    this.tocList = document.getElementById('toc-list');
-    this.tocHamburger = document.getElementById('toc-hamburger');
-    this.tocClose = document.getElementById('toc-close');
+    this.tocToggle = this.browser.getElementById('toc-toggle');
+    this.tocPanel = this.browser.getElementById('toc-panel');
+    this.tocOverlay = this.browser.getElementById('toc-overlay');
+    this.tocList = this.browser.getElementById('toc-list');
+    this.tocHamburger = this.browser.getElementById('toc-hamburger');
+    this.tocClose = this.browser.getElementById('toc-close');
 
     if (!this.tocToggle || !this.tocPanel) {
       console.log('TOC elements not found - likely not on a blog post page');
@@ -377,8 +574,8 @@ class TOCManager {
       return;
     }
 
-    // Initialize scroll tracker with the generated headings
-    this.scrollTracker = new ScrollTracker(headings, this.tocList);
+    // Initialize scroll tracker with the generated headings and shared browser environment
+    this.scrollTracker = new ScrollTracker(headings, this.tocList, this.browser);
   }
 
   setupEventListeners() {
@@ -400,13 +597,13 @@ class TOCManager {
         const headingId = e.target.getAttribute('data-heading-id');
         this.scrollToHeading(headingId);
         
-        if (window.innerWidth < 1024) {
+        if (this.browser.getWindowWidth() < 1024) {
           this.closeTOC();
         }
       }
     });
 
-    document.addEventListener('keydown', (e) => {
+    this.browser.addDocumentListener('keydown', (e) => {
       if (e.key === 'Escape' && this.isOpen) {
         this.closeTOC();
       }
@@ -416,8 +613,8 @@ class TOCManager {
     let resizeTimeout;
     let currentViewportState = this.isDesktop() ? 'desktop' : 'mobile';
     
-    window.addEventListener('resize', () => {
-      const newViewportState = window.innerWidth >= 1024 ? 'desktop' : 'mobile';
+    this.browser.addWindowListener('resize', () => {
+      const newViewportState = this.browser.getWindowWidth() >= 1024 ? 'desktop' : 'mobile';
       
       // Only act if viewport actually changed
       if (currentViewportState !== newViewportState) {
@@ -436,8 +633,8 @@ class TOCManager {
       }
       
       // Debounced cleanup and final state handling
-      clearTimeout(resizeTimeout);
-      resizeTimeout = setTimeout(() => {
+      this.browser.clearTimeout(resizeTimeout);
+      resizeTimeout = this.browser.setTimeout(() => {
         this.handleViewportChange();
       }, 50);
     });
@@ -470,13 +667,13 @@ class TOCManager {
     this.tocHamburger.classList.add('hidden');
     this.tocClose.classList.remove('hidden');
     
-    if (window.innerWidth < 1024) {
+    if (this.browser.getWindowWidth() < 1024) {
       this.tocOverlay.classList.remove('hidden');
       this.tocOverlay.classList.add('visible');
       // Focus first TOC link on mobile for better UX
       const firstLink = this.tocList.querySelector('a');
       if (firstLink) {
-        setTimeout(() => firstLink.focus(), 150);
+        this.browser.setTimeout(() => firstLink.focus(), 150);
       }
     }
 
@@ -503,7 +700,7 @@ class TOCManager {
     this.tocToggle.focus();
 
     // Clean timeout for hidden class
-    setTimeout(() => {
+    this.browser.setTimeout(() => {
       if (!this.isOpen) {
         this.tocPanel.classList.add('hidden');
         this.tocOverlay.classList.add('hidden');
@@ -517,12 +714,12 @@ class TOCManager {
    * @public
    */
   scrollToHeading(headingId) {
-    const heading = document.getElementById(headingId);
+    const heading = this.browser.getElementById(headingId);
     if (heading) {
       const yOffset = -20; // TODO: Use CSS variable --scroll-offset
-      const y = heading.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      const y = heading.getBoundingClientRect().top + this.browser.getPageYOffset() + yOffset;
       
-      window.scrollTo({
+      this.browser.scrollTo({
         top: y,
         behavior: 'smooth'
       });
@@ -545,7 +742,7 @@ class TOCManager {
    * @public
    */
   isDesktop() {
-    return window.innerWidth >= 1024;
+    return this.browser.getWindowWidth() >= 1024;
   }
 
   /**
@@ -587,25 +784,27 @@ class TOCManager {
 class BioCollapseManager {
   /**
    * Create a BioCollapseManager instance
+   * @param {BrowserEnvironment} [browser] - Browser environment for DOM/Window access
    * @constructor
    */
-  constructor() {
+  constructor(browser = new BrowserEnvironment()) {
+    this.browser = browser;
     this.bioContent = null;
     this.expandButton = null;
     this.init();
   }
 
   init() {
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', () => this.setup());
+    if (this.browser.getReadyState() === 'loading') {
+      this.browser.addDocumentListener('DOMContentLoaded', () => this.setup());
     } else {
       this.setup();
     }
   }
 
   setup() {
-    this.bioContent = document.querySelector('.bio-content');
-    this.expandButton = document.querySelector('.bio-expand-btn');
+    this.bioContent = this.browser.querySelector('.bio-content');
+    this.expandButton = this.browser.querySelector('.bio-expand-btn');
 
     if (!this.bioContent || !this.expandButton) {
       console.log('Bio collapse elements not found - bio collapse functionality disabled');
@@ -624,7 +823,7 @@ class BioCollapseManager {
     });
 
     // Optional: Handle window resize to reset state if needed
-    window.addEventListener('resize', () => {
+    this.browser.addWindowListener('resize', () => {
       this.handleViewportChange();
     });
   }
@@ -646,7 +845,7 @@ class BioCollapseManager {
    */
   handleViewportChange() {
     // Reset to collapsed state when switching to desktop
-    if (window.innerWidth > 768 && this.bioContent) {
+    if (this.browser.getWindowWidth() > 768 && this.bioContent) {
       this.bioContent.classList.remove('expanded');
     }
   }
@@ -656,33 +855,34 @@ class BioCollapseManager {
  * Initialize the application and all required managers
  * Uses requestAnimationFrame for optimal performance and conditionally
  * loads only the managers needed for the current page type
+ * @param {BrowserEnvironment} [browser] - Browser environment for DOM/Window access
  * @function
  * @public
  */
-function initializeApp() {
+function initializeApp(browser = new BrowserEnvironment()) {
   // Use requestAnimationFrame for better performance
-  requestAnimationFrame(() => {
+  browser.requestAnimationFrame(() => {
     // Always initialize theme manager
-    window.themeManager = new ThemeManager();
+    browser.window.themeManager = new ThemeManager(browser);
     
     // Only initialize TOC manager on blog post pages
-    const hasTOC = document.getElementById('toc-panel');
+    const hasTOC = browser.getElementById('toc-panel');
     if (hasTOC) {
-      window.tocManager = new TOCManager();
+      browser.window.tocManager = new TOCManager(browser);
     }
     
     // Only initialize bio collapse manager on homepage
-    const hasBioContent = document.querySelector('.bio-content');
+    const hasBioContent = browser.querySelector('.bio-content');
     if (hasBioContent) {
-      window.bioCollapseManager = new BioCollapseManager();
+      browser.window.bioCollapseManager = new BioCollapseManager(browser);
     }
     
     // Add loaded class for transition optimizations
-    document.body.classList.add('loaded');
+    browser.getBody().classList.add('loaded');
     
     // Performance mark for debugging
-    if ('performance' in window && 'mark' in performance) {
-      performance.mark('app-initialized');
+    if ('performance' in browser.window && 'mark' in browser.window.performance) {
+      browser.window.performance.mark('app-initialized');
     }
     
     console.log('Static website initialized successfully');
@@ -690,8 +890,9 @@ function initializeApp() {
 }
 
 // Initialize immediately if DOM is ready, otherwise wait
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initializeApp);
+const browserEnv = new BrowserEnvironment();
+if (browserEnv.getReadyState() === 'loading') {
+  browserEnv.addDocumentListener('DOMContentLoaded', () => initializeApp(browserEnv));
 } else {
-  initializeApp();
+  initializeApp(browserEnv);
 }
