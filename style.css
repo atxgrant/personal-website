@@ -65,8 +65,8 @@
   --border: 25 12% 20%;
   --input: 25 12% 15%;
   --ring: 43 20% 90%;
-  --link: #a84d2b;
-  --link-hover: #e67b4f;
+  --link: #e67b4f;
+  --link-hover: #ff8a5c;
 }
 
 /* Utility Classes - Minified for performance */
