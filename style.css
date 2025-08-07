@@ -160,6 +160,16 @@
   padding-left: 1.5rem; /* Add indentation for bullets */
 }
 
+/* TOC Active Highlighting */
+.toc-list a.active {
+  color: var(--link);
+  font-weight: 600;
+  background-color: hsl(var(--muted));
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  margin: -0.25rem -0.5rem;
+}
+
 /* Toggle Slider Fix - Ensure transform works */
 #toggle-slider {
   transition: transform 0.2s ease;
