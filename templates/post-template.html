@@ -29,29 +29,75 @@
     <!-- Canonical URL -->
     <link rel="canonical" href="https://atxgrant.github.io/personal-website/posts/{{POST_SLUG}}.html">
     
-    <!-- Favicons and App Icons -->
+    <!-- Optimized Favicon (SVG-first approach) -->
     <link rel="icon" href="../favicon.svg" type="image/svg+xml">
-    <link rel="icon" href="../favicon.ico" sizes="32x32">
-    <link rel="apple-touch-icon" href="../apple-touch-icon.png">
     <meta name="theme-color" content="#c96442">
-    <meta name="msapplication-TileColor" content="#c96442">
     
-    <!-- Font Optimization: Preload + Preconnect + Subset -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Self-hosted font optimization -->
+    <link rel="preload" href="../fonts/newsreader-400.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="../fonts/newsreader-600.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="../fonts/newsreader.css">
     
-    <!-- DNS Prefetch for external resources -->
-    <link rel="dns-prefetch" href="//fonts.googleapis.com">
-    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <!-- Critical CSS for above-the-fold content -->
+    <style>
+    /* Critical styles for immediate render */
+    :root {
+      --background: 49 22% 93%;
+      --foreground: 20 5% 12%;
+      --link: #c96442;
+      --muted: 43 8% 88%;
+      --ring: 25 25% 25%;
+      --border: 43 8% 85%;
+    }
+    .dark {
+      --background: 25 15% 8%;
+      --foreground: 43 20% 90%;
+      --link: #c96442;
+      --muted: 25 12% 15%;
+      --border: 25 12% 20%;
+    }
+    body { 
+      margin: 0; 
+      font-family: "Newsreader", Georgia, serif; 
+      background-color: hsl(var(--background)); 
+      color: hsl(var(--foreground));
+      font-display: swap;
+    }
+    .min-h-screen { min-height: 100vh; }
+    .max-w-2xl { max-width: 42rem; }
+    .mx-auto { margin-left: auto; margin-right: auto; }
+    .px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+    .py-8 { padding-top: 2rem; padding-bottom: 2rem; }
+    .flex { display: flex; }
+    .items-center { align-items: center; }
+    .justify-between { justify-content: space-between; }
+    .flex-grow { flex-grow: 1; }
+    .gap-3 { gap: 0.75rem; }
+    .mb-8 { margin-bottom: 2rem; }
+    .mb-4 { margin-bottom: 1rem; }
+    .text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
+    .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+    .font-serif { font-family: "Newsreader", Georgia, serif; }
+    .text-foreground { color: hsl(var(--foreground)); }
+    .academic-link { color: var(--link); text-decoration: underline; }
+    .skip-link { position: absolute; top: -40px; left: 6px; background: hsl(var(--foreground)); color: hsl(var(--background)); padding: 8px 16px; z-index: 1000; }
+    .skip-link:focus { top: 6px; }
     
-    <!-- Preload the specific font files we need most -->
-    <link rel="preload" href="https://fonts.gstatic.com/s/newsreader/v19/cY9qfjWCX1kCwDFVMBY0pWr0R6e9cPnXsFFUZzE.woff2" as="font" type="font/woff2" crossorigin>
+    /* Post-specific critical styles */
+    .post-meta { border-bottom: 1px solid hsl(var(--border)); padding-bottom: 1.5rem; margin-bottom: 2rem; }
+    .post-content { font-size: 1.25rem; line-height: 1.75; color: hsl(var(--foreground)); max-width: 70ch; }
     
-    <!-- Load optimized font subset for better performance -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:wght@400;600&display=swap&subset=latin" media="print" onload="this.media='all'; this.onload=null;">
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:wght@400;600&display=swap&subset=latin"></noscript>
+    @media (min-width: 640px) {
+      .sm\:py-12 { padding-top: 3rem; padding-bottom: 3rem; }
+      .sm\:text-4xl { font-size: 2.25rem; line-height: 2.5rem; }
+      .sm\:mb-12 { margin-bottom: 3rem; }
+    }
+    @media (min-width: 768px) {
+      .post-meta h1 { font-size: 3.875rem; }
+    }
+    </style>
     
-    <!-- Load main CSS asynchronously -->
+    <!-- Load remaining CSS asynchronously -->
     <link rel="stylesheet" href="../style.css" media="print" onload="this.media='all'; this.onload=null;">
     <noscript><link rel="stylesheet" href="../style.css"></noscript>
     

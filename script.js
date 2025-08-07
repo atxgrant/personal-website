@@ -482,9 +482,20 @@ class BioCollapseManager {
 function initializeApp() {
   // Use requestAnimationFrame for better performance
   requestAnimationFrame(() => {
+    // Always initialize theme manager
     window.themeManager = new ThemeManager();
-    window.tocManager = new TOCManager();
-    window.bioCollapseManager = new BioCollapseManager();
+    
+    // Only initialize TOC manager on blog post pages
+    const hasTOC = document.getElementById('toc-panel');
+    if (hasTOC) {
+      window.tocManager = new TOCManager();
+    }
+    
+    // Only initialize bio collapse manager on homepage
+    const hasBioContent = document.querySelector('.bio-content');
+    if (hasBioContent) {
+      window.bioCollapseManager = new BioCollapseManager();
+    }
     
     // Add loaded class for transition optimizations
     document.body.classList.add('loaded');
