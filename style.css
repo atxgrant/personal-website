@@ -160,6 +160,29 @@
   padding-left: 1.5rem; /* Add indentation for bullets */
 }
 
+/* TOC Typography & Spacing */
+.toc-list {
+  font-size: 0.875rem; /* 14px - smaller, more refined */
+  line-height: 1.4; /* Tighter line height for compactness */
+  letter-spacing: -0.01em; /* Slightly tighter letter spacing */
+}
+
+.toc-list li {
+  margin-bottom: 0.25rem; /* 4px vertical spacing between items */
+}
+
+.toc-list a {
+  display: block;
+  color: hsl(var(--foreground) / 0.7); /* Muted color for hierarchy */
+  text-decoration: none;
+  padding: 0.125rem 0; /* Small vertical padding for touch targets */
+  transition: color 0.15s ease;
+}
+
+.toc-list a:hover {
+  color: var(--link);
+}
+
 /* TOC Active Highlighting */
 .toc-list a.active {
   color: var(--link);
@@ -170,6 +193,7 @@
   position: relative;
   display: inline-block;
   text-decoration: none;
+  margin: -0.125rem -0.5rem; /* Extend background beyond text */
 }
 
 /* Toggle Slider Fix - Ensure transform works */
