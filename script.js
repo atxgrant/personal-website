@@ -280,9 +280,9 @@ class ThemeManager {
     
     this.currentTheme = theme;
     
-    // Update aria-pressed for accessibility
+    // Update aria-checked for accessibility (role="switch" uses aria-checked)
     if (this.themeToggle) {
-      this.themeToggle.setAttribute('aria-pressed', theme === 'dark');
+      this.themeToggle.setAttribute('aria-checked', theme === 'dark');
     }
   }
 
