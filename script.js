@@ -463,11 +463,6 @@ class ScrollTracker {
           break;
         }
       }
-
-      // Fallback for top of page - only if we didn't find any active heading
-      if (!activeId && scrollTop < 200 && this.headings.length > 0) {
-        activeId = this.headings[0].id;
-      }
     }
 
     this.setActiveHeading(activeId);
