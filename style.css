@@ -394,8 +394,7 @@
 /* Desktop TOC Content Adjustments */
 @media (min-width: 1024px) {
   .toc-panel .toc-header {
-    padding: 0;
-    padding-left: 0;
+    padding: 0 !important;
     margin-bottom: 1rem;
     margin-left: 0;
     border-bottom: none;
@@ -403,10 +402,8 @@
   }
   
   .toc-panel .toc-list {
-    padding: 0;
-    padding-left: 0;
+    padding: 0 !important;
     margin: 0;
-    margin-left: 0;
     flex-grow: unset;
     overflow-y: visible;
   }
