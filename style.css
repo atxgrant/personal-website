@@ -25,7 +25,7 @@
   --input: 43 8% 88%;
   --ring: 25 25% 25%;
   --radius: .25rem;
-  --link: #c96442;
+  --link: #a84d2b;
   --link-hover: #b8592e;
   
   /* Layout Constants - Clear for maintainability */
@@ -65,7 +65,7 @@
   --border: 25 12% 20%;
   --input: 25 12% 15%;
   --ring: 43 20% 90%;
-  --link: #c96442;
+  --link: #a84d2b;
   --link-hover: #e67b4f;
 }
 
@@ -185,8 +185,8 @@
 }
 
 .toc-toggle:hover {
-  background-color: #c96442;
-  border-color: #c96442;
+  background-color: #a84d2b;
+  border-color: #a84d2b;
 }
 
 .toc-toggle:focus {
@@ -222,8 +222,8 @@
   }
   
   .post-header .toc-toggle:hover {
-    background-color: #c96442;
-    border-color: #c96442;
+    background-color: #a84d2b;
+    border-color: #a84d2b;
   }
 }
 
