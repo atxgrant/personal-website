@@ -152,6 +152,19 @@
   }
 }
 
+/* Toggle Slider Fix - Ensure transform works */
+#toggle-slider {
+  transition: transform 0.2s ease;
+}
+
+#toggle-slider.translate-x-1 {
+  transform: translateX(0.25rem);
+}
+
+#toggle-slider.translate-x-6 {
+  transform: translateX(1.5rem);
+}
+
 /* Simple Responsive Utilities - Can stay minified */
 @media (min-width: 640px) {
   .sm\:mb-12 { margin-bottom: 3rem; }

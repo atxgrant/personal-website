@@ -287,13 +287,7 @@ class ThemeManager {
   }
 
   updateToggleUI(isDark) {
-    if (!this.toggleSlider) {
-      console.warn('Toggle slider element not found');
-      return;
-    }
-
-    console.log('Updating toggle UI, isDark:', isDark);
-    console.log('Current classes:', this.toggleSlider.className);
+    if (!this.toggleSlider) return;
 
     if (isDark) {
       this.toggleSlider.classList.remove('translate-x-1');
@@ -302,8 +296,6 @@ class ThemeManager {
       this.toggleSlider.classList.remove('translate-x-6');
       this.toggleSlider.classList.add('translate-x-1');
     }
-    
-    console.log('Updated classes:', this.toggleSlider.className);
   }
 }
 
