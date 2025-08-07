@@ -171,6 +171,9 @@
 .toc-list {
   font-size: 1.25rem; /* 20px - larger, more readable list items */
   line-height: 1.5;
+  margin: 0;
+  padding: 0;
+  list-style: none; /* Remove any default list styling */
 }
 
 .toc-list li {
@@ -391,7 +394,7 @@
 /* Desktop TOC Content Adjustments */
 @media (min-width: 1024px) {
   .toc-panel .toc-header {
-    padding: 0 0 1rem 0;
+    padding: 0;
     margin-bottom: 1rem;
     border-bottom: none;
     flex-shrink: unset;
@@ -399,6 +402,7 @@
   
   .toc-panel .toc-list {
     padding: 0;
+    margin: 0;
     flex-grow: unset;
     overflow-y: visible;
   }
