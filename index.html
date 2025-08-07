@@ -3,21 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Performance & Security -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
     <title>Grant Heimbach</title>
-    <meta name="description" content="Grant Heimbach" />
+    <meta name="description" content="Product leader in Austin, TX exploring AI tools in product management. Sharing practical insights from real-world experiments with AI-assisted research, content creation, and decision support." />
     <meta name="author" content="Grant Heimbach" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://atxgrant.github.io/personal-website/">
+    <meta property="og:title" content="Grant Heimbach - Product Leader & AI Experimenter">
+    <meta property="og:description" content="Product leader in Austin, TX exploring AI tools in product management. Sharing practical insights from real-world experiments with AI-assisted research, content creation, and decision support.">
+    <meta property="og:site_name" content="Grant Heimbach">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://atxgrant.github.io/personal-website/">
+    <meta property="twitter:title" content="Grant Heimbach - Product Leader & AI Experimenter">
+    <meta property="twitter:description" content="Product leader in Austin, TX exploring AI tools in product management. Sharing practical insights from real-world experiments with AI-assisted research, content creation, and decision support.">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://atxgrant.github.io/personal-website/">
+    
+    <!-- Favicons and App Icons -->
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="favicon.ico" sizes="32x32">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <meta name="theme-color" content="#c96442">
+    <meta name="msapplication-TileColor" content="#c96442">
+    <link rel="manifest" href="site.webmanifest">
     
     <!-- Font Optimization: Preload + Preconnect + Subset -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     
-    <!-- Preload the specific font files we need most -->
+    <!-- Preload critical resources -->
+    <link rel="preload" href="style.css" as="style">
+    <link rel="preload" href="script.js" as="script">
     <link rel="preload" href="https://fonts.gstatic.com/s/newsreader/v19/cY9qfjWCX1kCwDFVMBY0pWr0R6e9cPnXsFFUZzE.woff2" as="font" type="font/woff2" crossorigin>
     
     <!-- Load optimized font subset for better performance -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:wght@400;600&display=swap&subset=latin">
     
     <link rel="stylesheet" href="style.css">
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Grant Heimbach",
+      "jobTitle": "Product Leader",
+      "description": "Product leader in Austin, TX exploring AI tools in product management. Sharing practical insights from real-world experiments with AI-assisted research, content creation, and decision support.",
+      "url": "https://atxgrant.github.io/personal-website/",
+      "sameAs": [
+        "https://www.linkedin.com/in/grantheimbach/"
+      ],
+      "worksFor": {
+        "@type": "Organization",
+        "name": "Indeed"
+      },
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Austin",
+        "addressRegion": "TX",
+        "addressCountry": "US"
+      },
+      "knowsAbout": [
+        "Product Management",
+        "Artificial Intelligence",
+        "Machine Learning",
+        "B2B SaaS",
+        "Consumer UI",
+        "AI Tools"
+      ]
+    }
+    </script>
 </head>
 <body>
     <div id="root">
@@ -95,6 +158,6 @@
         </div>
     </div>
     
-    <script src="script.js"></script>
+    <script src="script.js" defer></script>
 </body>
 </html> 

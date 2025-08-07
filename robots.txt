@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://atxgrant.github.io/personal-website/sitemap.xml
+
+# Disallow common technical directories (if they exist in future)
+Disallow: /node_modules/
+Disallow: /.git/
+Disallow: /assets/temp/

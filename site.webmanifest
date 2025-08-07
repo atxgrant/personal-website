@@ -1,0 +1,17 @@
+{
+  "name": "Grant Heimbach - Product Leader & AI Experimenter",
+  "short_name": "Grant Heimbach",
+  "description": "Product leader exploring AI tools in product management",
+  "start_url": "/",
+  "display": "minimal-ui",
+  "theme_color": "#c96442",
+  "background_color": "#F0EEE6",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

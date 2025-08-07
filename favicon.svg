@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <style>
+      .favicon-bg { fill: #c96442; }
+      .favicon-text { fill: #F0EEE6; font-family: 'Times New Roman', serif; font-weight: bold; font-size: 60px; }
+    </style>
+  </defs>
+  <!-- Background circle -->
+  <circle cx="50" cy="50" r="45" class="favicon-bg"/>
+  <!-- Letter G -->
+  <text x="50" y="72" text-anchor="middle" class="favicon-text">G</text>
+</svg>
