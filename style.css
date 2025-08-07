@@ -152,6 +152,12 @@
   }
 }
 
+/* Posts List Styling */
+.posts-list {
+  font-size: 1.25rem; /* 20px to match rest of page */
+  line-height: 1.5;
+}
+
 /* Toggle Slider Fix - Ensure transform works */
 #toggle-slider {
   transition: transform 0.2s ease;
