@@ -37,9 +37,9 @@
   --transition-slow: .3s;
   --toc-width-desktop: 16rem;
   --toc-width-mobile: 100%;
-  --toc-top-desktop: 8rem;
-  --toc-left-desktop: 2rem;
-  --toc-gap-desktop: 2rem;
+  --toc-top-desktop: 6rem;
+  --toc-left-desktop: 1rem;
+  --toc-gap-desktop: 1rem;
   --bio-mobile-breakpoint: 768px;
   --desktop-breakpoint: 1024px;
   --mobile-breakpoint: 640px;
@@ -160,6 +160,35 @@
   padding-left: 1.5rem; /* Add indentation for bullets */
 }
 
+/* TOC Typography & Spacing Improvements */
+.toc-panel .toc-header h3 {
+  font-size: 1.5rem; /* 24px - larger, more prominent header */
+  font-weight: 600;
+  color: hsl(var(--foreground));
+  margin: 0;
+}
+
+.toc-list {
+  font-size: 1.25rem; /* 20px - larger, more readable list items */
+  line-height: 1.5;
+}
+
+.toc-list li {
+  margin-bottom: 0.5rem; /* 8px - more generous spacing between items */
+}
+
+.toc-list a {
+  display: block;
+  color: hsl(var(--foreground));
+  text-decoration: none;
+  padding: 0.25rem 0;
+  transition: color 0.15s ease;
+}
+
+.toc-list a:hover {
+  color: var(--link);
+}
+
 /* TOC Active Highlighting */
 .toc-list a.active {
   color: var(--link);
@@ -170,6 +199,7 @@
   position: relative;
   display: inline-block;
   text-decoration: none;
+  margin: -0.25rem -0.5rem;
 }
 
 /* Toggle Slider Fix - Ensure transform works */
