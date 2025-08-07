@@ -440,7 +440,51 @@ h2 {
   color: hsl(var(--muted-foreground));
 }
 
-/* Utility Classes */
+/* Accessibility Utility Classes */
+
+/* Skip Links for Keyboard Navigation */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: hsl(var(--foreground));
+  color: hsl(var(--background));
+  padding: 8px 16px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 600;
+  z-index: 1000;
+  transition: top 0.3s ease;
+}
+
+.skip-link:focus {
+  top: 6px;
+  outline: 2px solid hsl(var(--link));
+  outline-offset: 2px;
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .skip-link,
+  .academic-link,
+  .transition,
+  .transition-colors,
+  #toggle-slider,
+  .toc-panel,
+  .toc-overlay,
+  .hamburger-line,
+  .close-line,
+  .bio-expand-btn {
+    transition: none !important;
+    animation: none !important;
+  }
+  
+  /* Still allow smooth scrolling as it's less disorienting */
+  html {
+    scroll-behavior: auto;
+  }
+}
+
 .sr-only {
   position: absolute;
   width: 1px;

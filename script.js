@@ -72,6 +72,11 @@ class ThemeManager {
     }
     
     this.currentTheme = theme;
+    
+    // Update aria-pressed for accessibility
+    if (this.themeToggle) {
+      this.themeToggle.setAttribute('aria-pressed', theme === 'dark');
+    }
   }
 
   updateToggleUI(isDark) {
@@ -268,6 +273,11 @@ class TOCManager {
     if (window.innerWidth < 1024) {
       this.tocOverlay.classList.remove('hidden');
       this.tocOverlay.classList.add('visible');
+      // Focus first TOC link on mobile for better UX
+      const firstLink = this.tocList.querySelector('a');
+      if (firstLink) {
+        setTimeout(() => firstLink.focus(), 150);
+      }
     }
 
     this.tocToggle.setAttribute('aria-expanded', 'true');
@@ -283,6 +293,9 @@ class TOCManager {
     
     this.tocOverlay.classList.remove('visible');
     this.tocToggle.setAttribute('aria-expanded', 'false');
+
+    // Return focus to toggle button when closing TOC for accessibility
+    this.tocToggle.focus();
 
     // Clean timeout for hidden class
     setTimeout(() => {

@@ -76,10 +76,12 @@
     </script>
 </head>
 <body>
-
+    <!-- Skip Links for Keyboard Navigation -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <a href="#toc-panel" class="skip-link">Skip to table of contents</a>
 
     <!-- TOC Panel -->
-    <nav id="toc-panel" class="toc-panel hidden">
+    <nav id="toc-panel" class="toc-panel hidden" role="navigation" aria-label="Table of Contents">
         <div class="toc-header">
             <h3>Contents</h3>
         </div>
@@ -121,6 +123,8 @@
                             id="theme-toggle"
                             class="relative inline-flex h-6 w-11 items-center rounded-full bg-muted transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
                             aria-label="Toggle dark mode"
+                            aria-pressed="false"
+                            role="switch"
                         >
                             <span id="toggle-slider" class="inline-block h-4 w-4 transform rounded-full bg-foreground transition duration-200 translate-x-1">
 
@@ -139,12 +143,12 @@
                 </div>
                 
                 <!-- Post Content -->
-                <article class="post-content">
+                <article id="main-content" class="post-content" role="main">
                     {{POST_CONTENT}}
                 </article>
 
                 <!-- Post Navigation -->
-                <nav class="post-navigation">
+                <nav class="post-navigation" role="navigation" aria-label="Post navigation">
                     <a href="#top" class="academic-link">&uarr; Back to top</a>
                 </nav>
             </div>
