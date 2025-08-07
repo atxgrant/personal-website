@@ -25,7 +25,7 @@ h2{font-weight:bold}
 
 /* Utility Classes */
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border-width:0}
-.hidden{display:none}
+.hidden{display:none!important}
 .block{display:block}
 .inline-block{display:inline-block}
 .flex{display:flex}
@@ -109,6 +109,7 @@ h2{font-weight:bold}
 @media (max-width:1023px){.toc-toggle{position:relative;top:auto;left:auto;width:2.5rem;height:2.5rem;box-shadow:none;border:1px solid hsl(var(--border));background-color:hsl(var(--background));border-radius:.375rem;display:flex;align-items:center;justify-content:center}.post-header .toc-toggle:hover{background-color:#c96442;border-color:#c96442}}
 
 .toc-icon{position:relative;width:1.5rem;height:1.5rem;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:.25rem}
+.toc-icon.hidden{display:none!important}
 .hamburger-line{width:1.25rem;height:2px;background-color:hsl(var(--foreground));transition:all .3s ease;transform-origin:center}
 .close-line{position:absolute;width:1.25rem;height:2px;background-color:hsl(var(--foreground));transition:all .3s ease}
 .close-line:first-child{transform:rotate(45deg)}
