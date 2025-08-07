@@ -480,12 +480,27 @@ class BioCollapseManager {
 }
 
 function initializeApp() {
-  window.themeManager = new ThemeManager();
-  window.tocManager = new TOCManager();
-  window.bioCollapseManager = new BioCollapseManager();
-  
-  document.body.classList.add('loaded');
-  console.log('Static website initialized successfully');
+  // Use requestAnimationFrame for better performance
+  requestAnimationFrame(() => {
+    window.themeManager = new ThemeManager();
+    window.tocManager = new TOCManager();
+    window.bioCollapseManager = new BioCollapseManager();
+    
+    // Add loaded class for transition optimizations
+    document.body.classList.add('loaded');
+    
+    // Performance mark for debugging
+    if ('performance' in window && 'mark' in performance) {
+      performance.mark('app-initialized');
+    }
+    
+    console.log('Static website initialized successfully');
+  });
 }
 
-initializeApp();
+// Initialize immediately if DOM is ready, otherwise wait
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializeApp);
+} else {
+  initializeApp();
+}

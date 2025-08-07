@@ -40,15 +40,22 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     
+    <!-- DNS Prefetch for external resources -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    
     <!-- Preload critical resources -->
     <link rel="preload" href="style.css" as="style">
     <link rel="preload" href="script.js" as="script">
     <link rel="preload" href="https://fonts.gstatic.com/s/newsreader/v19/cY9qfjWCX1kCwDFVMBY0pWr0R6e9cPnXsFFUZzE.woff2" as="font" type="font/woff2" crossorigin>
     
     <!-- Load optimized font subset for better performance -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:wght@400;600&display=swap&subset=latin">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:wght@400;600&display=swap&subset=latin" media="print" onload="this.media='all'; this.onload=null;">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:wght@400;600&display=swap&subset=latin"></noscript>
     
-    <link rel="stylesheet" href="style.css">
+    <!-- Load main CSS asynchronously -->
+    <link rel="stylesheet" href="style.css" media="print" onload="this.media='all'; this.onload=null;">
+    <noscript><link rel="stylesheet" href="style.css"></noscript>
     
     <!-- Structured Data -->
     <script type="application/ld+json">
