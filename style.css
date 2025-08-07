@@ -395,14 +395,18 @@
 @media (min-width: 1024px) {
   .toc-panel .toc-header {
     padding: 0;
+    padding-left: 0;
     margin-bottom: 1rem;
+    margin-left: 0;
     border-bottom: none;
     flex-shrink: unset;
   }
   
   .toc-panel .toc-list {
     padding: 0;
+    padding-left: 0;
     margin: 0;
+    margin-left: 0;
     flex-grow: unset;
     overflow-y: visible;
   }
