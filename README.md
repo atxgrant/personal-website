@@ -28,16 +28,17 @@ This website serves as a digital space to share practical insights from experime
 - Touch-friendly interface elements
 
 ### 🎨 **Academic Aesthetic**
-- Georgia serif typography for professional appearance
+- Newsreader serif typography with Georgia fallback for professional appearance
 - Warm, sophisticated color palette
 - Minimal design with focus on content readability
 - Consistent spacing and typography hierarchy
 
 ### 🚀 **Professional Features**
-- **SEO Optimized** - Open Graph, Twitter Cards, structured data (JSON-LD)
-- **Performance** - Optimized fonts, resource preloading, deferred scripts
+- **SEO Optimized** - Open Graph, Twitter Cards, structured data (JSON-LD), sitemap, robots.txt
+- **Performance** - Critical CSS inlining, resource preloading, deferred script loading
 - **PWA Ready** - Web app manifest and favicons for all devices
 - **Error Handling** - Custom 404 page with helpful navigation
+- **Accessibility** - Skip links, ARIA attributes, keyboard navigation support
 - **Contact Options** - Multiple ways to connect (email, LinkedIn)
 
 ## 🏗️ Project Structure
@@ -47,6 +48,15 @@ personal-website/
 ├── index.html              # Homepage with bio and post links
 ├── style.css               # Complete styling with theme variables
 ├── script.js               # JavaScript for all interactive features
+├── 404.html                # Custom error page
+├── favicon.svg             # SVG favicon
+├── robots.txt              # Search engine directives
+├── sitemap.xml             # Site map for SEO
+├── site.webmanifest        # PWA manifest
+├── fonts/                  # Self-hosted typography
+│   ├── newsreader-400.woff2
+│   ├── newsreader-600.woff2
+│   └── newsreader.css
 ├── posts/                  # Blog posts directory
 │   └── hello-world.html    # Sample blog post
 └── templates/              # Template files for creating new content
@@ -90,9 +100,12 @@ python3 -m http.server 8000
 - **No build process** - Direct file serving for simplicity
 
 ### JavaScript Architecture
-- **ThemeManager** - Handles dark/light mode functionality
-- **TOCManager** - Generates and manages table of contents
-- **BioCollapseManager** - Handles mobile bio expand/collapse
+- **BrowserEnvironment** - Abstracts DOM/Window APIs for testability and clean architecture
+- **ThemeManager** - Handles dark/light mode functionality with system preference detection
+- **TOCManager** - Generates and manages table of contents with responsive behavior
+- **HeadingGenerator** - Extracts and structures content headings for navigation
+- **ScrollTracker** - Manages active section highlighting during scroll
+- **BioCollapseManager** - Handles mobile bio expand/collapse functionality
 
 ### CSS Architecture
 - CSS custom properties for consistent theming
@@ -114,7 +127,7 @@ The blog focuses on practical AI tool experimentation in product management:
 - **Decision Support** - AI tools for complex product decisions
 - **Process Optimization** - Automating repetitive PM tasks
 
-Each post includes honest assessments of tools, covering both successes and limitations to provide realistic expectations for fellow product managers.
+Each post includes honest assessments of tools, covering both successes and limitations to provide realistic expectations for fellow product managers. Currently featuring one foundational post with more experimental content in development.
 
 ## 🎨 Design Philosophy
 
