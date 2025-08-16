@@ -1,33 +1,6 @@
 {
   "themes": [
     {
-      "name": "Ocean Breeze",
-      "image": "ocean-breeze.jpg",
-      "colors": {
-        "--background": "200 35% 94%",
-        "--foreground": "200 20% 15%",
-        "--card": "200 35% 94%",
-        "--card-foreground": "200 20% 15%",
-        "--popover": "200 35% 94%",
-        "--popover-foreground": "200 20% 15%",
-        "--primary": "200 20% 15%",
-        "--primary-foreground": "200 35% 94%",
-        "--secondary": "200 25% 85%",
-        "--secondary-foreground": "200 20% 15%",
-        "--muted": "200 25% 85%",
-        "--muted-foreground": "200 20% 15%",
-        "--accent": "195 85% 41%",
-        "--accent-foreground": "200 35% 94%",
-        "--destructive": "0 84.2% 60.2%",
-        "--destructive-foreground": "200 35% 94%",
-        "--border": "200 25% 80%",
-        "--input": "200 25% 85%",
-        "--ring": "195 85% 41%",
-        "--link": "#0284c7",
-        "--link-hover": "#0369a1"
-      }
-    },
-    {
       "name": "Synthwave Sunset",
       "image": "synthwave-sunset.jpg",
       "colors": {
@@ -52,33 +25,6 @@
         "--ring": "180 100% 50%",
         "--link": "#00E5FF",
         "--link-hover": "#FF1493"
-      }
-    },
-    {
-      "name": "Forest Calm",
-      "image": "forest-calm.jpg",
-      "colors": {
-        "--background": "120 25% 93%",
-        "--foreground": "120 10% 15%",
-        "--card": "120 25% 93%",
-        "--card-foreground": "120 10% 15%",
-        "--popover": "120 25% 93%",
-        "--popover-foreground": "120 10% 15%",
-        "--primary": "120 10% 15%",
-        "--primary-foreground": "120 25% 93%",
-        "--secondary": "115 20% 85%",
-        "--secondary-foreground": "120 10% 15%",
-        "--muted": "115 20% 85%",
-        "--muted-foreground": "120 10% 15%",
-        "--accent": "140 65% 35%",
-        "--accent-foreground": "120 25% 93%",
-        "--destructive": "0 84.2% 60.2%",
-        "--destructive-foreground": "120 25% 93%",
-        "--border": "115 20% 80%",
-        "--input": "115 20% 85%",
-        "--ring": "140 65% 35%",
-        "--link": "#16a34a",
-        "--link-hover": "#15803d"
       }
     },
     {
