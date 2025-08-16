@@ -982,8 +982,8 @@ class VibeCheckManager {
     //   this.showError(`Failed to load image: ${currentTheme.name}`);
     // };
     
-    // Show vibe display
-    this.vibeDisplay.classList.remove('hidden');
+    // TEMP: Test if theme application itself causes the shift (not vibe display)
+    // this.vibeDisplay.classList.remove('hidden'); // Don't show vibe display at all
     
     // Apply theme colors
     this.themeManager.applyVibeTheme(currentTheme.colors);
