@@ -540,10 +540,9 @@
 .vibe-image {
   max-width: 150px;
   max-height: 100px;
-  min-width: 150px; /* Reserve width even when no src */
-  min-height: 100px; /* Reserve height even when no src */
-  width: auto;
-  height: auto;
+  width: 150px; /* Fixed width to reserve space */
+  height: 100px; /* Fixed height to reserve space */
+  object-fit: cover; /* Maintain aspect ratio, crop if needed */
   border-radius: 0.5rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   order: 2; /* Image appears second */
