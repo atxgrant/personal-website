@@ -982,11 +982,11 @@ class VibeCheckManager {
     //   this.showError(`Failed to load image: ${currentTheme.name}`);
     // };
     
-    // TEMP: Test if theme application itself causes the shift (not vibe display)
+    // TEMP: Test if CSS custom properties cause the shift
     // this.vibeDisplay.classList.remove('hidden'); // Don't show vibe display at all
     
-    // Apply theme colors
-    this.themeManager.applyVibeTheme(currentTheme.colors);
+    // TEMP: Disable theme colors to test if CSS custom properties cause shift
+    // this.themeManager.applyVibeTheme(currentTheme.colors);
     
     // Apply special theme styling based on theme name
     this.browser.getBody().classList.remove('synthwave-active', 'desert-pinon-active', 'texas-wildflower-active');
