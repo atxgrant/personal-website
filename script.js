@@ -982,22 +982,23 @@ class VibeCheckManager {
     //   this.showError(`Failed to load image: ${currentTheme.name}`);
     // };
     
-    // TEMP: Test if CSS custom properties cause the shift
+    // TEMP: Test if body classes cause the shift
     // this.vibeDisplay.classList.remove('hidden'); // Don't show vibe display at all
     
     // TEMP: Disable theme colors to test if CSS custom properties cause shift
     // this.themeManager.applyVibeTheme(currentTheme.colors);
     
-    // Apply special theme styling based on theme name
+    // TEMP: Disable body classes to test if theme-specific CSS causes shift
     this.browser.getBody().classList.remove('synthwave-active', 'desert-pinon-active', 'texas-wildflower-active');
     
-    if (currentTheme.name === 'Synthwave Sunset') {
-      this.browser.getBody().classList.add('synthwave-active');
-    } else if (currentTheme.name === 'Desert Pinon') {
-      this.browser.getBody().classList.add('desert-pinon-active');
-    } else if (currentTheme.name === 'Texas Wildflower') {
-      this.browser.getBody().classList.add('texas-wildflower-active');
-    }
+    // TEMP: Don't add any body classes - test if this stops the shift
+    // if (currentTheme.name === 'Synthwave Sunset') {
+    //   this.browser.getBody().classList.add('synthwave-active');
+    // } else if (currentTheme.name === 'Desert Pinon') {
+    //   this.browser.getBody().classList.add('desert-pinon-active');
+    // } else if (currentTheme.name === 'Texas Wildflower') {
+    //   this.browser.getBody().classList.add('texas-wildflower-active');
+    // }
     
     console.log(`Applied vibe theme: ${currentTheme.name}`);
   }
