@@ -615,20 +615,76 @@ body.synthwave-active {
 }
 
 /* Synthwave Name Styling - Hot Pink (No Glow for Readability) */
+body.synthwave-active h1 a {
+  color: #FF1493 !important;
+  transition: all 0.3s ease;
+}
 
+body.synthwave-active h1 a:hover {
+  text-shadow: 
+    0 0 5px #FF1493,
+    0 0 10px #FF1493;
+}
 
 /* Synthwave Section Headings - Hot Pink (No Glow for Readability) */
+body.synthwave-active #posts-heading {
+  color: #FF1493 !important;
+}
 
 /* Synthwave Vibe Check Button - Magenta Background */
+body.synthwave-active .vibe-check-button {
+  background: linear-gradient(45deg, #FF1493, #FF00FF) !important;
+  border-color: #FF1493 !important;
+  color: #FFFFFF !important;
+  box-shadow: 
+    0 0 10px rgba(255, 20, 147, 0.5),
+    0 0 20px rgba(255, 20, 147, 0.3),
+    0 0 30px rgba(255, 20, 147, 0.1);
+}
 
+body.synthwave-active .vibe-check-button:hover {
+  background: linear-gradient(45deg, #FF00FF, #FF1493) !important;
+  box-shadow: 
+    0 0 15px rgba(255, 20, 147, 0.7),
+    0 0 25px rgba(255, 20, 147, 0.5),
+    0 0 35px rgba(255, 20, 147, 0.3);
+  transform: translateY(-1px);
+}
 
 /* Synthwave Links - Enhanced Glow Effects */
+body.synthwave-active .academic-link {
+  color: #00E5FF !important;
+  text-shadow: 0 0 3px #00E5FF;
+  transition: all 0.3s ease;
+}
 
+body.synthwave-active .academic-link:hover {
+  color: #FF1493 !important;
+  text-shadow: 
+    0 0 5px #FF1493,
+    0 0 10px #FF1493,
+    0 0 15px #FF1493;
+}
 
 /* Synthwave Theme Toggle - Pink Border with Cyan Glow */
+body.synthwave-active #theme-toggle {
+  box-shadow: 
+    0 0 10px rgba(0, 229, 255, 0.3),
+    0 0 20px rgba(0, 229, 255, 0.2);
+  border-color: #FF1493 !important;
+  background-color: rgba(255, 20, 147, 0.1) !important;
+}
 
+body.synthwave-active #theme-toggle:hover {
+  box-shadow: 
+    0 0 15px rgba(0, 229, 255, 0.5),
+    0 0 25px rgba(0, 229, 255, 0.3);
+}
 
 /* Synthwave Theme Toggle Slider - Pink */
+body.synthwave-active #toggle-slider {
+  background-color: #FF1493 !important;
+}
 
 /* Synthwave Content Sections - Subtle Border Glow */
 body.synthwave-active .content-section {
@@ -636,19 +692,43 @@ body.synthwave-active .content-section {
   border-radius: 8px;
   padding: 1.5rem;
   margin-bottom: 2rem;
-  box-shadow: 0 0 20px rgba(0, 229, 255, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* FIX: Use same dimensions as default to prevent layout shift */
 }
 
 /* Synthwave Posts List - Pink/Cyan Balance */
+body.synthwave-active .posts-list a {
+  color: #FF1493 !important;
+  transition: all 0.3s ease;
+}
 
+body.synthwave-active .posts-list a:hover {
+  color: #00E5FF !important;
+  text-shadow: 0 0 5px #00E5FF;
+}
 
 /* Synthwave Bio Text - Add Pink Accents */
+body.synthwave-active .bio-content p {
+  color: hsl(var(--foreground)) !important;
+}
 
 /* Synthwave Bio Links - Pink by Default */
+body.synthwave-active .bio-content .academic-link {
+  color: #FF1493 !important;
+}
 
+body.synthwave-active .bio-content .academic-link:hover {
+  color: #00E5FF !important;
+  text-shadow: 0 0 3px #00E5FF;
+}
 
 /* Synthwave Bio Expand Button - Pink */
+body.synthwave-active .bio-expand-btn {
+  color: #FF1493 !important;
+}
 
+body.synthwave-active .bio-expand-btn:hover {
+  color: #00E5FF !important;
+}
 
 
 
