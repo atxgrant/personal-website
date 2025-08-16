@@ -583,13 +583,13 @@
 /* DEFAULT CONTENT SECTION STYLING - Consistent with vibe themes              */
 /* ============================================================================ */
 
-/* Default Content Sections - Same dimensions as vibe themes to prevent layout shift */
+/* Default Content Sections - Fixed values to prevent vibe theme CSS property changes from affecting layout */
 .content-section {
-  border: 1px solid hsl(var(--border));
+  border: 1px solid #e5e7eb; /* Fixed instead of hsl(var(--border)) */
   border-radius: 8px;
   padding: 1.5rem;
   margin-bottom: 2rem;
-  background: hsl(var(--card));
+  background: #ffffff; /* Fixed instead of hsl(var(--card)) */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
 }
