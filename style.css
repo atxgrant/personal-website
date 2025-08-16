@@ -505,17 +505,22 @@
   transform: translateY(1px);
 }
 
-/* Vibe Theme Display - Vertical Layout */
+/* Vibe Theme Display - Vertical Layout with Reserved Space */
 .vibe-display {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
   margin-top: 0.75rem;
+  /* Reserve space for consistent button positioning */
+  min-height: 140px; /* Accommodate title + image + gap */
+  transition: opacity 0.3s ease;
 }
 
 .vibe-display.hidden {
-  display: none !important;
+  opacity: 0;
+  pointer-events: none;
+  /* Keep the space reserved but make content invisible */
 }
 
 .vibe-title {
@@ -548,7 +553,9 @@
 }
 
 .vibe-error.hidden {
-  display: none !important;
+  opacity: 0;
+  pointer-events: none;
+  /* Keep consistent with vibe-display hidden behavior */
 }
 
 /* Responsive adjustments for very small screens */
