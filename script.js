@@ -977,11 +977,13 @@ class VibeCheckManager {
     // Apply theme colors
     this.themeManager.applyVibeTheme(currentTheme.colors);
     
-    // Apply special synthwave styling if this is the Synthwave Sunset theme
+    // Apply special theme styling based on theme name
+    this.browser.getBody().classList.remove('synthwave-active', 'desert-pinon-active');
+    
     if (currentTheme.name === 'Synthwave Sunset') {
       this.browser.getBody().classList.add('synthwave-active');
-    } else {
-      this.browser.getBody().classList.remove('synthwave-active');
+    } else if (currentTheme.name === 'Desert Pinon') {
+      this.browser.getBody().classList.add('desert-pinon-active');
     }
     
     console.log(`Applied vibe theme: ${currentTheme.name}`);
@@ -1008,8 +1010,8 @@ class VibeCheckManager {
     this.linkedinIcon.classList.remove('hidden');
     this.currentThemeIndex = 0;
     
-    // Remove synthwave styling
-    this.browser.getBody().classList.remove('synthwave-active');
+    // Remove special theme styling
+    this.browser.getBody().classList.remove('synthwave-active', 'desert-pinon-active');
   }
 }
 

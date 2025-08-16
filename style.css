@@ -691,6 +691,104 @@ body.synthwave-active .content-section {
 }
 
 /* ============================================================================ */
+/* DESERT PINON THEME ENHANCEMENTS - Southwest/American desert aesthetics     */
+/* ============================================================================ */
+
+/* Desert Pinon Background - Warm Sandy Tone */
+body.desert-pinon-active {
+  background: linear-gradient(135deg, 
+    hsl(35, 25%, 92%) 0%, 
+    hsl(30, 30%, 90%) 50%, 
+    hsl(40, 20%, 94%) 100%
+  ) !important;
+}
+
+/* Desert Pinon Name Styling - Turquoise (Southwest Jewelry Color) */
+body.desert-pinon-active h1 a {
+  color: #40E0D0 !important;
+  transition: all 0.3s ease;
+}
+
+body.desert-pinon-active h1 a:hover {
+  color: #E3735E !important;
+}
+
+/* Desert Pinon Section Headings - Burnt Orange (Desert Sunset) */
+body.desert-pinon-active #posts-heading {
+  color: #CC5500 !important;
+}
+
+/* Desert Pinon Vibe Check Button - Turquoise with Terracotta Accent */
+body.desert-pinon-active .vibe-check-button {
+  background: linear-gradient(45deg, #40E0D0, #48D1CC) !important;
+  border-color: #40E0D0 !important;
+  color: #FFFFFF !important;
+}
+
+body.desert-pinon-active .vibe-check-button:hover {
+  background: linear-gradient(45deg, #E3735E, #CC5500) !important;
+  border-color: #E3735E !important;
+}
+
+/* Desert Pinon Links - Terracotta (Adobe/Clay Feel) */
+body.desert-pinon-active .academic-link {
+  color: #E3735E !important;
+  transition: all 0.3s ease;
+}
+
+body.desert-pinon-active .academic-link:hover {
+  color: #40E0D0 !important;
+}
+
+/* Desert Pinon Theme Toggle - Turquoise Accents */
+body.desert-pinon-active #theme-toggle {
+  border-color: #40E0D0 !important;
+  background-color: rgba(64, 224, 208, 0.1) !important;
+}
+
+body.desert-pinon-active #toggle-slider {
+  background-color: #E3735E !important;
+}
+
+/* Desert Pinon Content Sections - Warm Earth Tones */
+body.desert-pinon-active .content-section {
+  border: 1px solid rgba(227, 115, 94, 0.3);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  background: rgba(208, 181, 154, 0.1);
+  box-shadow: 0 0 15px rgba(227, 115, 94, 0.1);
+}
+
+/* Desert Pinon Posts List - Terracotta to Turquoise */
+body.desert-pinon-active .posts-list a {
+  color: #E3735E !important;
+  transition: all 0.3s ease;
+}
+
+body.desert-pinon-active .posts-list a:hover {
+  color: #40E0D0 !important;
+}
+
+/* Desert Pinon Bio Links - Terracotta by Default */
+body.desert-pinon-active .bio-content .academic-link {
+  color: #E3735E !important;
+}
+
+body.desert-pinon-active .bio-content .academic-link:hover {
+  color: #40E0D0 !important;
+}
+
+/* Desert Pinon Bio Expand Button - Burnt Orange */
+body.desert-pinon-active .bio-expand-btn {
+  color: #CC5500 !important;
+}
+
+body.desert-pinon-active .bio-expand-btn:hover {
+  color: #40E0D0 !important;
+}
+
+/* ============================================================================ */
 /* BIO COLLAPSE COMPONENT - Complex mobile responsive behavior                 */
 /* ============================================================================ */
 
