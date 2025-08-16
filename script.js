@@ -971,15 +971,15 @@ class VibeCheckManager {
     // Update theme title
     this.vibeTitle.textContent = currentTheme.name;
     
-    // Update image
-    this.vibeImage.src = `vibe-themes/images/${currentTheme.image}`;
-    this.vibeImage.alt = `${currentTheme.name} theme`;
+    // TEMPORARILY DISABLED: Update image (testing if image loading causes layout shift)
+    // this.vibeImage.src = `vibe-themes/images/${currentTheme.image}`;
+    // this.vibeImage.alt = `${currentTheme.name} theme`;
     
-    // Handle image load errors
-    this.vibeImage.onerror = () => {
-      console.error(`Failed to load image: ${currentTheme.image}`);
-      this.showError(`Failed to load image: ${currentTheme.name}`);
-    };
+    // TEMPORARILY DISABLED: Handle image load errors
+    // this.vibeImage.onerror = () => {
+    //   console.error(`Failed to load image: ${currentTheme.image}`);
+    //   this.showError(`Failed to load image: ${currentTheme.name}`);
+    // };
     
     // Show vibe display
     this.vibeDisplay.classList.remove('hidden');
