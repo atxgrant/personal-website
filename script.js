@@ -915,7 +915,7 @@ class VibeCheckManager {
       const response = await fetch('vibe-themes/theme-data.json');
       
       if (!response.ok) {
-        throw new Error(`Failed to load themes: ${response.status}`);
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
       
       const data = await response.json();
@@ -932,7 +932,18 @@ class VibeCheckManager {
       console.log(`Loaded ${this.themes.length} vibe themes`);
     } catch (error) {
       console.error('Error loading vibe themes:', error);
-      this.showError();
+      
+      // Provide more specific error messages
+      let errorMessage = 'Unable to load themes';
+      if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        errorMessage = 'Connection failed - try using a local server';
+      } else if (error.message.includes('HTTP')) {
+        errorMessage = `Server error: ${error.message}`;
+      } else if (error.message.includes('JSON')) {
+        errorMessage = 'Invalid theme data format';
+      }
+      
+      this.showError(errorMessage);
     }
   }
 
@@ -967,7 +978,7 @@ class VibeCheckManager {
     // Handle image load errors
     this.vibeImage.onerror = () => {
       console.error(`Failed to load image: ${currentTheme.image}`);
-      this.showError();
+      this.showError(`Failed to load image: ${currentTheme.name}`);
     };
     
     // Show vibe display
@@ -992,9 +1003,11 @@ class VibeCheckManager {
 
   /**
    * Show error state
+   * @param {string} [message] - Custom error message to display
    * @private
    */
-  showError() {
+  showError(message = 'Unable to load theme') {
+    this.vibeError.textContent = message;
     this.vibeError.classList.remove('hidden');
     this.vibeDisplay.classList.remove('hidden');
   }
