@@ -629,7 +629,6 @@ body.synthwave-active h1 a:hover {
 /* Synthwave Section Headings - Hot Pink (No Glow for Readability) */
 body.synthwave-active #posts-heading {
   color: #FF1493 !important;
-  font-weight: 700;
 }
 
 /* Synthwave Vibe Check Button - Magenta Background */
@@ -693,7 +692,7 @@ body.synthwave-active .content-section {
   border-radius: 8px;
   padding: 1.5rem;
   margin-bottom: 2rem;
-  box-shadow: 0 0 20px rgba(0, 229, 255, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* TEMP: Use same box-shadow as default */
 }
 
 /* Synthwave Posts List - Pink/Cyan Balance */
@@ -759,7 +758,6 @@ body.desert-pinon-active h1 a:hover {
 /* Desert Pinon Section Headings - Turquoise (Southwest Accent) */
 body.desert-pinon-active #posts-heading {
   color: #40E0D0 !important;
-  font-weight: 700;
 }
 
 /* Desert Pinon Vibe Check Button - Turquoise with Terracotta Accent */
