@@ -594,6 +594,13 @@
   transition: all 0.3s ease;
 }
 
+/* Default Header Name - Same dimensions as vibe themes to prevent layout shift */
+h1 a {
+  border-bottom: 2px solid transparent; /* Reserve space for Texas Wildflower theme border */
+  padding-bottom: 2px; /* Same as Texas Wildflower theme */
+  transition: all 0.3s ease;
+}
+
 /* ============================================================================ */
 /* SYNTHWAVE THEME ENHANCEMENTS - Neon glow effects and gradient backgrounds  */
 /* ============================================================================ */
