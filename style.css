@@ -598,7 +598,6 @@
 h1 a {
   border-bottom: 2px solid transparent; /* Reserve space for Texas Wildflower theme border */
   padding-bottom: 2px; /* Same as Texas Wildflower theme */
-  text-shadow: 0 0 1px transparent; /* Reserve space for Texas Wildflower text-shadow */
   transition: all 0.3s ease;
 }
 
@@ -630,6 +629,7 @@ body.synthwave-active h1 a:hover {
 /* Synthwave Section Headings - Hot Pink (No Glow for Readability) */
 body.synthwave-active #posts-heading {
   color: #FF1493 !important;
+  font-weight: 700;
 }
 
 /* Synthwave Vibe Check Button - Magenta Background */
@@ -759,6 +759,7 @@ body.desert-pinon-active h1 a:hover {
 /* Desert Pinon Section Headings - Turquoise (Southwest Accent) */
 body.desert-pinon-active #posts-heading {
   color: #40E0D0 !important;
+  font-weight: 700;
 }
 
 /* Desert Pinon Vibe Check Button - Turquoise with Terracotta Accent */
