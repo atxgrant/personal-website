@@ -811,10 +811,8 @@ body.desert-pinon-active #toggle-slider {
 
 /* Desert Pinon Content Sections - Turquoise Accents */
 body.desert-pinon-active .content-section {
-  border-left: 4px solid #40E0D0;
-  border-top: 1px solid rgba(227, 115, 94, 0.3);
-  border-right: 1px solid rgba(227, 115, 94, 0.3);
-  border-bottom: 1px solid rgba(227, 115, 94, 0.3);
+  border: 1px solid rgba(227, 115, 94, 0.3);
+  border-left: 4px solid #40E0D0;  /* Keep 4px accent but override base border */
   border-radius: 8px;
   padding: 1.5rem;
   margin-bottom: 2rem;
@@ -935,10 +933,8 @@ body.texas-wildflower-active #toggle-slider {
 
 /* Texas Wildflower Content Sections - Bluebonnet Blue Accents */
 body.texas-wildflower-active .content-section {
-  border-left: 4px solid #002D62;
-  border-top: 1px solid rgba(0, 45, 98, 0.2);
-  border-right: 1px solid rgba(0, 45, 98, 0.2);
-  border-bottom: 1px solid rgba(0, 45, 98, 0.2);
+  border: 1px solid rgba(0, 45, 98, 0.2);
+  border-left: 4px solid #002D62;  /* Keep 4px accent but override base border */
   border-radius: 8px;
   padding: 1.5rem;
   margin-bottom: 2rem;

@@ -968,37 +968,35 @@ class VibeCheckManager {
     // Hide error (LinkedIn stays visible)
     this.vibeError.classList.add('hidden');
     
-    // TEMP: Disable title text to test if text content changes cause layout shift
-    // this.vibeTitle.textContent = currentTheme.name;
+        // Set theme title
+    this.vibeTitle.textContent = currentTheme.name;
+
+    // Set theme image
+    this.vibeImage.src = `vibe-themes/images/${currentTheme.image}`;
+    this.vibeImage.alt = `${currentTheme.name} theme`;
+
+    // Handle image loading errors
+    this.vibeImage.onerror = () => {
+      console.error(`Failed to load image: ${currentTheme.image}`);
+      this.showError(`Failed to load image: ${currentTheme.name}`);
+    };
     
-    // TEMP: Also disable image to test if vibe display visibility itself causes shift
-    // this.vibeImage.src = `vibe-themes/images/${currentTheme.image}`;
-    // this.vibeImage.alt = `${currentTheme.name} theme`;
-    this.vibeImage.style.display = 'none'; // Completely hide image
+    // Show vibe display
+    this.vibeDisplay.classList.remove('hidden');
     
-    // TEMP: Disable image error handling
-    // this.vibeImage.onerror = () => {
-    //   console.error(`Failed to load image: ${currentTheme.image}`);
-    //   this.showError(`Failed to load image: ${currentTheme.name}`);
-    // };
+    // Apply theme colors
+    this.themeManager.applyVibeTheme(currentTheme.colors);
     
-    // TEMP: Test if body classes cause the shift
-    // this.vibeDisplay.classList.remove('hidden'); // Don't show vibe display at all
-    
-    // TEMP: Disable theme colors to test if CSS custom properties cause shift
-    // this.themeManager.applyVibeTheme(currentTheme.colors);
-    
-    // TEMP: Disable body classes to test if theme-specific CSS causes shift
+    // Apply special theme styling based on theme name
     this.browser.getBody().classList.remove('synthwave-active', 'desert-pinon-active', 'texas-wildflower-active');
     
-    // TEMP: Don't add any body classes - test if this stops the shift
-    // if (currentTheme.name === 'Synthwave Sunset') {
-    //   this.browser.getBody().classList.add('synthwave-active');
-    // } else if (currentTheme.name === 'Desert Pinon') {
-    //   this.browser.getBody().classList.add('desert-pinon-active');
-    // } else if (currentTheme.name === 'Texas Wildflower') {
-    //   this.browser.getBody().classList.add('texas-wildflower-active');
-    // }
+    if (currentTheme.name === 'Synthwave Sunset') {
+      this.browser.getBody().classList.add('synthwave-active');
+    } else if (currentTheme.name === 'Desert Pinon') {
+      this.browser.getBody().classList.add('desert-pinon-active');
+    } else if (currentTheme.name === 'Texas Wildflower') {
+      this.browser.getBody().classList.add('texas-wildflower-active');
+    }
     
     console.log(`Applied vibe theme: ${currentTheme.name}`);
   }
