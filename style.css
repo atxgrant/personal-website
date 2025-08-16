@@ -512,15 +512,17 @@
   align-items: center;
   gap: 0.5rem;
   margin-top: 0.75rem;
-  /* Reserve space for consistent button positioning */
-  min-height: 140px; /* Accommodate title + image + gap */
+  /* Force consistent height regardless of content */
+  height: 140px; /* Fixed height instead of min-height */
   transition: opacity 0.3s ease;
+  /* Ensure content doesn't overflow the reserved space */
+  overflow: hidden;
 }
 
 .vibe-display.hidden {
   opacity: 0;
   pointer-events: none;
-  /* Keep the space reserved but make content invisible */
+  /* Keep the exact same space reserved */
 }
 
 .vibe-title {
