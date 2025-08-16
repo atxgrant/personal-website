@@ -954,9 +954,8 @@ class VibeCheckManager {
 
     const currentTheme = this.themes[this.currentThemeIndex];
     
-    // Hide error and LinkedIn icon
+    // Hide error (LinkedIn stays visible)
     this.vibeError.classList.add('hidden');
-    this.linkedinIcon.classList.add('hidden');
     
     // Update theme title
     this.vibeTitle.textContent = currentTheme.name;
@@ -996,7 +995,6 @@ class VibeCheckManager {
   showError() {
     this.vibeError.classList.remove('hidden');
     this.vibeDisplay.classList.remove('hidden');
-    this.linkedinIcon.classList.add('hidden');
   }
 
   /**
@@ -1007,7 +1005,6 @@ class VibeCheckManager {
   reset() {
     this.vibeDisplay.classList.add('hidden');
     this.vibeError.classList.add('hidden');
-    this.linkedinIcon.classList.remove('hidden');
     this.currentThemeIndex = 0;
     
     // Remove special theme styling
