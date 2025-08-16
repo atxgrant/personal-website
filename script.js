@@ -326,7 +326,10 @@ class ThemeManager {
     
     // Apply vibe theme colors
     Object.entries(themeColors).forEach(([property, value]) => {
-      root.style.setProperty(property, value);
+      // TEMP: Skip --border property to test layout shift
+      if (property !== '--border') {
+        root.style.setProperty(property, value);
+      }
     });
   }
 
@@ -984,8 +987,8 @@ class VibeCheckManager {
     // Show vibe display
     this.vibeDisplay.classList.remove('hidden');
     
-    // TEMP: Disable CSS custom properties to test layout shift
-    // this.themeManager.applyVibeTheme(currentTheme.colors);
+    // Apply theme colors
+    this.themeManager.applyVibeTheme(currentTheme.colors);
     
     // Apply special theme styling based on theme name
     this.browser.getBody().classList.remove('synthwave-active', 'desert-pinon-active', 'texas-wildflower-active');
