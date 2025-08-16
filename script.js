@@ -971,9 +971,12 @@ class VibeCheckManager {
     // Update theme title
     this.vibeTitle.textContent = currentTheme.name;
     
-    // TEMPORARILY DISABLED: Update image (testing if image loading causes layout shift)
+    // TEMPORARILY DISABLED: Update image (testing if image element causes layout shift)
     // this.vibeImage.src = `vibe-themes/images/${currentTheme.image}`;
     // this.vibeImage.alt = `${currentTheme.name} theme`;
+    
+    // TEMP: Completely hide image element to remove all layout impact
+    this.vibeImage.style.display = 'none';
     
     // TEMPORARILY DISABLED: Handle image load errors
     // this.vibeImage.onerror = () => {
