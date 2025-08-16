@@ -607,8 +607,11 @@ h1 a {
 
 /* Synthwave Background Gradient */
 body.synthwave-active {
-  /* TEMP: Test if gradient background causes layout shift - use solid color instead */
-  background-color: hsl(240, 45%, 8%) !important;
+  background: linear-gradient(135deg, 
+    hsl(240, 45%, 8%) 0%, 
+    hsl(260, 40%, 12%) 50%, 
+    hsl(280, 35%, 10%) 100%
+  ) !important;
 }
 
 /* Synthwave Name Styling - Hot Pink (No Glow for Readability) */
@@ -651,16 +654,18 @@ body.synthwave-active .vibe-check-button:hover {
 /* Synthwave Links - Enhanced Glow Effects */
 body.synthwave-active .academic-link {
   color: #00E5FF !important;
-  text-shadow: 0 0 3px #00E5FF;
+  /* TEMP: Remove text-shadow to test layout shift */
+  /* text-shadow: 0 0 3px #00E5FF; */
   transition: all 0.3s ease;
 }
 
 body.synthwave-active .academic-link:hover {
   color: #FF1493 !important;
-  text-shadow: 
+  /* TEMP: Remove hover text-shadow to test layout shift */
+  /* text-shadow: 
     0 0 5px #FF1493,
     0 0 10px #FF1493,
-    0 0 15px #FF1493;
+    0 0 15px #FF1493; */
 }
 
 /* Synthwave Theme Toggle - Pink Border with Cyan Glow */
@@ -700,7 +705,8 @@ body.synthwave-active .posts-list a {
 
 body.synthwave-active .posts-list a:hover {
   color: #00E5FF !important;
-  text-shadow: 0 0 5px #00E5FF;
+  /* TEMP: Remove posts text-shadow to test layout shift */
+  /* text-shadow: 0 0 5px #00E5FF; */
 }
 
 /* Synthwave Bio Text - Add Pink Accents */
@@ -715,7 +721,8 @@ body.synthwave-active .bio-content .academic-link {
 
 body.synthwave-active .bio-content .academic-link:hover {
   color: #00E5FF !important;
-  text-shadow: 0 0 3px #00E5FF;
+  /* TEMP: Remove bio text-shadow to test layout shift */
+  /* text-shadow: 0 0 3px #00E5FF; */
 }
 
 /* Synthwave Bio Expand Button - Pink */
