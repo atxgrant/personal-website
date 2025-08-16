@@ -1,0 +1,112 @@
+{
+  "themes": [
+    {
+      "name": "Ocean Breeze",
+      "image": "ocean-breeze.jpg",
+      "colors": {
+        "--background": "200 35% 94%",
+        "--foreground": "200 20% 15%",
+        "--card": "200 35% 94%",
+        "--card-foreground": "200 20% 15%",
+        "--popover": "200 35% 94%",
+        "--popover-foreground": "200 20% 15%",
+        "--primary": "200 20% 15%",
+        "--primary-foreground": "200 35% 94%",
+        "--secondary": "200 25% 85%",
+        "--secondary-foreground": "200 20% 15%",
+        "--muted": "200 25% 85%",
+        "--muted-foreground": "200 20% 15%",
+        "--accent": "195 85% 41%",
+        "--accent-foreground": "200 35% 94%",
+        "--destructive": "0 84.2% 60.2%",
+        "--destructive-foreground": "200 35% 94%",
+        "--border": "200 25% 80%",
+        "--input": "200 25% 85%",
+        "--ring": "195 85% 41%",
+        "--link": "#0284c7",
+        "--link-hover": "#0369a1"
+      }
+    },
+    {
+      "name": "Sunset Vibes",
+      "image": "sunset-vibes.jpg",
+      "colors": {
+        "--background": "25 40% 95%",
+        "--foreground": "25 15% 15%",
+        "--card": "25 40% 95%",
+        "--card-foreground": "25 15% 15%",
+        "--popover": "25 40% 95%",
+        "--popover-foreground": "25 15% 15%",
+        "--primary": "25 15% 15%",
+        "--primary-foreground": "25 40% 95%",
+        "--secondary": "20 30% 88%",
+        "--secondary-foreground": "25 15% 15%",
+        "--muted": "20 30% 88%",
+        "--muted-foreground": "25 15% 15%",
+        "--accent": "15 90% 55%",
+        "--accent-foreground": "25 40% 95%",
+        "--destructive": "0 84.2% 60.2%",
+        "--destructive-foreground": "25 40% 95%",
+        "--border": "20 30% 83%",
+        "--input": "20 30% 88%",
+        "--ring": "15 90% 55%",
+        "--link": "#ea580c",
+        "--link-hover": "#dc2626"
+      }
+    },
+    {
+      "name": "Forest Calm",
+      "image": "forest-calm.jpg",
+      "colors": {
+        "--background": "120 25% 93%",
+        "--foreground": "120 10% 15%",
+        "--card": "120 25% 93%",
+        "--card-foreground": "120 10% 15%",
+        "--popover": "120 25% 93%",
+        "--popover-foreground": "120 10% 15%",
+        "--primary": "120 10% 15%",
+        "--primary-foreground": "120 25% 93%",
+        "--secondary": "115 20% 85%",
+        "--secondary-foreground": "120 10% 15%",
+        "--muted": "115 20% 85%",
+        "--muted-foreground": "120 10% 15%",
+        "--accent": "140 65% 35%",
+        "--accent-foreground": "120 25% 93%",
+        "--destructive": "0 84.2% 60.2%",
+        "--destructive-foreground": "120 25% 93%",
+        "--border": "115 20% 80%",
+        "--input": "115 20% 85%",
+        "--ring": "140 65% 35%",
+        "--link": "#16a34a",
+        "--link-hover": "#15803d"
+      }
+    },
+    {
+      "name": "Purple Haze",
+      "image": "purple-haze.jpg",
+      "colors": {
+        "--background": "270 30% 94%",
+        "--foreground": "270 15% 15%",
+        "--card": "270 30% 94%",
+        "--card-foreground": "270 15% 15%",
+        "--popover": "270 30% 94%",
+        "--popover-foreground": "270 15% 15%",
+        "--primary": "270 15% 15%",
+        "--primary-foreground": "270 30% 94%",
+        "--secondary": "265 25% 86%",
+        "--secondary-foreground": "270 15% 15%",
+        "--muted": "265 25% 86%",
+        "--muted-foreground": "270 15% 15%",
+        "--accent": "260 85% 60%",
+        "--accent-foreground": "270 30% 94%",
+        "--destructive": "0 84.2% 60.2%",
+        "--destructive-foreground": "270 30% 94%",
+        "--border": "265 25% 81%",
+        "--input": "265 25% 86%",
+        "--ring": "260 85% 60%",
+        "--link": "#7c3aed",
+        "--link-hover": "#6d28d9"
+      }
+    }
+  ]
+}

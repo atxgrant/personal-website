@@ -435,6 +435,124 @@
 }
 
 /* ============================================================================ */
+/* VIBE CHECK COMPONENT - Homepage easter egg functionality                   */
+/* ============================================================================ */
+
+/* Footer Layout */
+.footer-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem 0;
+  min-height: 4rem;
+}
+
+.footer-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Vibe Check Button - Desktop Only */
+.vibe-check-button {
+  position: absolute;
+  left: 1.5rem;
+  bottom: 1rem;
+  
+  /* Pill shape similar to theme toggle */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  height: 2.5rem;
+  
+  /* Styling */
+  background-color: hsl(var(--muted));
+  border: 1px solid hsl(var(--border));
+  border-radius: 9999px;
+  color: hsl(var(--foreground));
+  font-size: 0.875rem;
+  font-weight: 500;
+  font-family: inherit;
+  
+  /* Interactions */
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.vibe-check-button:hover {
+  background-color: hsl(var(--accent));
+  border-color: hsl(var(--accent));
+  color: hsl(var(--accent-foreground));
+}
+
+.vibe-check-button:focus {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+/* Hide on mobile/tablet */
+@media (max-width: 1023px) {
+  .vibe-check-button {
+    display: none;
+  }
+}
+
+/* Vibe Theme Display */
+.vibe-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.vibe-display.hidden {
+  display: none !important;
+}
+
+.vibe-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: hsl(var(--foreground));
+  text-align: center;
+  margin-bottom: 0.25rem;
+}
+
+.vibe-image {
+  max-width: 150px;
+  max-height: 100px;
+  width: auto;
+  height: auto;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.vibe-error {
+  font-size: 0.875rem;
+  color: hsl(var(--destructive));
+  text-align: center;
+  padding: 0.5rem;
+  background-color: hsl(var(--destructive) / 0.1);
+  border-radius: 0.25rem;
+  border: 1px solid hsl(var(--destructive) / 0.2);
+}
+
+.vibe-error.hidden {
+  display: none !important;
+}
+
+/* LinkedIn Icon - Hide when vibe display is active */
+#linkedin-icon {
+  transition: opacity 0.2s ease;
+}
+
+#linkedin-icon.hidden {
+  display: none !important;
+}
+
+/* ============================================================================ */
 /* BIO COLLAPSE COMPONENT - Complex mobile responsive behavior                 */
 /* ============================================================================ */
 

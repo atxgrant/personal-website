@@ -191,8 +191,8 @@ class BrowserEnvironment {
 }
 
 /**
- * Theme Manager - Handles dark/light mode toggle functionality
- * Provides automatic theme detection, manual toggle, and persistent storage
+ * Theme Manager - Handles dark/light mode toggle functionality and vibe themes
+ * Provides automatic theme detection, manual toggle, persistent storage, and vibe check functionality
  */
 class ThemeManager {
   /**
@@ -205,6 +205,8 @@ class ThemeManager {
     this.themeToggle = null;
     this.toggleSlider = null;
     this.currentTheme = 'light';
+    this.isVibeMode = false;
+    this.originalTheme = 'light'; // Store original theme when entering vibe mode
     this.init();
   }
 
@@ -253,9 +255,19 @@ class ThemeManager {
   /**
    * Toggle between light and dark themes
    * Saves preference to localStorage for persistence
+   * Exits vibe mode if currently active
    * @public
    */
   toggleTheme() {
+    // If in vibe mode, exit it first
+    if (this.isVibeMode) {
+      this.exitVibeMode();
+      // Notify vibe check manager to reset UI
+      if (this.browser.window.vibeCheckManager) {
+        this.browser.window.vibeCheckManager.reset();
+      }
+    }
+    
     this.currentTheme = this.currentTheme === 'light' ? 'dark' : 'light';
     this.applyTheme(this.currentTheme);
     localStorage.setItem('theme', this.currentTheme);
@@ -296,6 +308,63 @@ class ThemeManager {
       this.toggleSlider.classList.remove('translate-x-6');
       this.toggleSlider.classList.add('translate-x-1');
     }
+  }
+
+  /**
+   * Apply a vibe theme with custom color palette
+   * @param {Object} themeColors - Object containing CSS custom property values
+   * @public
+   */
+  applyVibeTheme(themeColors) {
+    if (!this.isVibeMode) {
+      // Store original theme before entering vibe mode
+      this.originalTheme = this.currentTheme;
+      this.isVibeMode = true;
+    }
+
+    const root = this.browser.getDocumentElement();
+    
+    // Apply vibe theme colors
+    Object.entries(themeColors).forEach(([property, value]) => {
+      root.style.setProperty(property, value);
+    });
+  }
+
+  /**
+   * Exit vibe mode and return to original theme
+   * @public
+   */
+  exitVibeMode() {
+    if (!this.isVibeMode) return;
+
+    const root = this.browser.getDocumentElement();
+    
+    // Clear all custom properties set by vibe themes
+    const vibeProperties = [
+      '--background', '--foreground', '--card', '--card-foreground',
+      '--popover', '--popover-foreground', '--primary', '--primary-foreground',
+      '--secondary', '--secondary-foreground', '--muted', '--muted-foreground',
+      '--accent', '--accent-foreground', '--destructive', '--destructive-foreground',
+      '--border', '--input', '--ring', '--link', '--link-hover'
+    ];
+    
+    vibeProperties.forEach(property => {
+      root.style.removeProperty(property);
+    });
+
+    // Restore original theme
+    this.currentTheme = this.originalTheme;
+    this.applyTheme(this.currentTheme);
+    this.isVibeMode = false;
+  }
+
+  /**
+   * Check if currently in vibe mode
+   * @returns {boolean} True if in vibe mode
+   * @public
+   */
+  getIsVibeMode() {
+    return this.isVibeMode;
   }
 }
 
@@ -773,6 +842,168 @@ class TOCManager {
 }
 
 /**
+ * Vibe Check Manager - Handles theme cycling easter egg functionality
+ * Manages vibe theme switching, image display, and integration with ThemeManager
+ */
+class VibeCheckManager {
+  /**
+   * Create a VibeCheckManager instance
+   * @param {ThemeManager} themeManager - Theme manager instance for theme control
+   * @param {BrowserEnvironment} [browser] - Browser environment for DOM/Window access
+   * @constructor
+   */
+  constructor(themeManager, browser = new BrowserEnvironment()) {
+    this.browser = browser;
+    this.themeManager = themeManager;
+    this.vibeCheckBtn = null;
+    this.vibeDisplay = null;
+    this.vibeTitle = null;
+    this.vibeImage = null;
+    this.vibeError = null;
+    this.linkedinIcon = null;
+    
+    this.themes = [];
+    this.currentThemeIndex = 0;
+    this.isLoaded = false;
+    
+    this.init();
+  }
+
+  init() {
+    if (this.browser.getReadyState() === 'loading') {
+      this.browser.addDocumentListener('DOMContentLoaded', () => this.setup());
+    } else {
+      this.setup();
+    }
+  }
+
+  setup() {
+    this.vibeCheckBtn = this.browser.getElementById('vibe-check-btn');
+    this.vibeDisplay = this.browser.getElementById('vibe-display');
+    this.vibeTitle = this.browser.getElementById('vibe-title');
+    this.vibeImage = this.browser.getElementById('vibe-image');
+    this.vibeError = this.browser.getElementById('vibe-error');
+    this.linkedinIcon = this.browser.getElementById('linkedin-icon');
+
+    if (!this.vibeCheckBtn) {
+      console.log('Vibe Check button not found - likely not on homepage');
+      return;
+    }
+
+    console.log('Vibe Check Manager initializing...');
+    this.setupEventListeners();
+    console.log('Vibe Check Manager initialized successfully');
+  }
+
+  setupEventListeners() {
+    this.vibeCheckBtn.addEventListener('click', () => {
+      if (!this.isLoaded) {
+        this.loadThemes();
+      } else {
+        this.cycleToNextTheme();
+      }
+    });
+  }
+
+  /**
+   * Load theme data from JSON file
+   * @private
+   */
+  async loadThemes() {
+    try {
+      console.log('Loading vibe themes...');
+      const response = await fetch('vibe-themes/theme-data.json');
+      
+      if (!response.ok) {
+        throw new Error(`Failed to load themes: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      this.themes = data.themes || [];
+      
+      if (this.themes.length === 0) {
+        throw new Error('No themes found in data');
+      }
+      
+      this.isLoaded = true;
+      this.currentThemeIndex = 0;
+      this.showVibeTheme();
+      
+      console.log(`Loaded ${this.themes.length} vibe themes`);
+    } catch (error) {
+      console.error('Error loading vibe themes:', error);
+      this.showError();
+    }
+  }
+
+  /**
+   * Cycle to the next theme in the sequence
+   * @private
+   */
+  cycleToNextTheme() {
+    this.currentThemeIndex = (this.currentThemeIndex + 1) % this.themes.length;
+    this.showVibeTheme();
+  }
+
+  /**
+   * Display the current vibe theme
+   * @private
+   */
+  showVibeTheme() {
+    if (!this.isLoaded || this.themes.length === 0) return;
+
+    const currentTheme = this.themes[this.currentThemeIndex];
+    
+    // Hide error and LinkedIn icon
+    this.vibeError.classList.add('hidden');
+    this.linkedinIcon.classList.add('hidden');
+    
+    // Update theme title
+    this.vibeTitle.textContent = currentTheme.name;
+    
+    // Update image
+    this.vibeImage.src = `vibe-themes/images/${currentTheme.image}`;
+    this.vibeImage.alt = `${currentTheme.name} theme`;
+    
+    // Handle image load errors
+    this.vibeImage.onerror = () => {
+      console.error(`Failed to load image: ${currentTheme.image}`);
+      this.showError();
+    };
+    
+    // Show vibe display
+    this.vibeDisplay.classList.remove('hidden');
+    
+    // Apply theme colors
+    this.themeManager.applyVibeTheme(currentTheme.colors);
+    
+    console.log(`Applied vibe theme: ${currentTheme.name}`);
+  }
+
+  /**
+   * Show error state
+   * @private
+   */
+  showError() {
+    this.vibeError.classList.remove('hidden');
+    this.vibeDisplay.classList.remove('hidden');
+    this.linkedinIcon.classList.add('hidden');
+  }
+
+  /**
+   * Reset vibe check to initial state
+   * Called when exiting vibe mode
+   * @public
+   */
+  reset() {
+    this.vibeDisplay.classList.add('hidden');
+    this.vibeError.classList.add('hidden');
+    this.linkedinIcon.classList.remove('hidden');
+    this.currentThemeIndex = 0;
+  }
+}
+
+/**
  * Bio Collapse Manager - Handles mobile bio expand/collapse functionality
  * Manages the "read more" functionality for biography content on mobile devices
  */
@@ -870,6 +1101,12 @@ function initializeApp(browser = new BrowserEnvironment()) {
     const hasBioContent = browser.querySelector('.bio-content');
     if (hasBioContent) {
       browser.window.bioCollapseManager = new BioCollapseManager(browser);
+    }
+    
+    // Only initialize vibe check manager on homepage (where button exists)
+    const hasVibeCheck = browser.getElementById('vibe-check-btn');
+    if (hasVibeCheck) {
+      browser.window.vibeCheckManager = new VibeCheckManager(browser.window.themeManager, browser);
     }
     
     // Add loaded class for transition optimizations
