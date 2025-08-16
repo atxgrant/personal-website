@@ -583,13 +583,14 @@
 /* DEFAULT CONTENT SECTION STYLING - Consistent with vibe themes              */
 /* ============================================================================ */
 
-/* Default Content Sections - Same dimensions as vibe themes to prevent layout shift */
+/* Content Sections - CSS Variables approach to prevent layout shift */
 .content-section {
-  border: 1px solid hsl(var(--border));
+  border: var(--content-border, 1px solid hsl(var(--border)));
+  border-left: var(--content-border-left, 1px solid hsl(var(--border)));
   border-radius: 8px;
   padding: 1.5rem;
   margin-bottom: 2rem;
-  background: hsl(var(--card));
+  background: var(--content-background, hsl(var(--card)));
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
 }
@@ -602,8 +603,126 @@ h1 a {
 }
 
 /* ============================================================================ */
-/* SYNTHWAVE THEME ENHANCEMENTS - ALL RULES TEMPORARILY REMOVED FOR TESTING */
+/* SYNTHWAVE THEME ENHANCEMENTS - SYSTEMATIC TESTING: Adding rules one by one */
 /* ============================================================================ */
+
+/* TEST 1: Synthwave Background Gradient - ✅ NO SHIFT */
+body.synthwave-active {
+  background: linear-gradient(135deg, 
+    hsl(240, 45%, 8%) 0%, 
+    hsl(260, 40%, 12%) 50%, 
+    hsl(280, 35%, 10%) 100%
+  ) !important;
+  
+  /* Content Section Variables - CSS Variable approach to prevent layout shift */
+  --content-border: 1px solid rgba(0, 229, 255, 0.2);
+  --content-border-left: 1px solid rgba(0, 229, 255, 0.2);
+  --content-background: hsl(var(--card));
+}
+
+/* TEST 2: Synthwave Content Sections - ❌ CAUSES SHIFT (removed) */
+
+/* TEST 3: Synthwave Heading Styling - ✅ NO SHIFT (keeping) */
+body.synthwave-active h1 a {
+  color: #FF1493 !important;
+  transition: all 0.3s ease;
+}
+
+body.synthwave-active h1 a:hover {
+  text-shadow: 
+    0 0 5px #FF1493,
+    0 0 10px #FF1493;
+}
+
+body.synthwave-active #posts-heading {
+  color: #FF1493 !important;
+}
+
+/* TEST 4: Synthwave Vibe Check Button - ✅ NO SHIFT (keeping) */
+body.synthwave-active .vibe-check-button {
+  background: linear-gradient(45deg, #FF1493, #FF00FF) !important;
+  border-color: #FF1493 !important;
+  color: #FFFFFF !important;
+  box-shadow: 
+    0 0 10px rgba(255, 20, 147, 0.5),
+    0 0 20px rgba(255, 20, 147, 0.3),
+    0 0 30px rgba(255, 20, 147, 0.1);
+}
+
+body.synthwave-active .vibe-check-button:hover {
+  background: linear-gradient(45deg, #FF00FF, #FF1493) !important;
+  box-shadow: 
+    0 0 15px rgba(255, 20, 147, 0.7),
+    0 0 25px rgba(255, 20, 147, 0.5),
+    0 0 35px rgba(255, 20, 147, 0.3);
+  transform: translateY(-1px);
+}
+
+/* TEST 5: Synthwave Academic Links - ✅ NO SHIFT (keeping) */
+body.synthwave-active .academic-link {
+  color: #00E5FF !important;
+  text-shadow: 0 0 3px #00E5FF;
+  transition: all 0.3s ease;
+}
+
+body.synthwave-active .academic-link:hover {
+  color: #FF1493 !important;
+  text-shadow: 
+    0 0 5px #FF1493,
+    0 0 10px #FF1493,
+    0 0 15px #FF1493;
+}
+
+/* TEST 6: Synthwave Theme Toggle - ✅ NO SHIFT (keeping) */
+body.synthwave-active #theme-toggle {
+  box-shadow: 
+    0 0 10px rgba(0, 229, 255, 0.3),
+    0 0 20px rgba(0, 229, 255, 0.2);
+  border-color: #FF1493 !important;
+  background-color: rgba(255, 20, 147, 0.1) !important;
+}
+
+body.synthwave-active #theme-toggle:hover {
+  box-shadow: 
+    0 0 15px rgba(0, 229, 255, 0.5),
+    0 0 25px rgba(0, 229, 255, 0.3);
+}
+
+body.synthwave-active #toggle-slider {
+  background-color: #FF1493 !important;
+}
+
+/* TEST 7: Synthwave Posts & Bio - Testing remaining styling */
+body.synthwave-active .posts-list a {
+  color: #FF1493 !important;
+  transition: all 0.3s ease;
+}
+
+body.synthwave-active .posts-list a:hover {
+  color: #00E5FF !important;
+  text-shadow: 0 0 5px #00E5FF;
+}
+
+body.synthwave-active .bio-content p {
+  color: hsl(var(--foreground)) !important;
+}
+
+body.synthwave-active .bio-content .academic-link {
+  color: #FF1493 !important;
+}
+
+body.synthwave-active .bio-content .academic-link:hover {
+  color: #00E5FF !important;
+  text-shadow: 0 0 3px #00E5FF;
+}
+
+body.synthwave-active .bio-expand-btn {
+  color: #FF1493 !important;
+}
+
+body.synthwave-active .bio-expand-btn:hover {
+  color: #00E5FF !important;
+}
 
 
 
@@ -618,6 +737,11 @@ body.desert-pinon-active {
     hsl(30, 30%, 90%) 50%, 
     hsl(40, 20%, 94%) 100%
   ) !important;
+  
+  /* Content Section Variables - CSS Variable approach to prevent layout shift */
+  --content-border: 1px solid rgba(227, 115, 94, 0.3);
+  --content-border-left: 4px solid #40E0D0;
+  --content-background: rgba(208, 181, 154, 0.1);
 }
 
 /* Desert Pinon Name Styling - Turquoise (Southwest Jewelry Color) */
@@ -677,17 +801,16 @@ body.desert-pinon-active #toggle-slider {
   background-color: #40E0D0 !important;
 }
 
-/* Desert Pinon Content Sections - Turquoise Accents */
-body.desert-pinon-active .content-section {
+/* Desert Pinon Content Sections - TESTING: Completely removed to test layout shift theory */
+/* body.desert-pinon-active .content-section {
   border: 1px solid rgba(227, 115, 94, 0.3);
-  border-left: 4px solid #40E0D0;  /* Keep 4px accent but override base border */
   border-radius: 8px;
   padding: 1.5rem;
   margin-bottom: 2rem;
   background: rgba(208, 181, 154, 0.1);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* FIX: Use same dimensions as default to prevent layout shift */
-  transition: all 0.3s ease; /* FIX: Match default transition to prevent layout shift */
-}
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+} */
 
 /* Desert Pinon Posts List - Terracotta by Default */
 body.desert-pinon-active .posts-list a {
@@ -734,6 +857,11 @@ body.texas-wildflower-active {
     hsl(55, 25%, 95%) 50%, 
     hsl(50, 30%, 96%) 100%
   ) !important;
+  
+  /* Content Section Variables - CSS Variable approach to prevent layout shift */
+  --content-border: 1px solid rgba(0, 45, 98, 0.2);
+  --content-border-left: 4px solid #002D62;
+  --content-background: rgba(0, 45, 98, 0.03);
 }
 
 /* Texas Wildflower Name Styling - Deep Navy Blue (Texas Flag) */
@@ -800,17 +928,16 @@ body.texas-wildflower-active #toggle-slider {
   box-shadow: 0 0 4px rgba(0, 45, 98, 0.4);
 }
 
-/* Texas Wildflower Content Sections - Bluebonnet Blue Accents */
-body.texas-wildflower-active .content-section {
+/* Texas Wildflower Content Sections - TESTING: Completely removed to test layout shift theory */
+/* body.texas-wildflower-active .content-section {
   border: 1px solid rgba(0, 45, 98, 0.2);
-  border-left: 4px solid #002D62;  /* Keep 4px accent but override base border */
   border-radius: 8px;
   padding: 1.5rem;
   margin-bottom: 2rem;
   background: rgba(0, 45, 98, 0.03);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* FIX: Use same dimensions as default to prevent layout shift */
-  transition: all 0.3s ease; /* FIX: Match default transition to prevent layout shift */
-}
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+} */
 
 /* Texas Wildflower Posts List - Mix of Texas Colors */
 body.texas-wildflower-active .posts-list a {
