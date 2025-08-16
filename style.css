@@ -438,7 +438,7 @@
 /* VIBE CHECK COMPONENT - Homepage easter egg functionality                   */
 /* ============================================================================ */
 
-/* Footer Layout - Vertical Stack with Consistent Spacing */
+/* Footer Layout - Vertical Stack */
 .footer-container {
   display: flex;
   flex-direction: column;
@@ -446,7 +446,6 @@
   justify-content: center;
   padding: 2rem 0;
   gap: 1rem;
-  margin-top: 2rem; /* Explicit spacing from main content - matches initial load state */
 }
 
 /* LinkedIn Link - Prominent Positioning */
