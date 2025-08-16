@@ -820,6 +820,117 @@ body.desert-pinon-active .bio-expand-btn:hover {
 }
 
 /* ============================================================================ */
+/* TEXAS WILDFLOWER THEME ENHANCEMENTS - Texas flag + wildflower field colors */
+/* ============================================================================ */
+
+/* Texas Wildflower Background - Warm Cream Wildflower Field */
+body.texas-wildflower-active {
+  background: linear-gradient(135deg, 
+    hsl(60, 20%, 97%) 0%, 
+    hsl(55, 25%, 95%) 50%, 
+    hsl(50, 30%, 96%) 100%
+  ) !important;
+}
+
+/* Texas Wildflower Name Styling - Deep Navy Blue (Texas Flag) */
+body.texas-wildflower-active h1 a {
+  color: #002D62 !important;
+  transition: all 0.3s ease;
+}
+
+body.texas-wildflower-active h1 a:hover {
+  color: #B22222 !important;
+}
+
+/* Texas Wildflower Section Headings - Golden Yellow (Wildflower Blooms) */
+body.texas-wildflower-active #posts-heading {
+  color: #FFC513 !important;
+  font-weight: 700;
+}
+
+/* Texas Wildflower Vibe Check Button - Navy with Golden Accent */
+body.texas-wildflower-active .vibe-check-button {
+  background: linear-gradient(45deg, #002D62, #1a4480) !important;
+  border-color: #FFC513 !important;
+  color: #FAF9F6 !important;
+}
+
+body.texas-wildflower-active .vibe-check-button:hover {
+  background: linear-gradient(45deg, #B22222, #d63333) !important;
+  border-color: #FFC513 !important;
+}
+
+/* Texas Wildflower Links - Golden Yellow (Wildflowers) */
+body.texas-wildflower-active .academic-link {
+  color: #FFC513 !important;
+  transition: all 0.3s ease;
+}
+
+body.texas-wildflower-active .academic-link:hover {
+  color: #B22222 !important;
+}
+
+/* Texas Wildflower Theme Toggle - Navy Border with Golden Slider */
+body.texas-wildflower-active #theme-toggle {
+  border: 2px solid #002D62 !important;
+  background-color: rgba(255, 197, 19, 0.1) !important;
+}
+
+body.texas-wildflower-active #theme-toggle:hover {
+  border-color: #B22222 !important;
+  background-color: rgba(255, 197, 19, 0.2) !important;
+}
+
+body.texas-wildflower-active #toggle-slider {
+  background-color: #FFC513 !important;
+}
+
+/* Texas Wildflower Content Sections - Forest Green Accents */
+body.texas-wildflower-active .content-section {
+  border-left: 4px solid #4F7942;
+  border-top: 1px solid rgba(255, 197, 19, 0.3);
+  border-right: 1px solid rgba(255, 197, 19, 0.3);
+  border-bottom: 1px solid rgba(255, 197, 19, 0.3);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  background: rgba(255, 197, 19, 0.05);
+  box-shadow: 0 0 15px rgba(79, 121, 66, 0.1);
+}
+
+/* Texas Wildflower Posts List - Mix of Texas Colors */
+body.texas-wildflower-active .posts-list a {
+  color: #B22222 !important;
+  transition: all 0.3s ease;
+}
+
+body.texas-wildflower-active .posts-list a:hover {
+  color: #4F7942 !important;
+}
+
+/* Texas Wildflower Bio Links - Alternating Texas Flag & Nature Colors */
+body.texas-wildflower-active .bio-content .academic-link:nth-of-type(odd) {
+  color: #B22222 !important;
+}
+
+body.texas-wildflower-active .bio-content .academic-link:nth-of-type(even) {
+  color: #4F7942 !important;
+}
+
+body.texas-wildflower-active .bio-content .academic-link:hover {
+  color: #FFC513 !important;
+}
+
+/* Texas Wildflower Bio Expand Button - Forest Green */
+body.texas-wildflower-active .bio-expand-btn {
+  color: #4F7942 !important;
+}
+
+body.texas-wildflower-active .bio-expand-btn:hover {
+  color: #FFC513 !important;
+}
+
+/* ============================================================================ */
 /* BIO COLLAPSE COMPONENT - Complex mobile responsive behavior                 */
 /* ============================================================================ */
 

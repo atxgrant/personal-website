@@ -53,6 +53,33 @@
         "--link": "#40E0D0",
         "--link-hover": "#E3735E"
       }
+    },
+    {
+      "name": "Texas Wildflower",
+      "image": "texas-wildflower.jpg",
+      "colors": {
+        "--background": "60 20% 97%",
+        "--foreground": "210 100% 19%",
+        "--card": "60 20% 97%",
+        "--card-foreground": "210 100% 19%",
+        "--popover": "60 20% 97%",
+        "--popover-foreground": "210 100% 19%",
+        "--primary": "210 100% 19%",
+        "--primary-foreground": "60 20% 97%",
+        "--secondary": "45 100% 85%",
+        "--secondary-foreground": "210 100% 19%",
+        "--muted": "45 100% 85%",
+        "--muted-foreground": "210 100% 19%",
+        "--accent": "45 100% 54%",
+        "--accent-foreground": "210 100% 19%",
+        "--destructive": "0 84.2% 60.2%",
+        "--destructive-foreground": "60 20% 97%",
+        "--border": "100 25% 65%",
+        "--input": "45 100% 85%",
+        "--ring": "45 100% 54%",
+        "--link": "#FFC513",
+        "--link-hover": "#B22222"
+      }
     }
   ]
 }

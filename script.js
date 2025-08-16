@@ -977,12 +977,14 @@ class VibeCheckManager {
     this.themeManager.applyVibeTheme(currentTheme.colors);
     
     // Apply special theme styling based on theme name
-    this.browser.getBody().classList.remove('synthwave-active', 'desert-pinon-active');
+    this.browser.getBody().classList.remove('synthwave-active', 'desert-pinon-active', 'texas-wildflower-active');
     
     if (currentTheme.name === 'Synthwave Sunset') {
       this.browser.getBody().classList.add('synthwave-active');
     } else if (currentTheme.name === 'Desert Pinon') {
       this.browser.getBody().classList.add('desert-pinon-active');
+    } else if (currentTheme.name === 'Texas Wildflower') {
+      this.browser.getBody().classList.add('texas-wildflower-active');
     }
     
     console.log(`Applied vibe theme: ${currentTheme.name}`);
@@ -1008,7 +1010,7 @@ class VibeCheckManager {
     this.currentThemeIndex = 0;
     
     // Remove special theme styling
-    this.browser.getBody().classList.remove('synthwave-active', 'desert-pinon-active');
+    this.browser.getBody().classList.remove('synthwave-active', 'desert-pinon-active', 'texas-wildflower-active');
   }
 }
 
