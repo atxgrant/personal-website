@@ -971,15 +971,16 @@ class VibeCheckManager {
     // TEMP: Disable title text to test if text content changes cause layout shift
     // this.vibeTitle.textContent = currentTheme.name;
     
-    // Update image
-    this.vibeImage.src = `vibe-themes/images/${currentTheme.image}`;
-    this.vibeImage.alt = `${currentTheme.name} theme`;
+    // TEMP: Also disable image to test if vibe display visibility itself causes shift
+    // this.vibeImage.src = `vibe-themes/images/${currentTheme.image}`;
+    // this.vibeImage.alt = `${currentTheme.name} theme`;
+    this.vibeImage.style.display = 'none'; // Completely hide image
     
-    // Handle image load errors
-    this.vibeImage.onerror = () => {
-      console.error(`Failed to load image: ${currentTheme.image}`);
-      this.showError(`Failed to load image: ${currentTheme.name}`);
-    };
+    // TEMP: Disable image error handling
+    // this.vibeImage.onerror = () => {
+    //   console.error(`Failed to load image: ${currentTheme.image}`);
+    //   this.showError(`Failed to load image: ${currentTheme.name}`);
+    // };
     
     // Show vibe display
     this.vibeDisplay.classList.remove('hidden');
