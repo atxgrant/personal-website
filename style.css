@@ -553,6 +553,118 @@
 }
 
 /* ============================================================================ */
+/* SYNTHWAVE THEME ENHANCEMENTS - Neon glow effects and gradient backgrounds  */
+/* ============================================================================ */
+
+/* Synthwave Background Gradient */
+body.synthwave-active {
+  background: linear-gradient(135deg, 
+    hsl(240, 45%, 8%) 0%, 
+    hsl(260, 40%, 12%) 50%, 
+    hsl(280, 35%, 10%) 100%
+  ) !important;
+}
+
+/* Synthwave Name Styling - Hot Pink with Glow */
+body.synthwave-active h1 a {
+  color: #FF1493 !important;
+  text-shadow: 
+    0 0 5px #FF1493,
+    0 0 10px #FF1493,
+    0 0 15px #FF1493;
+  transition: all 0.3s ease;
+}
+
+body.synthwave-active h1 a:hover {
+  text-shadow: 
+    0 0 5px #FF1493,
+    0 0 10px #FF1493,
+    0 0 20px #FF1493,
+    0 0 30px #FF1493;
+}
+
+/* Synthwave Section Headings - Cyan with Glow */
+body.synthwave-active #posts-heading {
+  color: #00E5FF !important;
+  text-shadow: 
+    0 0 5px #00E5FF,
+    0 0 10px #00E5FF,
+    0 0 15px #00E5FF;
+}
+
+/* Synthwave Vibe Check Button - Magenta Background */
+body.synthwave-active .vibe-check-button {
+  background: linear-gradient(45deg, #FF1493, #FF00FF) !important;
+  border-color: #FF1493 !important;
+  color: #FFFFFF !important;
+  box-shadow: 
+    0 0 10px rgba(255, 20, 147, 0.5),
+    0 0 20px rgba(255, 20, 147, 0.3),
+    0 0 30px rgba(255, 20, 147, 0.1);
+}
+
+body.synthwave-active .vibe-check-button:hover {
+  background: linear-gradient(45deg, #FF00FF, #FF1493) !important;
+  box-shadow: 
+    0 0 15px rgba(255, 20, 147, 0.7),
+    0 0 25px rgba(255, 20, 147, 0.5),
+    0 0 35px rgba(255, 20, 147, 0.3);
+  transform: translateY(-1px);
+}
+
+/* Synthwave Links - Enhanced Glow Effects */
+body.synthwave-active .academic-link {
+  color: #00E5FF !important;
+  text-shadow: 0 0 3px #00E5FF;
+  transition: all 0.3s ease;
+}
+
+body.synthwave-active .academic-link:hover {
+  color: #FF1493 !important;
+  text-shadow: 
+    0 0 5px #FF1493,
+    0 0 10px #FF1493,
+    0 0 15px #FF1493;
+}
+
+/* Synthwave Theme Toggle - Cyan Glow */
+body.synthwave-active #theme-toggle {
+  box-shadow: 
+    0 0 10px rgba(0, 229, 255, 0.3),
+    0 0 20px rgba(0, 229, 255, 0.2);
+  border-color: #00E5FF !important;
+}
+
+body.synthwave-active #theme-toggle:hover {
+  box-shadow: 
+    0 0 15px rgba(0, 229, 255, 0.5),
+    0 0 25px rgba(0, 229, 255, 0.3);
+}
+
+/* Synthwave Content Sections - Subtle Border Glow */
+body.synthwave-active .content-section {
+  border: 1px solid rgba(0, 229, 255, 0.2);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 0 20px rgba(0, 229, 255, 0.1);
+}
+
+/* Synthwave Posts List - Enhanced Styling */
+body.synthwave-active .posts-list a {
+  color: #00E5FF !important;
+  text-shadow: 0 0 3px #00E5FF;
+  transition: all 0.3s ease;
+}
+
+body.synthwave-active .posts-list a:hover {
+  color: #FF1493 !important;
+  text-shadow: 
+    0 0 5px #FF1493,
+    0 0 10px #FF1493;
+}
+
+/* ============================================================================ */
 /* BIO COLLAPSE COMPONENT - Complex mobile responsive behavior                 */
 /* ============================================================================ */
 
