@@ -968,21 +968,18 @@ class VibeCheckManager {
     // Hide error (LinkedIn stays visible)
     this.vibeError.classList.add('hidden');
     
-    // Update theme title
-    this.vibeTitle.textContent = currentTheme.name;
+    // TEMP: Disable title text to test if text content changes cause layout shift
+    // this.vibeTitle.textContent = currentTheme.name;
     
-    // TEMPORARILY DISABLED: Update image (testing if image element causes layout shift)
-    // this.vibeImage.src = `vibe-themes/images/${currentTheme.image}`;
-    // this.vibeImage.alt = `${currentTheme.name} theme`;
+    // Update image
+    this.vibeImage.src = `vibe-themes/images/${currentTheme.image}`;
+    this.vibeImage.alt = `${currentTheme.name} theme`;
     
-    // TEMP: Completely hide image element to remove all layout impact
-    this.vibeImage.style.display = 'none';
-    
-    // TEMPORARILY DISABLED: Handle image load errors
-    // this.vibeImage.onerror = () => {
-    //   console.error(`Failed to load image: ${currentTheme.image}`);
-    //   this.showError(`Failed to load image: ${currentTheme.name}`);
-    // };
+    // Handle image load errors
+    this.vibeImage.onerror = () => {
+      console.error(`Failed to load image: ${currentTheme.image}`);
+      this.showError(`Failed to load image: ${currentTheme.name}`);
+    };
     
     // Show vibe display
     this.vibeDisplay.classList.remove('hidden');
