@@ -324,12 +324,9 @@ class ThemeManager {
 
     const root = this.browser.getDocumentElement();
     
-    // Apply vibe theme colors  
+    // Apply vibe theme colors
     Object.entries(themeColors).forEach(([property, value]) => {
-      // TEMP: Allow background and card to change, skip other variables for comparison
-      if (property === '--background' || property === '--card') {
-        root.style.setProperty(property, value);
-      }
+      root.style.setProperty(property, value);
     });
   }
 
@@ -990,16 +987,17 @@ class VibeCheckManager {
     // Apply theme colors
     this.themeManager.applyVibeTheme(currentTheme.colors);
     
-    // Apply special theme styling based on theme name
+    // TEMP: Disable theme-specific CSS rules to test CSS variables alone
     this.browser.getBody().classList.remove('synthwave-active', 'desert-pinon-active', 'texas-wildflower-active');
     
-    if (currentTheme.name === 'Synthwave Sunset') {
-      this.browser.getBody().classList.add('synthwave-active');
-    } else if (currentTheme.name === 'Desert Pinon') {
-      this.browser.getBody().classList.add('desert-pinon-active');
-    } else if (currentTheme.name === 'Texas Wildflower') {
-      this.browser.getBody().classList.add('texas-wildflower-active');
-    }
+    // TEMP: Don't add any theme classes - test CSS variables contribution alone
+    // if (currentTheme.name === 'Synthwave Sunset') {
+    //   this.browser.getBody().classList.add('synthwave-active');
+    // } else if (currentTheme.name === 'Desert Pinon') {
+    //   this.browser.getBody().classList.add('desert-pinon-active');
+    // } else if (currentTheme.name === 'Texas Wildflower') {
+    //   this.browser.getBody().classList.add('texas-wildflower-active');
+    // }
     
     console.log(`Applied vibe theme: ${currentTheme.name}`);
   }
