@@ -326,8 +326,8 @@ class ThemeManager {
     
     // Apply vibe theme colors
     Object.entries(themeColors).forEach(([property, value]) => {
-      // TEMP: Skip --border property to test layout shift
-      if (property !== '--border') {
+      // TEMP: Skip background/card properties to test layout shift
+      if (property !== '--background' && property !== '--card') {
         root.style.setProperty(property, value);
       }
     });
