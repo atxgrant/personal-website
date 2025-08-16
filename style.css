@@ -740,11 +740,20 @@ body.desert-pinon-active .academic-link:hover {
   color: #40E0D0 !important;
 }
 
-/* Desert Pinon Theme Toggle - Prominent Turquoise */
+/* Desert Pinon Theme Toggle - Turquoise with Terracotta Outline */
 body.desert-pinon-active #theme-toggle {
-  border-color: #40E0D0 !important;
+  border: 2px solid #E3735E !important;
   background-color: rgba(64, 224, 208, 0.2) !important;
-  box-shadow: 0 0 8px rgba(64, 224, 208, 0.3);
+  box-shadow: 
+    0 0 8px rgba(64, 224, 208, 0.3),
+    0 0 0 1px #E3735E;
+}
+
+body.desert-pinon-active #theme-toggle:hover {
+  border-color: #CC5500 !important;
+  box-shadow: 
+    0 0 12px rgba(64, 224, 208, 0.4),
+    0 0 0 1px #CC5500;
 }
 
 body.desert-pinon-active #toggle-slider {
