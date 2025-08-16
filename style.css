@@ -692,7 +692,9 @@ body.synthwave-active .content-section {
   border-radius: 8px;
   padding: 1.5rem;
   margin-bottom: 2rem;
+  background: hsl(var(--card)); /* FIX: Match default background to prevent layout shift */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* FIX: Use same dimensions as default to prevent layout shift */
+  transition: all 0.3s ease; /* FIX: Match default transition to prevent layout shift */
 }
 
 /* Synthwave Posts List - Pink/Cyan Balance */
@@ -811,6 +813,7 @@ body.desert-pinon-active .content-section {
   margin-bottom: 2rem;
   background: rgba(208, 181, 154, 0.1);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* FIX: Use same dimensions as default to prevent layout shift */
+  transition: all 0.3s ease; /* FIX: Match default transition to prevent layout shift */
 }
 
 /* Desert Pinon Posts List - Terracotta by Default */
@@ -933,6 +936,7 @@ body.texas-wildflower-active .content-section {
   margin-bottom: 2rem;
   background: rgba(0, 45, 98, 0.03);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* FIX: Use same dimensions as default to prevent layout shift */
+  transition: all 0.3s ease; /* FIX: Match default transition to prevent layout shift */
 }
 
 /* Texas Wildflower Posts List - Mix of Texas Colors */
