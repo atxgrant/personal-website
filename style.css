@@ -542,7 +542,7 @@
   max-height: 100px;
   width: 150px; /* Fixed width to reserve space */
   height: 100px; /* Fixed height to reserve space */
-  object-fit: cover; /* Maintain aspect ratio, crop if needed */
+  object-fit: contain; /* Show entire image without cropping */
   border-radius: 0.5rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   order: 2; /* Image appears second */
