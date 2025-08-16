@@ -324,10 +324,10 @@ class ThemeManager {
 
     const root = this.browser.getDocumentElement();
     
-    // Apply vibe theme colors
+    // Apply vibe theme colors  
     Object.entries(themeColors).forEach(([property, value]) => {
-      // TEMP: Skip only --card property to confirm --background is the main culprit
-      if (property !== '--card') {
+      // TEMP: Allow background and card to change, skip other variables for comparison
+      if (property === '--background' || property === '--card') {
         root.style.setProperty(property, value);
       }
     });
