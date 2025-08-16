@@ -631,6 +631,13 @@ body.synthwave-active {
 /* Synthwave Theme Toggle Slider - Pink */
 
 /* Synthwave Content Sections - Subtle Border Glow */
+body.synthwave-active .content-section {
+  border: 1px solid rgba(0, 229, 255, 0.2);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 0 20px rgba(0, 229, 255, 0.1);
+}
 
 /* Synthwave Posts List - Pink/Cyan Balance */
 
