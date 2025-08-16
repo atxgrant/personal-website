@@ -879,7 +879,9 @@ class VibeCheckManager {
 
   setup() {
     this.vibeCheckBtn = this.browser.getElementById('vibe-check-btn');
-    this.vibeDisplay = this.browser.getElementById('vibe-display');
+    this.vibePanel = this.browser.getElementById('vibe-panel');
+    this.vibeBackdrop = this.browser.getElementById('vibe-backdrop');
+    this.vibePanelClose = this.browser.getElementById('vibe-panel-close');
     this.vibeTitle = this.browser.getElementById('vibe-title');
     this.vibeImage = this.browser.getElementById('vibe-image');
     this.vibeError = this.browser.getElementById('vibe-error');
@@ -901,6 +903,27 @@ class VibeCheckManager {
         this.loadThemes();
       } else {
         this.cycleToNextTheme();
+      }
+    });
+
+    // Close panel when backdrop is clicked
+    if (this.vibeBackdrop) {
+      this.vibeBackdrop.addEventListener('click', () => {
+        this.closePanel();
+      });
+    }
+
+    // Close panel when close button is clicked
+    if (this.vibePanelClose) {
+      this.vibePanelClose.addEventListener('click', () => {
+        this.closePanel();
+      });
+    }
+
+    // Close panel when escape key is pressed
+    this.browser.addDocumentListener('keydown', (e) => {
+      if (e.key === 'Escape' && this.isPanelOpen()) {
+        this.closePanel();
       }
     });
   }
@@ -965,10 +988,10 @@ class VibeCheckManager {
 
     const currentTheme = this.themes[this.currentThemeIndex];
     
-    // Hide error (LinkedIn stays visible)
+    // Hide error
     this.vibeError.classList.add('hidden');
     
-        // Set theme title
+    // Set theme title
     this.vibeTitle.textContent = currentTheme.name;
 
     // Set theme image
@@ -981,8 +1004,8 @@ class VibeCheckManager {
       this.showError(`Failed to load image: ${currentTheme.name}`);
     };
     
-    // Show vibe display
-    this.vibeDisplay.classList.remove('hidden');
+    // Show slide-up panel
+    this.openPanel();
     
     // Apply theme colors
     this.themeManager.applyVibeTheme(currentTheme.colors);
@@ -1009,7 +1032,50 @@ class VibeCheckManager {
   showError(message = 'Unable to load theme') {
     this.vibeError.textContent = message;
     this.vibeError.classList.remove('hidden');
-    this.vibeDisplay.classList.remove('hidden');
+    this.openPanel();
+  }
+
+  /**
+   * Open the slide-up panel
+   * @private
+   */
+  openPanel() {
+    if (this.vibePanel && this.vibeBackdrop) {
+      this.vibePanel.classList.remove('hidden');
+      this.vibeBackdrop.classList.remove('hidden');
+      
+      // Use requestAnimationFrame to ensure smooth animation
+      this.browser.requestAnimationFrame(() => {
+        this.vibePanel.classList.add('visible');
+        this.vibeBackdrop.classList.add('visible');
+      });
+    }
+  }
+
+  /**
+   * Close the slide-up panel
+   * @private
+   */
+  closePanel() {
+    if (this.vibePanel && this.vibeBackdrop) {
+      this.vibePanel.classList.remove('visible');
+      this.vibeBackdrop.classList.remove('visible');
+      
+      // Hide elements after animation completes
+      this.browser.setTimeout(() => {
+        this.vibePanel.classList.add('hidden');
+        this.vibeBackdrop.classList.add('hidden');
+      }, 300); // Match CSS transition duration
+    }
+  }
+
+  /**
+   * Check if panel is currently open
+   * @returns {boolean} True if panel is open
+   * @private
+   */
+  isPanelOpen() {
+    return this.vibePanel && this.vibePanel.classList.contains('visible');
   }
 
   /**
@@ -1018,7 +1084,7 @@ class VibeCheckManager {
    * @public
    */
   reset() {
-    this.vibeDisplay.classList.add('hidden');
+    this.closePanel();
     this.vibeError.classList.add('hidden');
     this.currentThemeIndex = 0;
     

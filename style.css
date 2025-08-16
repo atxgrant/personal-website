@@ -505,72 +505,140 @@
   transform: translateY(1px);
 }
 
-/* Vibe Theme Display - Vertical Layout with Reserved Space */
-.vibe-display {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: 0.75rem;
-  /* Force consistent height regardless of content */
-  height: 140px; /* Fixed height instead of min-height */
-  transition: opacity 0.3s ease;
-  /* Ensure content doesn't overflow the reserved space */
+/* Slide-up Theme Panel - Modern slide-up design */
+.vibe-panel {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background-color: hsl(var(--background));
+  border-top: 1px solid hsl(var(--border));
+  border-radius: 1rem 1rem 0 0;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  max-height: 50vh;
   overflow: hidden;
 }
 
-.vibe-display.hidden {
-  opacity: 0;
-  pointer-events: none;
-  /* Keep the exact same space reserved */
+.vibe-panel.visible {
+  transform: translateY(0);
+}
+
+.vibe-panel.hidden {
+  transform: translateY(100%);
+}
+
+.vibe-panel-content {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  position: relative;
+}
+
+.vibe-panel-close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: hsl(var(--muted-foreground));
+  cursor: pointer;
+  padding: 0.25rem;
+  line-height: 1;
+  transition: color 0.2s ease;
+  z-index: 1001;
+}
+
+.vibe-panel-close:hover {
+  color: hsl(var(--foreground));
 }
 
 .vibe-title {
-  font-size: 1rem;
+  font-size: 1.25rem;
   font-weight: 600;
   color: hsl(var(--foreground));
   text-align: center;
-  order: 1; /* Title appears first */
-  min-height: 1.5rem; /* Reserve space even when empty */
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  margin: 0;
 }
 
 .vibe-image {
-  max-width: 150px;
-  max-height: 100px;
-  width: 150px; /* Fixed width to reserve space */
-  height: 100px; /* Fixed height to reserve space */
-  object-fit: contain; /* Show entire image without cropping */
-  border-radius: 0.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  order: 2; /* Image appears second */
-  background-color: transparent; /* Ensure it takes space even when empty */
+  max-width: 280px;
+  max-height: 200px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .vibe-error {
   font-size: 0.875rem;
   color: hsl(var(--destructive));
   text-align: center;
-  padding: 0.5rem;
+  padding: 0.75rem;
   background-color: hsl(var(--destructive) / 0.1);
-  border-radius: 0.25rem;
+  border-radius: 0.5rem;
   border: 1px solid hsl(var(--destructive) / 0.2);
-  order: 3;
+  max-width: 280px;
 }
 
 .vibe-error.hidden {
-  opacity: 0;
-  pointer-events: none;
-  /* Keep consistent with vibe-display hidden behavior */
+  display: none;
 }
 
-/* Responsive adjustments for very small screens */
-@media (max-width: 320px) {
+/* Panel Backdrop */
+.vibe-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 999;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.vibe-backdrop.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.vibe-backdrop.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Responsive adjustments for slide-up panel */
+@media (max-width: 640px) {
+  .vibe-panel {
+    max-height: 60vh;
+  }
+  
+  .vibe-panel-content {
+    padding: 1rem;
+  }
+  
   .vibe-image {
-    max-width: 120px;
-    max-height: 80px;
+    max-width: 240px;
+    max-height: 160px;
+  }
+}
+
+@media (max-width: 320px) {
+  .vibe-panel {
+    max-height: 70vh;
+  }
+  
+  .vibe-image {
+    max-width: 200px;
+    max-height: 140px;
   }
   
   .footer-container {
