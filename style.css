@@ -654,18 +654,16 @@ body.synthwave-active .vibe-check-button:hover {
 /* Synthwave Links - Enhanced Glow Effects */
 body.synthwave-active .academic-link {
   color: #00E5FF !important;
-  /* TEMP: Remove text-shadow to test layout shift */
-  /* text-shadow: 0 0 3px #00E5FF; */
+  text-shadow: 0 0 3px #00E5FF;
   transition: all 0.3s ease;
 }
 
 body.synthwave-active .academic-link:hover {
   color: #FF1493 !important;
-  /* TEMP: Remove hover text-shadow to test layout shift */
-  /* text-shadow: 
+  text-shadow: 
     0 0 5px #FF1493,
     0 0 10px #FF1493,
-    0 0 15px #FF1493; */
+    0 0 15px #FF1493;
 }
 
 /* Synthwave Theme Toggle - Pink Border with Cyan Glow */
@@ -694,6 +692,7 @@ body.synthwave-active .content-section {
   border-radius: 8px;
   padding: 1.5rem;
   margin-bottom: 2rem;
+  background: hsl(var(--card)); /* TEMP: Add same background as default */
   box-shadow: 0 0 20px rgba(0, 229, 255, 0.1);
 }
 
@@ -705,8 +704,7 @@ body.synthwave-active .posts-list a {
 
 body.synthwave-active .posts-list a:hover {
   color: #00E5FF !important;
-  /* TEMP: Remove posts text-shadow to test layout shift */
-  /* text-shadow: 0 0 5px #00E5FF; */
+  text-shadow: 0 0 5px #00E5FF;
 }
 
 /* Synthwave Bio Text - Add Pink Accents */
@@ -721,8 +719,7 @@ body.synthwave-active .bio-content .academic-link {
 
 body.synthwave-active .bio-content .academic-link:hover {
   color: #00E5FF !important;
-  /* TEMP: Remove bio text-shadow to test layout shift */
-  /* text-shadow: 0 0 3px #00E5FF; */
+  text-shadow: 0 0 3px #00E5FF;
 }
 
 /* Synthwave Bio Expand Button - Pink */
