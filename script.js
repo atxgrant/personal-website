@@ -987,17 +987,16 @@ class VibeCheckManager {
     // Apply theme colors
     this.themeManager.applyVibeTheme(currentTheme.colors);
     
-    // TEMP: Disable theme-specific CSS rules to test CSS variables alone
+    // Apply special theme styling based on theme name
     this.browser.getBody().classList.remove('synthwave-active', 'desert-pinon-active', 'texas-wildflower-active');
     
-    // TEMP: Don't add any theme classes - test CSS variables contribution alone
-    // if (currentTheme.name === 'Synthwave Sunset') {
-    //   this.browser.getBody().classList.add('synthwave-active');
-    // } else if (currentTheme.name === 'Desert Pinon') {
-    //   this.browser.getBody().classList.add('desert-pinon-active');
-    // } else if (currentTheme.name === 'Texas Wildflower') {
-    //   this.browser.getBody().classList.add('texas-wildflower-active');
-    // }
+    if (currentTheme.name === 'Synthwave Sunset') {
+      this.browser.getBody().classList.add('synthwave-active');
+    } else if (currentTheme.name === 'Desert Pinon') {
+      this.browser.getBody().classList.add('desert-pinon-active');
+    } else if (currentTheme.name === 'Texas Wildflower') {
+      this.browser.getBody().classList.add('texas-wildflower-active');
+    }
     
     console.log(`Applied vibe theme: ${currentTheme.name}`);
   }

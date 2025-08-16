@@ -607,11 +607,12 @@ h1 a {
 
 /* Synthwave Background Gradient */
 body.synthwave-active {
-  background: linear-gradient(135deg, 
+  /* TEMP: Remove gradient to test if this causes layout shift */
+  /* background: linear-gradient(135deg, 
     hsl(240, 45%, 8%) 0%, 
     hsl(260, 40%, 12%) 50%, 
     hsl(280, 35%, 10%) 100%
-  ) !important;
+  ) !important; */
 }
 
 /* Synthwave Name Styling - Hot Pink (No Glow for Readability) */
@@ -648,7 +649,8 @@ body.synthwave-active .vibe-check-button:hover {
     0 0 15px rgba(255, 20, 147, 0.7),
     0 0 25px rgba(255, 20, 147, 0.5),
     0 0 35px rgba(255, 20, 147, 0.3);
-  transform: translateY(-1px);
+  /* TEMP: Remove transform to test layout shift */
+  /* transform: translateY(-1px); */
 }
 
 /* Synthwave Links - Enhanced Glow Effects */
