@@ -1,5 +1,19 @@
-// Console welcome message
-console.log("If you're curious about if we might enjoy interacting,\nreach out.\n\nit's just my full name at gmail");
+// Console welcome message with ASCII art
+console.log(`
+ ██████╗ ██╗  ██╗
+██╔════╝ ██║  ██║
+██║  ███╗███████║
+██║   ██║██╔══██║
+╚██████╔╝██║  ██║
+ ╚═════╝ ╚═╝  ╚═╝
+
+Grant Heimbach
+
+If you're curious about if we might enjoy interacting,
+reach out.
+
+it's just my full name at gmail
+`);
 
 /**
  * Browser Environment - Abstracts DOM and Window APIs for testability
