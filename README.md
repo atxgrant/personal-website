@@ -14,6 +14,14 @@ This website serves as a digital space to share practical insights from experime
 - Persistent theme selection stored in localStorage
 - Academic color scheme optimized for readability
 
+### 🎨 **Vibe Check Theme System**
+- Interactive theme cycling with "Vibe Check" button
+- Three custom themes: Synthwave Sunset, Desert Pinon, Texas Wildflower
+- Slide-up panel displaying theme images with smooth animations
+- Professional backdrop and multiple close interactions (backdrop, × button, ESC key)
+- Theme colors dynamically applied while maintaining functionality
+- Optimized footer layout with Vibe Check button prioritized above LinkedIn logo
+
 ### 📑 **Table of Contents (TOC)**
 - Auto-generating navigation for blog posts
 - Desktop: Opens by default for easy navigation
@@ -41,6 +49,11 @@ This website serves as a digital space to share practical insights from experime
 - **Accessibility** - Skip links, ARIA attributes, keyboard navigation support
 - **Contact Options** - Multiple ways to connect (email, LinkedIn)
 
+### 👨‍💻 **Developer Experience**
+- **Console ASCII Art** - Branded "GH" ASCII art greeting in browser console
+- **Developer Easter Egg** - Contact invitation for curious developers who inspect the code
+- **Clean Architecture** - Modular JavaScript classes with comprehensive documentation
+
 ## 🏗️ Project Structure
 
 ```
@@ -59,8 +72,14 @@ personal-website/
 │   └── newsreader.css
 ├── posts/                  # Blog posts directory
 │   └── hello-world.html    # Sample blog post
-└── templates/              # Template files for creating new content
-    └── post-template.html  # Template for new blog posts
+├── templates/              # Template files for creating new content
+│   └── post-template.html  # Template for new blog posts
+└── vibe-themes/            # Vibe Check theme system
+    ├── theme-data.json     # Theme configuration and color palettes
+    └── images/             # Theme preview images
+        ├── synthwave-sunset.jpg
+        ├── desert-pinon.jpg
+        └── texas-wildflower.jpg
 ```
 
 ## 🚀 Development
@@ -91,6 +110,25 @@ python3 -m http.server 8000
 4. Update `sitemap.xml` with the new post URL and date
 5. The TOC will automatically generate from `<h2>` headings in your content
 
+### Customizing Vibe Themes
+The Vibe Check system uses `vibe-themes/theme-data.json` to define themes:
+```json
+{
+  "themes": [
+    {
+      "name": "Theme Name",
+      "image": "theme-image.jpg",
+      "colors": {
+        "--background": "hsl values",
+        "--foreground": "hsl values",
+        // ... other CSS custom properties
+      }
+    }
+  ]
+}
+```
+Add theme images to `vibe-themes/images/` and update the JSON configuration to add new themes.
+
 ## 🛠️ Technical Details
 
 ### Technologies Used
@@ -101,7 +139,8 @@ python3 -m http.server 8000
 
 ### JavaScript Architecture
 - **BrowserEnvironment** - Abstracts DOM/Window APIs for testability and clean architecture
-- **ThemeManager** - Handles dark/light mode functionality with system preference detection
+- **ThemeManager** - Handles dark/light mode functionality with system preference detection and vibe theme integration
+- **VibeCheckManager** - Manages interactive theme cycling, slide-up panel, and theme image display
 - **TOCManager** - Generates and manages table of contents with responsive behavior
 - **HeadingGenerator** - Extracts and structures content headings for navigation
 - **ScrollTracker** - Manages active section highlighting during scroll
