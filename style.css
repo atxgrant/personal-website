@@ -638,6 +638,7 @@
   object-fit: contain;
   border-radius: 0.75rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: opacity 0.3s ease, filter 0.3s ease;
 }
 
 .vibe-error {

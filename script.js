@@ -908,6 +908,11 @@ class VibeCheckManager {
     this.currentThemeIndex = 0;
     this.isLoaded = false;
     
+    // Image optimization properties
+    this.imageCache = new Map(); // Cache for loaded images
+    this.preloadPromises = new Map(); // Track preloading promises
+    this.imageLoadAttempts = new Map(); // Track retry attempts
+    
     this.init();
   }
 
@@ -1040,15 +1045,8 @@ class VibeCheckManager {
     // Set theme title
     this.vibeTitle.textContent = currentTheme.name;
 
-    // Set theme image
-    this.vibeImage.src = `vibe-themes/images/${currentTheme.image}`;
-    this.vibeImage.alt = `${currentTheme.name} theme`;
-
-    // Handle image loading errors
-    this.vibeImage.onerror = () => {
-      console.error(`Failed to load image: ${currentTheme.image}`);
-      this.showError(`Failed to load image: ${currentTheme.name}`);
-    };
+    // Load theme image with optimization
+    this.loadThemeImage(currentTheme);
     
     // Show slide-up panel
     this.openPanel();
@@ -1079,6 +1077,39 @@ class VibeCheckManager {
     this.announceToScreenReader(`Applied ${currentTheme.name} theme: ${themeDescription}. Theme panel opened. ${interactionInstructions}`);
     
     console.log(`Applied vibe theme: ${currentTheme.name}`);
+    
+    // Preload next theme for smoother transitions
+    this.preloadNextTheme();
+  }
+
+  /**
+   * Load theme image with optimization and loading states
+   * @param {Object} theme - Theme object with name and image properties
+   * @private
+   */
+  async loadThemeImage(theme) {
+    const imagePath = `vibe-themes/images/${theme.image}`;
+    
+    try {
+      // Show loading state
+      this.showImageLoading();
+      
+      // Try to load from cache or preload
+      const img = await this.preloadImage(imagePath);
+      
+      // Update the display image
+      this.vibeImage.src = img.src;
+      this.vibeImage.alt = `${theme.name} theme`;
+      
+      // Hide loading state
+      this.hideImageLoading();
+      
+    } catch (error) {
+      // Hide loading state and show error
+      this.hideImageLoading();
+      console.error(`Failed to load image: ${theme.image}`, error);
+      this.showError(`Failed to load image: ${theme.name}`);
+    }
   }
 
   /**
@@ -1400,6 +1431,99 @@ class VibeCheckManager {
     this.browser.setTimeout(() => {
       this.srAnnouncements.textContent = message;
     }, 100);
+  }
+
+  /**
+   * Preload an image with caching and retry logic
+   * @param {string} imagePath - Path to the image
+   * @param {number} [maxAttempts=3] - Maximum retry attempts
+   * @returns {Promise<HTMLImageElement>} Promise that resolves with loaded image
+   * @private
+   */
+  async preloadImage(imagePath, maxAttempts = 3) {
+    // Check if image is already cached
+    if (this.imageCache.has(imagePath)) {
+      return this.imageCache.get(imagePath);
+    }
+
+    // Check if preloading is already in progress
+    if (this.preloadPromises.has(imagePath)) {
+      return this.preloadPromises.get(imagePath);
+    }
+
+    // Start preloading
+    const preloadPromise = new Promise((resolve, reject) => {
+      const img = new Image();
+      const currentAttempts = this.imageLoadAttempts.get(imagePath) || 0;
+
+      img.onload = () => {
+        // Cache the successful load
+        this.imageCache.set(imagePath, img);
+        this.imageLoadAttempts.delete(imagePath);
+        this.preloadPromises.delete(imagePath);
+        resolve(img);
+      };
+
+      img.onerror = () => {
+        this.preloadPromises.delete(imagePath);
+        
+        if (currentAttempts < maxAttempts - 1) {
+          // Retry after a delay
+          this.imageLoadAttempts.set(imagePath, currentAttempts + 1);
+          this.browser.setTimeout(() => {
+            this.preloadImage(imagePath, maxAttempts).then(resolve).catch(reject);
+          }, 1000 * (currentAttempts + 1)); // Exponential backoff
+        } else {
+          // Max attempts reached
+          this.imageLoadAttempts.delete(imagePath);
+          reject(new Error(`Failed to load image after ${maxAttempts} attempts: ${imagePath}`));
+        }
+      };
+
+      img.src = imagePath;
+    });
+
+    this.preloadPromises.set(imagePath, preloadPromise);
+    return preloadPromise;
+  }
+
+  /**
+   * Preload the next theme image for smoother transitions
+   * @private
+   */
+  preloadNextTheme() {
+    if (!this.isLoaded || this.themes.length === 0) return;
+
+    const nextIndex = (this.currentThemeIndex + 1) % this.themes.length;
+    const nextTheme = this.themes[nextIndex];
+    const imagePath = `vibe-themes/images/${nextTheme.image}`;
+
+    // Preload in background without blocking
+    this.preloadImage(imagePath).catch(error => {
+      console.warn('Failed to preload next theme image:', error);
+    });
+  }
+
+  /**
+   * Show loading state on the image
+   * @private
+   */
+  showImageLoading() {
+    if (this.vibeImage) {
+      this.vibeImage.style.opacity = '0.5';
+      this.vibeImage.style.filter = 'blur(2px)';
+    }
+  }
+
+  /**
+   * Hide loading state on the image
+   * @private
+   */
+  hideImageLoading() {
+    if (this.vibeImage) {
+      this.vibeImage.style.opacity = '1';
+      this.vibeImage.style.filter = 'none';
+    }
   }
 }
 
