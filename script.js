@@ -913,6 +913,15 @@ class VibeCheckManager {
     this.preloadPromises = new Map(); // Track preloading promises
     this.imageLoadAttempts = new Map(); // Track retry attempts
     
+    // Performance monitoring properties
+    this.performanceMetrics = new Map(); // Track operation timing
+    this.errorCount = 0; // Track error frequency
+    this.lastErrorTime = null; // Prevent error spam
+    this.isOperationInProgress = false; // Prevent concurrent operations
+    
+    // Setup error boundary
+    this.setupErrorBoundary();
+    
     this.init();
   }
 
@@ -934,6 +943,7 @@ class VibeCheckManager {
     this.vibeError = this.browser.getElementById('vibe-error');
     this.linkedinIcon = this.browser.getElementById('linkedin-icon');
     this.srAnnouncements = this.browser.getElementById('sr-announcements');
+    this.globalLoading = this.browser.getElementById('global-loading');
 
     if (!this.vibeCheckBtn) {
       console.log('Vibe Check button not found - likely not on homepage');
@@ -947,11 +957,13 @@ class VibeCheckManager {
 
   setupEventListeners() {
     this.vibeCheckBtn.addEventListener('click', () => {
+      this.safeExecute(async () => {
       if (!this.isLoaded) {
-        this.loadThemes();
+          await this.loadThemes();
       } else {
         this.cycleToNextTheme();
       }
+      }, 'theme-switch');
     });
 
     // Close panel when backdrop is clicked
@@ -1523,6 +1535,166 @@ class VibeCheckManager {
     if (this.vibeImage) {
       this.vibeImage.style.opacity = '1';
       this.vibeImage.style.filter = 'none';
+    }
+  }
+
+  /**
+   * Setup error boundary for the theme system
+   * @private
+   */
+  setupErrorBoundary() {
+    // Global error handler for unhandled promise rejections
+    this.browser.addWindowListener('unhandledrejection', (event) => {
+      console.error('Unhandled promise rejection in theme system:', event.reason);
+      this.handleSystemError(event.reason, 'Promise rejection');
+    });
+
+    // Global error handler for JavaScript errors
+    this.browser.addWindowListener('error', (event) => {
+      // Only handle errors related to our theme system
+      if (event.filename && (event.filename.includes('script.js') || 
+          event.message.toLowerCase().includes('theme') || 
+          event.message.toLowerCase().includes('vibe'))) {
+        console.error('JavaScript error in theme system:', event.error);
+        this.handleSystemError(event.error, 'JavaScript error');
+      }
+    });
+  }
+
+  /**
+   * Handle system-level errors gracefully
+   * @param {Error} error - The error that occurred
+   * @param {string} context - Context where the error occurred
+   * @private
+   */
+  handleSystemError(error, context) {
+    const now = Date.now();
+    
+    // Prevent error spam (max 1 error every 5 seconds)
+    if (this.lastErrorTime && now - this.lastErrorTime < 5000) {
+      return;
+    }
+    
+    this.lastErrorTime = now;
+    this.errorCount++;
+    
+    // Log performance metrics for debugging
+    if (this.performanceMetrics.size > 0) {
+      console.log('Performance metrics at error:', Object.fromEntries(this.performanceMetrics));
+    }
+    
+    // Show user-friendly error message
+    const userMessage = this.errorCount > 3 
+      ? 'Theme system experiencing issues. Please refresh the page.'
+      : 'Temporary theme issue. Please try again.';
+    
+    this.showError(userMessage);
+    
+    // Reset operation state
+    this.isOperationInProgress = false;
+    this.hideImageLoading();
+    
+    // Announce error to screen readers
+    this.announceToScreenReader(`Error in theme system: ${userMessage}`, 'assertive');
+  }
+
+  /**
+   * Start performance timing for an operation
+   * @param {string} operation - Name of the operation
+   * @private
+   */
+  startPerformanceTimer(operation) {
+    const startTime = this.browser.window.performance ? 
+      this.browser.window.performance.now() : Date.now();
+    this.performanceMetrics.set(`${operation}_start`, startTime);
+  }
+
+  /**
+   * End performance timing for an operation and log results
+   * @param {string} operation - Name of the operation
+   * @private
+   */
+  endPerformanceTimer(operation) {
+    if (!this.browser.window.performance) return;
+    
+    const endTime = this.browser.window.performance.now();
+    const startTime = this.performanceMetrics.get(`${operation}_start`);
+    
+    if (startTime) {
+      const duration = endTime - startTime;
+      this.performanceMetrics.set(`${operation}_duration`, duration);
+      
+      // Log slow operations (>500ms) for optimization
+      if (duration > 500) {
+        console.warn(`Slow theme operation detected: ${operation} took ${duration.toFixed(2)}ms`);
+      }
+      
+      // Clean up start time
+      this.performanceMetrics.delete(`${operation}_start`);
+    }
+  }
+
+  /**
+   * Show global loading indicator
+   * @param {string} [message='Loading theme...'] - Loading message to display
+   * @private
+   */
+  showGlobalLoading(message = 'Loading theme...') {
+    if (this.globalLoading) {
+      const textElement = this.globalLoading.querySelector('.global-loading-text');
+      if (textElement) {
+        textElement.textContent = message;
+      }
+      this.globalLoading.classList.remove('hidden');
+    }
+  }
+
+  /**
+   * Hide global loading indicator
+   * @private
+   */
+  hideGlobalLoading() {
+    if (this.globalLoading) {
+      this.globalLoading.classList.add('hidden');
+    }
+  }
+
+  /**
+   * Safely execute an operation with error boundary and loading states
+   * @param {Function} operation - Function to execute
+   * @param {string} operationName - Name for logging
+   * @param {boolean} [showLoading=true] - Whether to show global loading indicator
+   * @returns {Promise} Promise that resolves with operation result
+   * @private
+   */
+  async safeExecute(operation, operationName, showLoading = true) {
+    // Prevent concurrent operations
+    if (this.isOperationInProgress) {
+      console.warn(`Operation ${operationName} skipped - another operation in progress`);
+      return;
+    }
+    
+    try {
+      this.isOperationInProgress = true;
+      this.startPerformanceTimer(operationName);
+      
+      // Show loading for operations that might take time
+      if (showLoading && operationName.includes('theme')) {
+        this.showGlobalLoading();
+      }
+      
+      const result = await operation();
+      
+      this.endPerformanceTimer(operationName);
+      return result;
+      
+    } catch (error) {
+      this.endPerformanceTimer(operationName);
+      this.handleSystemError(error, operationName);
+      throw error;
+    } finally {
+      this.isOperationInProgress = false;
+      this.hideGlobalLoading();
     }
   }
 }
