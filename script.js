@@ -82,6 +82,16 @@ class BrowserEnvironment {
   }
 
   /**
+   * Remove event listener from document
+   * @param {string} event - Event name
+   * @param {Function} handler - Event handler
+   * @public
+   */
+  removeDocumentListener(event, handler) {
+    this.document.removeEventListener(event, handler);
+  }
+
+  /**
    * Add event listener to window
    * @param {string} event - Event name
    * @param {Function} handler - Event handler
@@ -107,6 +117,24 @@ class BrowserEnvironment {
    */
   getWindowHeight() {
     return this.window.innerHeight;
+  }
+
+  /**
+   * Get window object
+   * @returns {Window} Window object
+   * @public
+   */
+  getWindow() {
+    return this.window;
+  }
+
+  /**
+   * Get document object
+   * @returns {Document} Document object
+   * @public
+   */
+  getDocument() {
+    return this.document;
   }
 
   /**
@@ -1067,11 +1095,24 @@ class VibeCheckManager {
       this.vibePanel.classList.remove('hidden');
       this.vibeBackdrop.classList.remove('hidden');
       
+      // Store the element that was focused before opening the panel
+      this.lastFocusedElement = this.browser.getDocument().activeElement;
+      
       // Use requestAnimationFrame to ensure smooth animation
       this.browser.requestAnimationFrame(() => {
         this.vibePanel.classList.add('visible');
         this.vibeBackdrop.classList.add('visible');
+        
+        // Move focus to the close button for keyboard accessibility
+        this.browser.setTimeout(() => {
+          if (this.vibePanelClose) {
+            this.vibePanelClose.focus();
+          }
+        }, 100); // Small delay to ensure animation has started
       });
+      
+      // Add focus trap event listener
+      this.setupFocusTrap();
     }
   }
 
@@ -1083,6 +1124,14 @@ class VibeCheckManager {
     if (this.vibePanel && this.vibeBackdrop) {
       this.vibePanel.classList.remove('visible');
       this.vibeBackdrop.classList.remove('visible');
+      
+      // Remove focus trap
+      this.removeFocusTrap();
+      
+      // Return focus to the element that was focused before opening the panel
+      if (this.lastFocusedElement && this.lastFocusedElement.focus) {
+        this.lastFocusedElement.focus();
+      }
       
       // Hide elements after animation completes
       this.browser.setTimeout(() => {
@@ -1204,6 +1253,87 @@ class VibeCheckManager {
     
     // Remove special theme styling
     this.browser.getBody().classList.remove('synthwave-active', 'desert-pinon-active', 'texas-wildflower-active', 'falling-water-active', 'park-ranger-active', 'craftsman-comfort-active');
+  }
+
+  /**
+   * Setup focus trap to keep focus within the panel
+   * @private
+   */
+  setupFocusTrap() {
+    // Remove any existing focus trap first
+    this.removeFocusTrap();
+    
+    this.focusTrapHandler = (e) => {
+      if (e.key === 'Tab' && this.isPanelOpen()) {
+        const focusableElements = this.getFocusableElements();
+        
+        // Only apply focus trap if we have focusable elements
+        if (focusableElements.length === 0) {
+          return;
+        }
+        
+        const firstElement = focusableElements[0];
+        const lastElement = focusableElements[focusableElements.length - 1];
+        const currentElement = this.browser.getDocument().activeElement;
+
+        // If shift+tab on first element, focus last element
+        if (e.shiftKey && currentElement === firstElement) {
+          e.preventDefault();
+          lastElement.focus();
+        }
+        // If tab on last element, focus first element  
+        else if (!e.shiftKey && currentElement === lastElement) {
+          e.preventDefault();
+          firstElement.focus();
+        }
+      }
+    };
+
+    this.browser.addDocumentListener('keydown', this.focusTrapHandler);
+  }
+
+  /**
+   * Remove focus trap event listener
+   * @private
+   */
+  removeFocusTrap() {
+    if (this.focusTrapHandler) {
+      this.browser.removeDocumentListener('keydown', this.focusTrapHandler);
+      this.focusTrapHandler = null;
+    }
+  }
+
+  /**
+   * Get all focusable elements within the panel
+   * @returns {Element[]} Array of focusable elements
+   * @private
+   */
+  getFocusableElements() {
+    if (!this.vibePanel || !this.isPanelOpen()) return [];
+
+    const focusableSelectors = [
+      'button:not([disabled])',
+      'input:not([disabled])', 
+      'select:not([disabled])',
+      'textarea:not([disabled])',
+      'a[href]',
+      '[tabindex]:not([tabindex="-1"])'
+    ];
+
+    try {
+      const elements = this.vibePanel.querySelectorAll(focusableSelectors.join(','));
+      return Array.from(elements).filter(el => {
+        // Filter out hidden elements and ensure they're visible
+        const style = this.browser.window.getComputedStyle(el);
+        return el.offsetWidth > 0 && 
+               el.offsetHeight > 0 && 
+               style.visibility !== 'hidden' && 
+               style.display !== 'none';
+      });
+    } catch (error) {
+      console.warn('Error finding focusable elements:', error);
+      return [];
+    }
   }
 }
 
