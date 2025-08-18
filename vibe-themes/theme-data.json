@@ -110,7 +110,7 @@
     },
     {
       "name": "Park Ranger",
-      "image": "park_ranger.jpg",
+      "image": "park-ranger.jpg",
       "colors": {
         "--background": "44 43% 94%",
         "--foreground": "15 28% 25%",
@@ -133,6 +133,33 @@
         "--ring": "15 28% 25%",
         "--link": "#DE8C41",
         "--link-hover": "#1D6067"
+      }
+    },
+    {
+      "name": "Craftsman Comfort",
+      "image": "craftsman-comfort.jpg",
+      "colors": {
+        "--background": "60 56% 93%",
+        "--foreground": "25 30% 25%",
+        "--card": "60 56% 91%",
+        "--card-foreground": "25 30% 25%",
+        "--popover": "60 56% 91%",
+        "--popover-foreground": "25 30% 25%",
+        "--primary": "25 30% 25%",
+        "--primary-foreground": "60 56% 93%",
+        "--secondary": "20 45% 80%",
+        "--secondary-foreground": "25 30% 25%",
+        "--muted": "20 45% 80%",
+        "--muted-foreground": "25 15% 50%",
+        "--accent": "82 47% 35%",
+        "--accent-foreground": "60 56% 93%",
+        "--destructive": "0 84.2% 60.2%",
+        "--destructive-foreground": "60 56% 93%",
+        "--border": "20 45% 75%",
+        "--input": "20 45% 80%",
+        "--ring": "25 30% 25%",
+        "--link": "#B87333",
+        "--link-hover": "#556B2F"
       }
     }
   ]

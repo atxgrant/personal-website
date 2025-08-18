@@ -934,9 +934,15 @@ class VibeCheckManager {
       });
     }
 
-    // Close panel when escape key is pressed
+    // Close panel when escape key or spacebar is pressed
     this.browser.addDocumentListener('keydown', (e) => {
       if (e.key === 'Escape' && this.isPanelOpen()) {
+        this.closePanel();
+      }
+      
+      // Close panel with spacebar on desktop viewports only
+      if (e.key === ' ' && this.isPanelOpen() && this.isDesktopViewport()) {
+        e.preventDefault(); // Prevent page scroll
         this.closePanel();
       }
     });
@@ -1025,7 +1031,7 @@ class VibeCheckManager {
     this.themeManager.applyVibeTheme(currentTheme.colors);
     
     // Apply special theme styling based on theme name
-    this.browser.getBody().classList.remove('synthwave-active', 'desert-pinon-active', 'texas-wildflower-active', 'falling-water-active', 'park-ranger-active');
+    this.browser.getBody().classList.remove('synthwave-active', 'desert-pinon-active', 'texas-wildflower-active', 'falling-water-active', 'park-ranger-active', 'craftsman-comfort-active');
     
     if (currentTheme.name === 'Synthwave Sunset') {
       this.browser.getBody().classList.add('synthwave-active');
@@ -1037,6 +1043,8 @@ class VibeCheckManager {
       this.browser.getBody().classList.add('falling-water-active');
     } else if (currentTheme.name === 'Park Ranger') {
       this.browser.getBody().classList.add('park-ranger-active');
+    } else if (currentTheme.name === 'Craftsman Comfort') {
+      this.browser.getBody().classList.add('craftsman-comfort-active');
     }
     
     console.log(`Applied vibe theme: ${currentTheme.name}`);
@@ -1097,6 +1105,15 @@ class VibeCheckManager {
   }
 
   /**
+   * Check if current viewport is desktop size (1024px+)
+   * @returns {boolean} True if desktop viewport
+   * @private
+   */
+  isDesktopViewport() {
+    return this.browser.getWindowWidth() >= 1024;
+  }
+
+  /**
    * Reset vibe check to initial state
    * Called when exiting vibe mode
    * @public
@@ -1107,7 +1124,7 @@ class VibeCheckManager {
     this.currentThemeIndex = 0;
     
     // Remove special theme styling
-    this.browser.getBody().classList.remove('synthwave-active', 'desert-pinon-active', 'texas-wildflower-active', 'falling-water-active', 'park-ranger-active');
+    this.browser.getBody().classList.remove('synthwave-active', 'desert-pinon-active', 'texas-wildflower-active', 'falling-water-active', 'park-ranger-active', 'craftsman-comfort-active');
   }
 }
 

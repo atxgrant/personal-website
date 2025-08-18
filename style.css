@@ -1306,6 +1306,162 @@ body.park-ranger-active .bio-expand-btn:hover {
 }
 
 /* ============================================================================ */
+/* CRAFTSMAN COMFORT THEME - Arts & Crafts movement inspired handcrafted design */
+/* ============================================================================ */
+
+/* Craftsman Comfort Background - Warm cream like cozy craftsman interiors */
+body.craftsman-comfort-active {
+  background: linear-gradient(135deg, 
+    #F5F5DC 0%, 
+    hsl(60, 56%, 93%) 50%, 
+    hsl(60, 50%, 90%) 100%
+  ) !important;
+  
+  /* Content Section Variables - CSS Variable approach to prevent layout shift */
+  --content-border: 1px solid rgba(92, 64, 51, 0.2);
+  --content-border-left: 4px solid #8B4513;
+  --content-background: rgba(139, 69, 19, 0.04);
+}
+
+/* Craftsman Name Styling - Dark Oak (handcrafted furniture) */
+body.craftsman-comfort-active h1 a {
+  color: #5C4033 !important;
+  text-shadow: 0 0 1px rgba(92, 64, 51, 0.3);
+  border-bottom: 2px solid rgba(184, 115, 51, 0.4);
+  padding-bottom: 2px;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+body.craftsman-comfort-active h1 a:hover {
+  color: #B87333 !important;
+  border-bottom-color: #556B2F;
+  text-shadow: 0 0 2px rgba(184, 115, 51, 0.4);
+}
+
+/* Craftsman Section Headings - Medium Wood (natural warmth) */
+body.craftsman-comfort-active #posts-heading {
+  color: #8B4513 !important;
+  font-weight: 700;
+  text-shadow: 0 0 1px rgba(139, 69, 19, 0.2);
+  letter-spacing: 0.3px;
+}
+
+/* Craftsman Change Vibe Button - Handcrafted aesthetic with rich textures */
+body.craftsman-comfort-active .vibe-check-button {
+  background: linear-gradient(45deg, #B87333, #8B4513) !important;
+  border: 2px solid #5C4033 !important;
+  color: #F5F5DC !important;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(92, 64, 51, 0.4);
+  box-shadow: 
+    0 3px 8px rgba(139, 69, 19, 0.25),
+    inset 0 1px 2px rgba(245, 245, 220, 0.2),
+    inset 0 -1px 2px rgba(92, 64, 51, 0.1);
+  letter-spacing: 0.3px;
+}
+
+body.craftsman-comfort-active .vibe-check-button:hover {
+  background: linear-gradient(45deg, #556B2F, #8D8478) !important;
+  border-color: #B87333 !important;
+  color: #F5F5DC !important;
+  text-shadow: 0 1px 2px rgba(85, 107, 47, 0.5);
+  box-shadow: 
+    0 4px 12px rgba(85, 107, 47, 0.3),
+    inset 0 1px 3px rgba(245, 245, 220, 0.3),
+    inset 0 -1px 3px rgba(92, 64, 51, 0.15);
+  transform: translateY(-1px);
+}
+
+/* Craftsman Links - Hammered Copper (artisanal metalwork) */
+body.craftsman-comfort-active .academic-link {
+  color: #B87333 !important;
+  transition: all 0.3s ease;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(184, 115, 51, 0.6);
+}
+
+body.craftsman-comfort-active .academic-link:hover {
+  color: #556B2F !important;
+  text-shadow: 0 0 3px rgba(85, 107, 47, 0.4);
+  text-decoration-color: #8D8478;
+}
+
+/* Craftsman Theme Toggle - Handcrafted hardware aesthetic */
+body.craftsman-comfort-active #theme-toggle {
+  border: 2px solid #8B4513 !important;
+  background: linear-gradient(45deg, 
+    rgba(245, 245, 220, 0.95), 
+    rgba(141, 132, 120, 0.3)
+  ) !important;
+  box-shadow: 
+    0 0 10px rgba(139, 69, 19, 0.2),
+    inset 0 1px 3px rgba(245, 245, 220, 0.4),
+    inset 0 -1px 2px rgba(92, 64, 51, 0.1),
+    0 0 0 1px rgba(184, 115, 51, 0.1);
+}
+
+body.craftsman-comfort-active #theme-toggle:hover {
+  border-color: #B87333 !important;
+  background: linear-gradient(45deg, 
+    rgba(184, 115, 51, 0.2), 
+    rgba(85, 107, 47, 0.15)
+  ) !important;
+  box-shadow: 
+    0 0 15px rgba(184, 115, 51, 0.3),
+    inset 0 1px 4px rgba(245, 245, 220, 0.5),
+    inset 0 -1px 3px rgba(92, 64, 51, 0.15),
+    0 0 0 1px rgba(139, 69, 19, 0.2);
+}
+
+body.craftsman-comfort-active #toggle-slider {
+  background: linear-gradient(45deg, #5C4033, #8B4513) !important;
+  box-shadow: 
+    0 0 6px rgba(92, 64, 51, 0.4),
+    inset 0 1px 2px rgba(245, 245, 220, 0.2),
+    inset 0 -1px 1px rgba(139, 69, 19, 0.3);
+}
+
+/* Craftsman Posts List - Natural wood tone progression */
+body.craftsman-comfort-active .posts-list a {
+  color: #8B4513 !important;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+body.craftsman-comfort-active .posts-list a:hover {
+  color: #B87333 !important;
+  text-shadow: 0 0 2px rgba(184, 115, 51, 0.3);
+}
+
+/* Craftsman Bio Links - Arts & Crafts color harmony */
+body.craftsman-comfort-active .bio-content .academic-link:nth-of-type(odd) {
+  color: #B87333 !important;
+}
+
+body.craftsman-comfort-active .bio-content .academic-link:nth-of-type(even) {
+  color: #8D8478 !important;
+}
+
+body.craftsman-comfort-active .bio-content .academic-link:hover {
+  color: #556B2F !important;
+  text-shadow: 0 0 3px rgba(85, 107, 47, 0.4);
+}
+
+/* Craftsman Bio Expand Button - Stone Gray (natural materials) */
+body.craftsman-comfort-active .bio-expand-btn {
+  color: #8D8478 !important;
+  font-weight: 500;
+}
+
+body.craftsman-comfort-active .bio-expand-btn:hover {
+  color: #B87333 !important;
+  text-shadow: 0 0 2px rgba(184, 115, 51, 0.3);
+}
+
+/* ============================================================================ */
 /* BIO COLLAPSE COMPONENT - Complex mobile responsive behavior                 */
 /* ============================================================================ */
 
