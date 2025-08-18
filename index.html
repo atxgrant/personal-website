@@ -231,13 +231,18 @@
             <!-- Slide-up Theme Panel (Hidden by default) -->
             <div id="vibe-panel" class="vibe-panel hidden">
                 <div class="vibe-panel-content">
+                    <div class="vibe-panel-handle" aria-hidden="true"></div>
                     <div class="vibe-panel-header">
                         <span class="vibe-panel-esc-hint">(Esc)</span>
-                        <button id="vibe-panel-close" class="vibe-panel-close" aria-label="Close theme panel (Escape key)">×</button>
+                        <button id="vibe-panel-close" class="vibe-panel-close" aria-label="Close theme panel. Also works with Escape key, swipe down on mobile, or clicking outside">×</button>
                     </div>
                     <div id="vibe-title" class="vibe-title"></div>
                     <img id="vibe-image" class="vibe-image" alt="Current vibe theme" />
                     <div id="vibe-error" class="vibe-error hidden">Unable to load theme</div>
+                    <div id="vibe-help" class="vibe-help">
+                        <span class="vibe-help-desktop">Press Esc, click ×, or click outside to close</span>
+                        <span class="vibe-help-mobile">Swipe down, tap ×, or tap outside to close</span>
+                    </div>
                 </div>
             </div>
             

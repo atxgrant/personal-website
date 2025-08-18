@@ -553,6 +553,30 @@
   position: relative;
 }
 
+/* Swipe handle indicator (mobile only) */
+.vibe-panel-handle {
+  width: 40px;
+  height: 4px;
+  background-color: hsl(var(--muted-foreground));
+  border-radius: 2px;
+  opacity: 0.4;
+  margin: -0.5rem auto 0.5rem auto;
+  display: none;
+  transition: opacity 0.2s ease;
+}
+
+/* Show handle only on mobile/tablet where swipe is available */
+@media (max-width: 1023px) {
+  .vibe-panel-handle {
+    display: block;
+  }
+}
+
+/* Subtle hover effect for the handle */
+.vibe-panel-content:hover .vibe-panel-handle {
+  opacity: 0.6;
+}
+
 .vibe-panel-header {
   position: absolute;
   top: 0.5rem;
@@ -629,6 +653,35 @@
 
 .vibe-error.hidden {
   display: none;
+}
+
+/* Help Text for Interaction Methods */
+.vibe-help {
+  font-size: 0.75rem;
+  color: hsl(var(--muted-foreground));
+  text-align: center;
+  margin-top: 0.75rem;
+  opacity: 0.8;
+  font-style: italic;
+}
+
+.vibe-help-desktop {
+  display: inline;
+}
+
+.vibe-help-mobile {
+  display: none;
+}
+
+/* Show mobile help and hide desktop help on smaller viewports */
+@media (max-width: 1023px) {
+  .vibe-help-desktop {
+    display: none;
+  }
+  
+  .vibe-help-mobile {
+    display: inline;
+  }
 }
 
 /* Panel Backdrop */

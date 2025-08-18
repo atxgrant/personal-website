@@ -1073,9 +1073,10 @@ class VibeCheckManager {
       this.browser.getBody().classList.add('craftsman-comfort-active');
     }
     
-    // Announce theme change to screen readers with description
+    // Announce theme change to screen readers with description and interaction help
     const themeDescription = this.getThemeDescription(currentTheme.name);
-    this.announceToScreenReader(`Applied ${currentTheme.name} theme: ${themeDescription}. Theme panel opened.`);
+    const interactionInstructions = this.getInteractionInstructions();
+    this.announceToScreenReader(`Applied ${currentTheme.name} theme: ${themeDescription}. Theme panel opened. ${interactionInstructions}`);
     
     console.log(`Applied vibe theme: ${currentTheme.name}`);
   }
@@ -1364,6 +1365,20 @@ class VibeCheckManager {
     };
     
     return descriptions[themeName] || 'a custom color scheme';
+  }
+
+  /**
+   * Get interaction instructions based on current viewport
+   * @returns {string} Instructions for closing the panel
+   * @private
+   */
+  getInteractionInstructions() {
+    const isMobile = this.isMobileViewport();
+    if (isMobile) {
+      return 'To close: swipe down, tap the close button, or tap outside the panel.';
+    } else {
+      return 'To close: press Escape, click the close button, or click outside the panel.';
+    }
   }
 
   /**
