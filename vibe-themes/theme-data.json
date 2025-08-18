@@ -80,6 +80,60 @@
         "--link": "#FFC513",
         "--link-hover": "#B22222"
       }
+    },
+    {
+      "name": "Falling Water",
+      "image": "falling-water.jpg",
+      "colors": {
+        "--background": "42 35% 96%",
+        "--foreground": "355 61% 38%",
+        "--card": "42 35% 94%",
+        "--card-foreground": "355 61% 38%",
+        "--popover": "42 35% 94%",
+        "--popover-foreground": "355 61% 38%",
+        "--primary": "355 61% 38%",
+        "--primary-foreground": "42 35% 96%",
+        "--secondary": "79 21% 88%",
+        "--secondary-foreground": "355 61% 38%",
+        "--muted": "79 21% 88%",
+        "--muted-foreground": "78 12% 42%",
+        "--accent": "79 36% 62%",
+        "--accent-foreground": "42 35% 96%",
+        "--destructive": "0 84.2% 60.2%",
+        "--destructive-foreground": "42 35% 96%",
+        "--border": "78 12% 75%",
+        "--input": "79 21% 88%",
+        "--ring": "355 61% 38%",
+        "--link": "#F0C034",
+        "--link-hover": "#9B2B28"
+      }
+    },
+    {
+      "name": "Park Ranger",
+      "image": "park_ranger.jpg",
+      "colors": {
+        "--background": "44 43% 94%",
+        "--foreground": "15 28% 25%",
+        "--card": "44 43% 92%",
+        "--card-foreground": "15 28% 25%",
+        "--popover": "44 43% 92%",
+        "--popover-foreground": "15 28% 25%",
+        "--primary": "15 28% 25%",
+        "--primary-foreground": "44 43% 94%",
+        "--secondary": "44 45% 85%",
+        "--secondary-foreground": "15 28% 25%",
+        "--muted": "44 45% 85%",
+        "--muted-foreground": "186 57% 25%",
+        "--accent": "194 67% 70%",
+        "--accent-foreground": "15 28% 25%",
+        "--destructive": "0 84.2% 60.2%",
+        "--destructive-foreground": "44 43% 94%",
+        "--border": "44 45% 80%",
+        "--input": "44 45% 85%",
+        "--ring": "15 28% 25%",
+        "--link": "#DE8C41",
+        "--link-hover": "#1D6067"
+      }
     }
   ]
 }

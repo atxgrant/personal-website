@@ -1040,6 +1040,272 @@ body.texas-wildflower-active .bio-expand-btn:hover {
 }
 
 /* ============================================================================ */
+/* FALLING WATER THEME ENHANCEMENTS - Frank Lloyd Wright inspired natural flow */
+/* ============================================================================ */
+
+/* Falling Water Background - Soft cream like flowing water foam */
+body.falling-water-active {
+  background: linear-gradient(135deg, 
+    hsl(42, 35%, 98%) 0%, 
+    hsl(42, 35%, 96%) 50%, 
+    hsl(42, 30%, 94%) 100%
+  ) !important;
+  
+  /* Content Section Variables - CSS Variable approach to prevent layout shift */
+  --content-border: 1px solid rgba(155, 43, 40, 0.2);
+  --content-border-left: 4px solid #7C936E;
+  --content-background: rgba(124, 147, 110, 0.05);
+}
+
+/* Falling Water Name Styling - Cherokee Red (Natural stone) */
+body.falling-water-active h1 a {
+  color: #9B2B28 !important;
+  text-shadow: 0 0 1px rgba(155, 43, 40, 0.2);
+  border-bottom: 2px solid rgba(124, 147, 110, 0.3);
+  padding-bottom: 2px;
+  transition: all 0.3s ease;
+}
+
+body.falling-water-active h1 a:hover {
+  color: #7C936E !important;
+  border-bottom-color: #F0C034;
+}
+
+/* Falling Water Section Headings - Sage Green (Natural foliage) */
+body.falling-water-active #posts-heading {
+  color: #7C936E !important;
+  font-weight: 700;
+}
+
+/* Falling Water Change Vibe Button - Golden Yellow with natural accents */
+body.falling-water-active .vibe-check-button {
+  background: linear-gradient(45deg, #F0C034, #E6B82E) !important;
+  border-color: #7C936E !important;
+  color: #4A4C47 !important;
+  box-shadow: 0 2px 6px rgba(124, 147, 110, 0.2);
+}
+
+body.falling-water-active .vibe-check-button:hover {
+  background: linear-gradient(45deg, #9B2B28, #8A2725) !important;
+  border-color: #F0C034 !important;
+  color: #F5F5F0 !important;
+  box-shadow: 0 3px 8px rgba(155, 43, 40, 0.3);
+}
+
+/* Falling Water Links - Golden Yellow (Warm sunlight) */
+body.falling-water-active .academic-link {
+  color: #F0C034 !important;
+  transition: all 0.3s ease;
+}
+
+body.falling-water-active .academic-link:hover {
+  color: #9B2B28 !important;
+  text-shadow: 0 0 2px rgba(155, 43, 40, 0.3);
+}
+
+/* Falling Water Theme Toggle - Natural integration */
+body.falling-water-active #theme-toggle {
+  border: 2px solid #7C936E !important;
+  background-color: rgba(240, 192, 52, 0.1) !important;
+  box-shadow: 
+    0 0 8px rgba(124, 147, 110, 0.2),
+    0 0 0 1px rgba(240, 192, 52, 0.1);
+}
+
+body.falling-water-active #theme-toggle:hover {
+  border-color: #F0C034 !important;
+  background-color: rgba(240, 192, 52, 0.15) !important;
+  box-shadow: 
+    0 0 12px rgba(124, 147, 110, 0.3),
+    0 0 0 1px rgba(240, 192, 52, 0.2);
+}
+
+body.falling-water-active #toggle-slider {
+  background-color: #9B2B28 !important;
+  box-shadow: 0 0 4px rgba(155, 43, 40, 0.4);
+}
+
+/* Falling Water Posts List - Natural color alternation */
+body.falling-water-active .posts-list a {
+  color: #7C936E !important;
+  transition: all 0.3s ease;
+}
+
+body.falling-water-active .posts-list a:hover {
+  color: #9B2B28 !important;
+}
+
+/* Falling Water Bio Links - Natural flow of colors */
+body.falling-water-active .bio-content .academic-link:nth-of-type(odd) {
+  color: #F0C034 !important;
+}
+
+body.falling-water-active .bio-content .academic-link:nth-of-type(even) {
+  color: #7C936E !important;
+}
+
+body.falling-water-active .bio-content .academic-link:hover {
+  color: #9B2B28 !important;
+  text-shadow: 0 0 2px rgba(155, 43, 40, 0.2);
+}
+
+/* Falling Water Bio Expand Button - Accent Brown */
+body.falling-water-active .bio-expand-btn {
+  color: #7B543D !important;
+}
+
+body.falling-water-active .bio-expand-btn:hover {
+  color: #F0C034 !important;
+}
+
+/* ============================================================================ */
+/* PARK RANGER THEME ENHANCEMENTS - WPA National Park poster inspired design  */
+/* ============================================================================ */
+
+/* Park Ranger Background - Warm Cream from actual poster image */
+body.park-ranger-active {
+  background: linear-gradient(135deg, 
+    #F3EAD3 0%, 
+    hsl(44, 43%, 94%) 50%, 
+    hsl(44, 40%, 90%) 100%
+  ) !important;
+  
+  /* Content Section Variables - CSS Variable approach to prevent layout shift */
+  --content-border: 1px solid rgba(29, 96, 103, 0.3);
+  --content-border-left: 4px solid #84D2E4;
+  --content-background: rgba(132, 210, 228, 0.05);
+}
+
+/* Park Ranger Name Styling - Deep Brown from actual poster */
+body.park-ranger-active h1 a {
+  color: #52342C !important;
+  text-shadow: 0 0 1px rgba(82, 52, 44, 0.3);
+  border-bottom: 2px solid rgba(212, 166, 87, 0.5);
+  padding-bottom: 2px;
+  transition: all 0.3s ease;
+  font-weight: 600;
+}
+
+body.park-ranger-active h1 a:hover {
+  color: #DE8C41 !important;
+  border-bottom-color: #1D6067;
+  text-shadow: 0 0 2px rgba(222, 140, 65, 0.4);
+}
+
+/* Park Ranger Section Headings - Forest Green from actual poster */
+body.park-ranger-active #posts-heading {
+  color: #1D6067 !important;
+  font-weight: 700;
+  text-shadow: 0 0 1px rgba(29, 96, 103, 0.3);
+}
+
+/* Park Ranger Change Vibe Button - Authentic poster colors */
+body.park-ranger-active .vibe-check-button {
+  background: linear-gradient(45deg, #DE8C41, #D4A657) !important;
+  border: 2px solid #1D6067 !important;
+  color: #F3EAD3 !important;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(82, 52, 44, 0.4);
+  box-shadow: 
+    0 3px 8px rgba(29, 96, 103, 0.2),
+    inset 0 1px 2px rgba(243, 234, 211, 0.3);
+}
+
+body.park-ranger-active .vibe-check-button:hover {
+  background: linear-gradient(45deg, #84D2E4, #1D6067) !important;
+  border-color: #DE8C41 !important;
+  color: #52342C !important;
+  text-shadow: 0 1px 2px rgba(243, 234, 211, 0.6);
+  box-shadow: 
+    0 4px 12px rgba(132, 210, 228, 0.3),
+    inset 0 1px 3px rgba(243, 234, 211, 0.4);
+  transform: translateY(-1px);
+}
+
+/* Park Ranger Links - Muted Orange from actual poster */
+body.park-ranger-active .academic-link {
+  color: #DE8C41 !important;
+  transition: all 0.3s ease;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+body.park-ranger-active .academic-link:hover {
+  color: #1D6067 !important;
+  text-shadow: 0 0 3px rgba(29, 96, 103, 0.4);
+  text-decoration-color: #84D2E4;
+}
+
+/* Park Ranger Theme Toggle - Authentic poster aesthetic */
+body.park-ranger-active #theme-toggle {
+  border: 2px solid #1D6067 !important;
+  background: linear-gradient(45deg, 
+    rgba(243, 234, 211, 0.9), 
+    rgba(212, 166, 87, 0.8)
+  ) !important;
+  box-shadow: 
+    0 0 10px rgba(29, 96, 103, 0.2),
+    inset 0 1px 3px rgba(243, 234, 211, 0.4),
+    0 0 0 1px rgba(82, 52, 44, 0.1);
+}
+
+body.park-ranger-active #theme-toggle:hover {
+  border-color: #84D2E4 !important;
+  background: linear-gradient(45deg, 
+    rgba(222, 140, 65, 0.2), 
+    rgba(132, 210, 228, 0.2)
+  ) !important;
+  box-shadow: 
+    0 0 15px rgba(132, 210, 228, 0.3),
+    inset 0 1px 4px rgba(243, 234, 211, 0.5),
+    0 0 0 1px rgba(29, 96, 103, 0.2);
+}
+
+body.park-ranger-active #toggle-slider {
+  background: linear-gradient(45deg, #52342C, #1D6067) !important;
+  box-shadow: 
+    0 0 6px rgba(82, 52, 44, 0.4),
+    inset 0 1px 2px rgba(243, 234, 211, 0.2);
+}
+
+/* Park Ranger Posts List - Authentic poster colors */
+body.park-ranger-active .posts-list a {
+  color: #1D6067 !important;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+body.park-ranger-active .posts-list a:hover {
+  color: #DE8C41 !important;
+  text-shadow: 0 0 2px rgba(222, 140, 65, 0.3);
+}
+
+/* Park Ranger Bio Links - Authentic poster color scheme */
+body.park-ranger-active .bio-content .academic-link:nth-of-type(odd) {
+  color: #DE8C41 !important;
+}
+
+body.park-ranger-active .bio-content .academic-link:nth-of-type(even) {
+  color: #84D2E4 !important;
+}
+
+body.park-ranger-active .bio-content .academic-link:hover {
+  color: #1D6067 !important;
+  text-shadow: 0 0 3px rgba(29, 96, 103, 0.4);
+}
+
+/* Park Ranger Bio Expand Button - Deep Brown from poster */
+body.park-ranger-active .bio-expand-btn {
+  color: #52342C !important;
+  font-weight: 500;
+}
+
+body.park-ranger-active .bio-expand-btn:hover {
+  color: #D4A657 !important;
+  text-shadow: 0 0 2px rgba(212, 166, 87, 0.3);
+}
+
+/* ============================================================================ */
 /* BIO COLLAPSE COMPONENT - Complex mobile responsive behavior                 */
 /* ============================================================================ */
 
