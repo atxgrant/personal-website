@@ -558,6 +558,13 @@
   transition: opacity 0.2s ease;
 }
 
+/* Hide Esc hint on mobile/tablet where keyboards are less common */
+@media (max-width: 1023px) {
+  .vibe-panel-esc-hint {
+    display: none;
+  }
+}
+
 .vibe-panel-close {
   background: none;
   border: none;

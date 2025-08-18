@@ -940,6 +940,9 @@ class VibeCheckManager {
         this.closePanel();
       }
     });
+
+    // Add touch swipe support for mobile/tablet
+    this.setupTouchGestures();
   }
 
   /**
@@ -1087,6 +1090,97 @@ class VibeCheckManager {
         this.vibeBackdrop.classList.add('hidden');
       }, 300); // Match CSS transition duration
     }
+  }
+
+  /**
+   * Setup touch gesture support for mobile/tablet swipe-to-close
+   * @private
+   */
+  setupTouchGestures() {
+    if (!this.vibePanel) return;
+
+    let startY = 0;
+    let currentY = 0;
+    let startTime = 0;
+    let isDragging = false;
+    const threshold = 100; // Minimum swipe distance in pixels
+    const timeThreshold = 300; // Maximum time for a valid swipe in ms
+    const velocityThreshold = 0.5; // Minimum velocity for swipe detection
+
+    // Touch start
+    this.vibePanel.addEventListener('touchstart', (e) => {
+      if (!this.isPanelOpen() || this.isMobileViewport() === false) return;
+      
+      startY = e.touches[0].clientY;
+      startTime = Date.now();
+      isDragging = true;
+      
+      // Prevent default to avoid scroll conflicts
+      e.preventDefault();
+    }, { passive: false });
+
+    // Touch move
+    this.vibePanel.addEventListener('touchmove', (e) => {
+      if (!isDragging || !this.isPanelOpen()) return;
+      
+      currentY = e.touches[0].clientY;
+      const deltaY = currentY - startY;
+      
+      // Only allow downward swipes (positive deltaY)
+      if (deltaY > 0) {
+        // Add subtle visual feedback by slightly moving the panel
+        const translateY = Math.min(deltaY * 0.3, 30); // Cap at 30px movement
+        this.vibePanel.style.transform = `translateY(${translateY}px)`;
+      }
+      
+      e.preventDefault();
+    }, { passive: false });
+
+    // Touch end
+    this.vibePanel.addEventListener('touchend', (e) => {
+      if (!isDragging || !this.isPanelOpen()) return;
+      
+      const deltaY = currentY - startY;
+      const deltaTime = Date.now() - startTime;
+      const velocity = Math.abs(deltaY) / deltaTime;
+      
+      // Reset panel position
+      this.vibePanel.style.transform = '';
+      
+      // Check if swipe meets criteria for closing
+      const isValidSwipe = deltaY > threshold && deltaTime < timeThreshold && velocity > velocityThreshold;
+      const isDownwardSwipe = deltaY > 0;
+      
+      if (isValidSwipe && isDownwardSwipe) {
+        this.closePanel();
+      }
+      
+      // Reset tracking variables
+      isDragging = false;
+      startY = 0;
+      currentY = 0;
+      startTime = 0;
+    });
+
+    // Touch cancel (if touch is interrupted)
+    this.vibePanel.addEventListener('touchcancel', () => {
+      if (this.vibePanel) {
+        this.vibePanel.style.transform = '';
+      }
+      isDragging = false;
+      startY = 0;
+      currentY = 0;
+      startTime = 0;
+    });
+  }
+
+  /**
+   * Check if current viewport is mobile/tablet size (< 1024px)
+   * @returns {boolean} True if mobile/tablet viewport
+   * @private
+   */
+  isMobileViewport() {
+    return this.browser.getWindowWidth() < 1024;
   }
 
   /**
