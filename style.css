@@ -539,10 +539,26 @@
   position: relative;
 }
 
-.vibe-panel-close {
+.vibe-panel-header {
   position: absolute;
   top: 0.5rem;
   right: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  z-index: 1001;
+}
+
+.vibe-panel-esc-hint {
+  font-size: 0.75rem;
+  color: hsl(var(--muted-foreground));
+  opacity: 0.7;
+  font-family: ui-monospace, SFMono-Regular, "Menlo", Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  letter-spacing: 0.025em;
+  transition: opacity 0.2s ease;
+}
+
+.vibe-panel-close {
   background: none;
   border: none;
   font-size: 1.5rem;
@@ -551,11 +567,14 @@
   padding: 0.25rem;
   line-height: 1;
   transition: color 0.2s ease;
-  z-index: 1001;
 }
 
 .vibe-panel-close:hover {
   color: hsl(var(--foreground));
+}
+
+.vibe-panel-header:hover .vibe-panel-esc-hint {
+  opacity: 1;
 }
 
 .vibe-title {
