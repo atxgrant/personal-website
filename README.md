@@ -16,11 +16,20 @@ This website serves as a digital space to share practical insights from experime
 
 ### 🎨 **Vibe Check Theme System**
 - Interactive theme cycling with "Change Vibe" button
-- Three custom themes: Synthwave Sunset, Desert Pinon, Texas Wildflower
+- Six custom themes with rich visual aesthetics and screen reader descriptions
 - Slide-up panel displaying theme images with smooth animations
-- Professional backdrop and multiple close interactions (backdrop, × button, ESC key)
+- Professional backdrop and multiple close interactions (backdrop, × button, ESC key, swipe down on mobile)
 - Theme colors dynamically applied while maintaining functionality
 - Optimized footer layout with Vibe Check button prioritized above LinkedIn logo
+- Full accessibility support with focus management and ARIA live announcements
+
+#### Available Themes:
+- **Synthwave Sunset**: A retro-futuristic 80s aesthetic with electric cyan text on deep purple backgrounds, featuring neon pink accents that evoke cyberpunk and synthwave vibes
+- **Desert Pinon**: Warm earthy tones inspired by the American Southwest, with soft beige backgrounds, brown text, and turquoise accent colors that capture the essence of desert landscapes
+- **Texas Wildflower**: Bright and cheerful with cream backgrounds and deep blue text, featuring golden yellow links that reflect the vibrant wildflower fields of Texas
+- **Falling Water**: Inspired by Frank Lloyd Wright's architectural masterpiece, with warm cream backgrounds, Cherokee red text, and golden accents that blend natural elements with modernist design
+- **Park Ranger**: Evokes WPA National Park poster art with warm beige backgrounds, dark brown text, and sky blue accents that capture the spirit of America's national parks
+- **Craftsman Comfort**: Celebrates Arts and Crafts architecture with warm cream backgrounds, rich brown text, and copper-bronze accents that embody handcrafted quality and natural materials
 
 ### 📑 **Table of Contents (TOC)**
 - Auto-generating navigation for blog posts
@@ -46,7 +55,7 @@ This website serves as a digital space to share practical insights from experime
 - **Performance** - Critical CSS inlining, resource preloading, deferred script loading
 - **PWA Ready** - Web app manifest and favicons for all devices
 - **Error Handling** - Custom 404 page with helpful navigation
-- **Accessibility** - Skip links, ARIA attributes, keyboard navigation support
+- **Accessibility** - Skip links, ARIA attributes, keyboard navigation, focus management, screen reader announcements with rich theme descriptions
 - **Contact Options** - Multiple ways to connect (email, LinkedIn)
 
 ### 👨‍💻 **Developer Experience**
@@ -79,7 +88,10 @@ personal-website/
     └── images/             # Theme preview images
         ├── synthwave-sunset.jpg
         ├── desert-pinon.jpg
-        └── texas-wildflower.jpg
+        ├── texas-wildflower.jpg
+        ├── falling-water.jpg
+        ├── park-ranger.jpg
+        └── craftsman-comfort.jpg
 ```
 
 ## 🚀 Development
@@ -172,8 +184,9 @@ Each post includes honest assessments of tools, covering both successes and limi
 
 - **Content First** - Clean typography and layout prioritize readability
 - **Academic Feel** - Professional aesthetic suitable for career-focused content
-- **Accessibility** - Proper semantic HTML, keyboard navigation, and screen reader support
+- **Inclusive Design** - Full accessibility with semantic HTML, keyboard navigation, focus management, and rich screen reader descriptions that make visual themes meaningful for all users
 - **Performance** - Minimal dependencies and optimized assets for fast loading
+- **Cultural Appreciation** - Theme designs that respectfully draw inspiration from architectural movements, geographic regions, and artistic periods
 
 ## 📄 License
 

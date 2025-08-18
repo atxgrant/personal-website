@@ -928,6 +928,7 @@ class VibeCheckManager {
     this.vibeImage = this.browser.getElementById('vibe-image');
     this.vibeError = this.browser.getElementById('vibe-error');
     this.linkedinIcon = this.browser.getElementById('linkedin-icon');
+    this.srAnnouncements = this.browser.getElementById('sr-announcements');
 
     if (!this.vibeCheckBtn) {
       console.log('Vibe Check button not found - likely not on homepage');
@@ -1072,6 +1073,10 @@ class VibeCheckManager {
       this.browser.getBody().classList.add('craftsman-comfort-active');
     }
     
+    // Announce theme change to screen readers with description
+    const themeDescription = this.getThemeDescription(currentTheme.name);
+    this.announceToScreenReader(`Applied ${currentTheme.name} theme: ${themeDescription}. Theme panel opened.`);
+    
     console.log(`Applied vibe theme: ${currentTheme.name}`);
   }
 
@@ -1084,6 +1089,9 @@ class VibeCheckManager {
     this.vibeError.textContent = message;
     this.vibeError.classList.remove('hidden');
     this.openPanel();
+    
+    // Announce error to screen readers with assertive priority
+    this.announceToScreenReader(`Error: ${message}`, 'assertive');
   }
 
   /**
@@ -1132,6 +1140,9 @@ class VibeCheckManager {
       if (this.lastFocusedElement && this.lastFocusedElement.focus) {
         this.lastFocusedElement.focus();
       }
+      
+      // Announce panel closure to screen readers
+      this.announceToScreenReader('Theme panel closed.');
       
       // Hide elements after animation completes
       this.browser.setTimeout(() => {
@@ -1334,6 +1345,46 @@ class VibeCheckManager {
       console.warn('Error finding focusable elements:', error);
       return [];
     }
+  }
+
+  /**
+   * Get descriptive information about a theme for screen readers
+   * @param {string} themeName - Name of the theme
+   * @returns {string} Descriptive text about the theme
+   * @private
+   */
+  getThemeDescription(themeName) {
+    const descriptions = {
+      'Synthwave Sunset': 'a retro-futuristic 80s aesthetic with electric cyan text on deep purple backgrounds, featuring neon pink accents that evoke cyberpunk and synthwave vibes',
+      'Desert Pinon': 'warm earthy tones inspired by the American Southwest, with soft beige backgrounds, brown text, and turquoise accent colors that capture the essence of desert landscapes',
+      'Texas Wildflower': 'bright and cheerful with cream backgrounds and deep blue text, featuring golden yellow links that reflect the vibrant wildflower fields of Texas',
+      'Falling Water': 'inspired by Frank Lloyd Wright\'s architectural masterpiece, with warm cream backgrounds, Cherokee red text, and golden accents that blend natural elements with modernist design',
+      'Park Ranger': 'evokes WPA National Park poster art with warm beige backgrounds, dark brown text, and sky blue accents that capture the spirit of America\'s national parks',
+      'Craftsman Comfort': 'celebrates Arts and Crafts architecture with warm cream backgrounds, rich brown text, and copper-bronze accents that embody handcrafted quality and natural materials'
+    };
+    
+    return descriptions[themeName] || 'a custom color scheme';
+  }
+
+  /**
+   * Announce message to screen readers
+   * @param {string} message - Message to announce
+   * @param {string} [priority='polite'] - Announcement priority ('polite' or 'assertive')
+   * @private
+   */
+  announceToScreenReader(message, priority = 'polite') {
+    if (!this.srAnnouncements || !message) return;
+
+    // Set the priority
+    this.srAnnouncements.setAttribute('aria-live', priority);
+    
+    // Clear previous message first to ensure new message is announced
+    this.srAnnouncements.textContent = '';
+    
+    // Use setTimeout to ensure the clear happens before the new message
+    this.browser.setTimeout(() => {
+      this.srAnnouncements.textContent = message;
+    }, 100);
   }
 }
 

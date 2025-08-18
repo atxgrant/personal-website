@@ -131,6 +131,20 @@
 /* READABLE RESPONSIVE SECTIONS - Complex media queries kept readable          */
 /* ============================================================================ */
 
+/* Screen Reader Only Content - Accessible but visually hidden */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  border: 0;
+  white-space: nowrap;
+}
+
 /* Reduced Motion Support - Important for accessibility */
 @media (prefers-reduced-motion: reduce) {
   .skip-link,
