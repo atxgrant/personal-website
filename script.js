@@ -934,15 +934,9 @@ class VibeCheckManager {
       });
     }
 
-    // Close panel when escape key or spacebar is pressed
+    // Close panel when escape key is pressed
     this.browser.addDocumentListener('keydown', (e) => {
       if (e.key === 'Escape' && this.isPanelOpen()) {
-        this.closePanel();
-      }
-      
-      // Close panel with spacebar on desktop viewports only
-      if (e.key === ' ' && this.isPanelOpen() && this.isDesktopViewport()) {
-        e.preventDefault(); // Prevent page scroll
         this.closePanel();
       }
     });
@@ -1102,15 +1096,6 @@ class VibeCheckManager {
    */
   isPanelOpen() {
     return this.vibePanel && this.vibePanel.classList.contains('visible');
-  }
-
-  /**
-   * Check if current viewport is desktop size (1024px+)
-   * @returns {boolean} True if desktop viewport
-   * @private
-   */
-  isDesktopViewport() {
-    return this.browser.getWindowWidth() >= 1024;
   }
 
   /**
