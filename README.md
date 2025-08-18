@@ -15,7 +15,7 @@ This website serves as a digital space to share practical insights from experime
 - Academic color scheme optimized for readability
 
 ### 🎨 **Vibe Check Theme System**
-- Interactive theme cycling with "Vibe Check" button
+- Interactive theme cycling with "Change Vibe" button
 - Three custom themes: Synthwave Sunset, Desert Pinon, Texas Wildflower
 - Slide-up panel displaying theme images with smooth animations
 - Professional backdrop and multiple close interactions (backdrop, × button, ESC key)
