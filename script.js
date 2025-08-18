@@ -955,14 +955,14 @@ class VibeCheckManager {
     console.log('Vibe Check Manager initialized successfully');
   }
 
-  setupEventListeners() {
+    setupEventListeners() {
     this.vibeCheckBtn.addEventListener('click', () => {
       this.safeExecute(async () => {
-      if (!this.isLoaded) {
+        if (!this.isLoaded) {
           await this.loadThemes();
-      } else {
-        this.cycleToNextTheme();
-      }
+        } else {
+          this.cycleToNextTheme();
+        }
       }, 'theme-switch');
     });
 
