@@ -1215,11 +1215,16 @@ class VibeCheckManager {
     this.vibePanel.addEventListener('touchstart', (e) => {
       if (!this.isPanelOpen() || this.isMobileViewport() === false) return;
       
+      // Don't interfere with button clicks
+      if (e.target.closest('.vibe-panel-close') || e.target.closest('.vibe-panel-header')) {
+        return;
+      }
+      
       startY = e.touches[0].clientY;
       startTime = Date.now();
       isDragging = true;
       
-      // Prevent default to avoid scroll conflicts
+      // Only prevent default for swipe gestures, not button clicks
       e.preventDefault();
     }, { passive: false });
 
@@ -1235,9 +1240,10 @@ class VibeCheckManager {
         // Add subtle visual feedback by slightly moving the panel
         const translateY = Math.min(deltaY * 0.3, 30); // Cap at 30px movement
         this.vibePanel.style.transform = `translateY(${translateY}px)`;
+        
+        // Only prevent default when we're actually swiping
+        e.preventDefault();
       }
-      
-      e.preventDefault();
     }, { passive: false });
 
     // Touch end
