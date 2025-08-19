@@ -191,6 +191,26 @@
 
 /* Reduced Motion Support - Important for accessibility */
 @media (prefers-reduced-motion: reduce) {
+  /* Disable all transitions and animations */
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
+  }
+  
+  /* Specifically target theme system elements */
+  .vibe-panel,
+  .vibe-backdrop,
+  .vibe-image,
+  .vibe-panel-close,
+  .vibe-panel-esc-hint,
+  .vibe-panel-handle,
+  .global-loading,
+  .global-loading-spinner,
+  .vibe-check-button,
+  .linkedin-link,
   .skip-link,
   .academic-link,
   .transition,
@@ -203,10 +223,32 @@
   .bio-expand-btn {
     transition: none !important;
     animation: none !important;
+    transform: none !important;
   }
   
+  /* Disable smooth scrolling */
   html {
-    scroll-behavior: auto;
+    scroll-behavior: auto !important;
+  }
+  
+  /* Disable the loading spinner animation */
+  .global-loading-spinner {
+    animation: none !important;
+    transform: none !important;
+  }
+  
+  /* Ensure theme panels appear instantly */
+  .vibe-panel.visible {
+    transform: translateY(0) !important;
+  }
+  
+  .vibe-panel.hidden {
+    transform: translateY(100%) !important;
+  }
+  
+  /* Remove hover effects that rely on transitions */
+  .vibe-check-button:active {
+    transform: none !important;
   }
 }
 

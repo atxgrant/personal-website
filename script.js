@@ -1237,9 +1237,11 @@ class VibeCheckManager {
       
       // Only allow downward swipes (positive deltaY)
       if (deltaY > 0) {
-        // Add subtle visual feedback by slightly moving the panel
-        const translateY = Math.min(deltaY * 0.3, 30); // Cap at 30px movement
-        this.vibePanel.style.transform = `translateY(${translateY}px)`;
+        // Add subtle visual feedback by slightly moving the panel (unless reduced motion is preferred)
+        if (!this.prefersReducedMotion()) {
+          const translateY = Math.min(deltaY * 0.3, 30); // Cap at 30px movement
+          this.vibePanel.style.transform = `translateY(${translateY}px)`;
+        }
         
         // Only prevent default when we're actually swiping
         e.preventDefault();
@@ -1254,8 +1256,10 @@ class VibeCheckManager {
       const deltaTime = Date.now() - startTime;
       const velocity = Math.abs(deltaY) / deltaTime;
       
-      // Reset panel position
-      this.vibePanel.style.transform = '';
+      // Reset panel position (only if we moved it due to motion preference)
+      if (!this.prefersReducedMotion()) {
+        this.vibePanel.style.transform = '';
+      }
       
       // Check if swipe meets criteria for closing
       const isValidSwipe = deltaY > threshold && deltaTime < timeThreshold && velocity > velocityThreshold;
@@ -1274,7 +1278,7 @@ class VibeCheckManager {
 
     // Touch cancel (if touch is interrupted)
     this.vibePanel.addEventListener('touchcancel', () => {
-      if (this.vibePanel) {
+      if (this.vibePanel && !this.prefersReducedMotion()) {
         this.vibePanel.style.transform = '';
       }
       isDragging = false;
@@ -1300,6 +1304,16 @@ class VibeCheckManager {
    */
   isPanelOpen() {
     return this.vibePanel && this.vibePanel.classList.contains('visible');
+  }
+
+  /**
+   * Check if user prefers reduced motion
+   * @returns {boolean} True if reduced motion is preferred
+   * @private
+   */
+  prefersReducedMotion() {
+    return this.browser.window.matchMedia && 
+           this.browser.window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   }
 
   /**
