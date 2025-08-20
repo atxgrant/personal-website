@@ -216,6 +216,33 @@
         "--link": "#B794F6",
         "--link-hover": "#F687B3"
       }
+    },
+    {
+      "name": "Reader Beware",
+      "image": "reader-beware.jpg",
+      "colors": {
+        "--background": "0 0% 6%",
+        "--foreground": "82 60% 75%",
+        "--card": "0 0% 8%",
+        "--card-foreground": "82 60% 75%",
+        "--popover": "0 0% 8%",
+        "--popover-foreground": "82 60% 75%",
+        "--primary": "37 95% 58%",
+        "--primary-foreground": "0 0% 6%",
+        "--secondary": "82 65% 55%",
+        "--secondary-foreground": "0 0% 6%",
+        "--muted": "0 0% 12%",
+        "--muted-foreground": "82 40% 60%",
+        "--accent": "37 95% 58%",
+        "--accent-foreground": "0 0% 6%",
+        "--destructive": "0 85% 60%",
+        "--destructive-foreground": "82 60% 75%",
+        "--border": "82 30% 25%",
+        "--input": "0 0% 10%",
+        "--ring": "37 95% 58%",
+        "--link": "#f9a22c",
+        "--link-hover": "#98d236"
+      }
     }
   ]
 }

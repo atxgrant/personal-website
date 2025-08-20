@@ -1067,7 +1067,7 @@ class VibeCheckManager {
     this.themeManager.applyVibeTheme(currentTheme.colors);
     
     // Apply special theme styling based on theme name
-    this.browser.getBody().classList.remove('synthwave-active', 'desert-pinon-active', 'texas-wildflower-active', 'falling-water-active', 'park-ranger-active', 'craftsman-comfort-active');
+    this.browser.getBody().classList.remove('synthwave-active', 'desert-pinon-active', 'texas-wildflower-active', 'falling-water-active', 'park-ranger-active', 'craftsman-comfort-active', 'cher-orleans-active', 'star-stuff-active', 'reader-beware-active');
     
     if (currentTheme.name === 'Synthwave Sunset') {
       this.browser.getBody().classList.add('synthwave-active');
@@ -1081,6 +1081,12 @@ class VibeCheckManager {
       this.browser.getBody().classList.add('park-ranger-active');
     } else if (currentTheme.name === 'Craftsman Comfort') {
       this.browser.getBody().classList.add('craftsman-comfort-active');
+    } else if (currentTheme.name === 'Cher Orleans') {
+      this.browser.getBody().classList.add('cher-orleans-active');
+    } else if (currentTheme.name === 'Star Stuff') {
+      this.browser.getBody().classList.add('star-stuff-active');
+    } else if (currentTheme.name === 'Reader Beware') {
+      this.browser.getBody().classList.add('reader-beware-active');
     }
     
     // Announce theme change to screen readers with description and interaction help
