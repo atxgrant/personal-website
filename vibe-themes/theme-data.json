@@ -189,6 +189,33 @@
         "--link": "#CFAE29",
         "--link-hover": "#32843B"
       }
+    },
+    {
+      "name": "Star Stuff",
+      "image": "star-stuff.jpg",
+      "colors": {
+        "--background": "237 61% 11%",
+        "--foreground": "187 100% 85%",
+        "--card": "237 61% 13%",
+        "--card-foreground": "187 100% 85%",
+        "--popover": "237 61% 13%",
+        "--popover-foreground": "187 100% 85%",
+        "--primary": "280 67% 65%",
+        "--primary-foreground": "237 61% 11%",
+        "--secondary": "337 75% 70%",
+        "--secondary-foreground": "237 61% 11%",
+        "--muted": "237 45% 18%",
+        "--muted-foreground": "187 60% 70%",
+        "--accent": "337 75% 70%",
+        "--accent-foreground": "237 61% 11%",
+        "--destructive": "0 84.2% 60.2%",
+        "--destructive-foreground": "187 100% 95%",
+        "--border": "237 45% 25%",
+        "--input": "237 45% 18%",
+        "--ring": "187 100% 50%",
+        "--link": "#B794F6",
+        "--link-hover": "#F687B3"
+      }
     }
   ]
 }
