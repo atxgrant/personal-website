@@ -55,10 +55,12 @@ This website serves as a digital space to share practical insights from experime
 
 ### 🚀 **Professional Features**
 - **SEO Optimized** - Open Graph, Twitter Cards, structured data (JSON-LD), sitemap, robots.txt
-- **Performance** - Critical CSS inlining, resource preloading, deferred script loading
+- **Performance** - Critical CSS inlining, resource preloading, deferred script loading, lazy image loading, conditional asset loading
 - **PWA Ready** - Web app manifest and favicons for all devices
-- **Error Handling** - Custom 404 page with helpful navigation
-- **Accessibility** - Skip links, ARIA attributes, keyboard navigation, focus management, screen reader announcements with rich theme descriptions
+- **Error Handling** - Custom 404 page, comprehensive error boundaries, safe localStorage wrapper, graceful degradation
+- **Accessibility** - Skip links, ARIA attributes, keyboard navigation, focus management, screen reader announcements, reduced motion support
+- **Memory Management** - Comprehensive cleanup systems, event listener management, timeout tracking, automatic page unload cleanup
+- **Code Quality** - Enterprise-level architecture, JSDoc documentation, modular components, comprehensive error handling
 - **Contact Options** - Multiple ways to connect (email, LinkedIn)
 
 ### 👨‍💻 **Developer Experience**
@@ -71,24 +73,30 @@ This website serves as a digital space to share practical insights from experime
 ```
 personal-website/
 ├── index.html              # Homepage with bio and post links
-├── style.css               # Complete styling with theme variables
-├── script.js               # JavaScript for all interactive features
+├── style.css               # Main styling with component organization
+├── script.js               # Legacy script (maintained for compatibility)
 ├── 404.html                # Custom error page
 ├── favicon.svg             # SVG favicon
 ├── robots.txt              # Search engine directives
 ├── sitemap.xml             # Site map for SEO
 ├── site.webmanifest        # PWA manifest
-├── fonts/                  # Self-hosted typography
+├── CSS-GUIDE.md            # Comprehensive CSS architecture documentation
+├── css/                    # Modular CSS architecture
+│   └── variables.css       # Centralized CSS custom properties and theme system
+├── js/                     # Modular JavaScript architecture
+│   ├── core.js            # Main application logic with enterprise-level error handling
+│   └── toc.js             # Table of Contents functionality (conditionally loaded)
+├── fonts/                  # Self-hosted typography with performance optimization
 │   ├── newsreader-400.woff2
 │   ├── newsreader-600.woff2
 │   └── newsreader.css
 ├── posts/                  # Blog posts directory
-│   └── hello-world.html    # Sample blog post
+│   └── hello-world.html    # Sample blog post with TOC integration
 ├── templates/              # Template files for creating new content
-│   └── post-template.html  # Template for new blog posts
+│   └── post-template.html  # Template for new blog posts with performance optimization
 └── vibe-themes/            # Vibe Check theme system
     ├── theme-data.json     # Theme configuration and color palettes
-    └── images/             # Theme preview images
+    └── images/             # Theme preview images with lazy loading
         ├── cher-orleans.jpg
         ├── craftsman-comfort.jpg
         ├── desert-pinon.jpg
@@ -152,23 +160,57 @@ Add theme images to `vibe-themes/images/` and update the JSON configuration to a
 ### Technologies Used
 - **HTML5** - Semantic markup with accessibility features
 - **CSS3** - Custom properties for theming, CSS Grid/Flexbox for layout
-- **Vanilla JavaScript** - Modular classes for feature management
-- **No build process** - Direct file serving for simplicity
+- **Vanilla JavaScript** - Modular classes with enterprise-level architecture
+- **No build process** - Direct file serving for simplicity with performance optimization
 
-### JavaScript Architecture
+### 🏗️ Architecture Highlights
+
+This website implements **enterprise-level code quality** with a comprehensive 10-phase architecture overhaul:
+
+#### **Phase 1-3: Foundation & Safety**
+- Centralized configuration system (`SITE_CONFIG`)
+- Safe localStorage wrapper preventing crashes
+- Comprehensive error boundaries and graceful degradation
+- User-friendly error messages with retry logic
+
+#### **Phase 4-6: Modularity & Performance**  
+- Code splitting with conditional loading (TOC only on blog posts)
+- CSS variables extraction for maintainability
+- Resource preloading and lazy loading optimizations
+- Memory-efficient caching systems
+
+#### **Phase 7-9: Quality & Sustainability**
+- Comprehensive JSDoc documentation
+- Strategic inline comments explaining complex logic
+- Complete memory management with `destroy()` methods
+- Event listener cleanup and timeout tracking
+
+#### **Phase 10: Validation & Polish**
+- Enterprise-level testing and validation
+- Reduced console logging for production
+- Performance monitoring and optimization
+- Accessibility compliance verification
+
+### JavaScript Architecture (Enterprise-Level)
+- **SITE_CONFIG** - Centralized configuration for all magic numbers and constants
+- **Safe Storage Wrapper** - Prevents localStorage crashes in private browsing mode
+- **SafeInit Class** - Prevents cascading failures during component initialization
 - **BrowserEnvironment** - Abstracts DOM/Window APIs for testability and clean architecture
-- **ThemeManager** - Handles dark/light mode functionality with system preference detection and vibe theme integration
-- **VibeCheckManager** - Manages interactive theme cycling, slide-up panel, and theme image display
-- **TOCManager** - Generates and manages table of contents with responsive behavior
+- **ThemeManager** - Handles dark/light mode with system preference detection, vibe theme integration, and comprehensive cleanup
+- **VibeCheckManager** - Manages interactive theme cycling, slide-up panel, image caching, and performance optimization
+- **TOCManager** - Generates and manages table of contents with responsive behavior and scroll tracking
 - **HeadingGenerator** - Extracts and structures content headings for navigation
-- **ScrollTracker** - Manages active section highlighting during scroll
-- **BioCollapseManager** - Handles mobile bio expand/collapse functionality
+- **ScrollTracker** - Manages active section highlighting with intersection observer and fallback support
+- **BioCollapseManager** - Handles mobile bio expand/collapse with proper event cleanup
+- **Memory Management** - All classes include `destroy()` methods with comprehensive resource cleanup
+- **Error Boundaries** - System-wide error handling with graceful degradation and user-friendly messages
 
-### CSS Architecture
-- CSS custom properties for consistent theming
-- Mobile-first responsive design
-- Utility classes for common patterns
-- Modular component styles (TOC, bio, theme toggle)
+### CSS Architecture (Modular & Documented)
+- **Centralized Variables** - `css/variables.css` with comprehensive theme system and documentation
+- **Component Organization** - Clear section headers and modular styles with CSS-GUIDE.md documentation
+- **Performance Optimized** - Critical CSS inlining, async loading, and reduced paint operations
+- **Accessibility First** - Reduced motion support, focus management, and semantic styling
+- **Mobile-first** - Progressive enhancement with touch-optimized interactions
 
 ### Browser Support
 - Modern browsers with CSS custom properties support
