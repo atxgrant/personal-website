@@ -16,7 +16,7 @@ This website serves as a digital space to share practical insights from experime
 
 ### 🎨 **Vibe Check Theme System**
 - Interactive theme cycling with "Change Vibe" button
-- Six custom themes with rich visual aesthetics and screen reader descriptions
+- Nine custom themes with rich visual aesthetics and screen reader descriptions
 - Slide-up panel displaying theme images with smooth animations
 - Professional backdrop and multiple close interactions (backdrop, × button, ESC key, swipe down on mobile)
 - Theme colors dynamically applied while maintaining functionality
@@ -24,11 +24,14 @@ This website serves as a digital space to share practical insights from experime
 - Full accessibility support with focus management and ARIA live announcements
 
 #### Available Themes:
-- **Synthwave Sunset**: A retro-futuristic 80s aesthetic with electric cyan text on deep purple backgrounds, featuring neon pink accents that evoke cyberpunk and synthwave vibes
 - **Desert Pinon**: Warm earthy tones inspired by the American Southwest, with soft beige backgrounds, brown text, and turquoise accent colors that capture the essence of desert landscapes
+- **Synthwave Sunset**: A retro-futuristic 80s aesthetic with electric cyan text on deep purple backgrounds, featuring neon pink accents that evoke cyberpunk and synthwave vibes
 - **Texas Wildflower**: Bright and cheerful with cream backgrounds and deep blue text, featuring golden yellow links that reflect the vibrant wildflower fields of Texas
+- **Cher Orleans**: Bold Mardi Gras-inspired theme with deep purple backgrounds, golden text, and vibrant green accents that celebrate New Orleans culture
 - **Falling Water**: Inspired by Frank Lloyd Wright's architectural masterpiece, with warm cream backgrounds, Cherokee red text, and golden accents that blend natural elements with modernist design
+- **Star Stuff**: Cosmic theme with deep space blue backgrounds, cyan text, and purple-pink accents that evoke the wonder of the universe
 - **Park Ranger**: Evokes WPA National Park poster art with warm beige backgrounds, dark brown text, and sky blue accents that capture the spirit of America's national parks
+- **Reader Beware**: Goosebumps-inspired spooky theme with black backgrounds, lime green text, and orange-yellow accents for a fun horror aesthetic
 - **Craftsman Comfort**: Celebrates Arts and Crafts architecture with warm cream backgrounds, rich brown text, and copper-bronze accents that embody handcrafted quality and natural materials
 
 ### 📑 **Table of Contents (TOC)**
@@ -86,12 +89,15 @@ personal-website/
 └── vibe-themes/            # Vibe Check theme system
     ├── theme-data.json     # Theme configuration and color palettes
     └── images/             # Theme preview images
-        ├── synthwave-sunset.jpg
+        ├── cher-orleans.jpg
+        ├── craftsman-comfort.jpg
         ├── desert-pinon.jpg
-        ├── texas-wildflower.jpg
         ├── falling-water.jpg
         ├── park-ranger.jpg
-        └── craftsman-comfort.jpg
+        ├── reader-beware.jpg
+        ├── star-stuff.jpg
+        ├── synthwave-sunset.jpg
+        └── texas-wildflower.jpg
 ```
 
 ## 🚀 Development

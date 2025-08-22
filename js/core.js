@@ -1,4 +1,3 @@
-console.log('Script loaded');
 // Site Configuration - All magic numbers in one place
 const SITE_CONFIG = {
   // Scroll and viewport
@@ -12,8 +11,8 @@ const SITE_CONFIG = {
   
   // Touch gestures
   SWIPE_THRESHOLD_PX: 100,         // Min swipe distance in pixels
-  SWIPE_TIME_THRESHOLD: 300,       // Max time for valid swipe in ms
-  SWIPE_VELOCITY_THRESHOLD: 0.5,   // Min velocity for swipe detection
+  SWIPE_TIME_THRESHOLD: 800,       // Max time for valid swipe in ms
+  SWIPE_VELOCITY_THRESHOLD: 0.2,   // Min velocity for swipe detection
   SWIPE_VISUAL_FEEDBACK: 0.3,      // Visual feedback multiplier
   SWIPE_MAX_VISUAL: 30,            // Max visual feedback in px
   
@@ -22,6 +21,7 @@ const SITE_CONFIG = {
   ANIMATION_NORMAL: 300,            // ms - Normal transitions
   ANIMATION_DEBOUNCE: 50,           // ms - Resize debounce
   ANIMATION_DELAY: 100,             // ms - Generic delay
+  TOC_MOBILE_CLOSE_DELAY: 50,       // ms - Fast TOC close on mobile
   
   // Retry and loading
   IMAGE_RETRY_ATTEMPTS: 3,          // Max attempts to load theme image
@@ -69,7 +69,6 @@ class SafeInit {
   static initialize(className, setupFn) {
     try {
       const instance = setupFn();
-      console.log(`✓ ${className} initialized successfully`);
       return instance;
     } catch (error) {
       console.error(`✗ ${className} failed to initialize:`, error);
@@ -176,10 +175,22 @@ class BrowserEnvironment {
    * Add event listener to window
    * @param {string} event - Event name
    * @param {Function} handler - Event handler
+   * @param {Object} [options] - Event listener options
    * @public
    */
-  addWindowListener(event, handler) {
-    this.window.addEventListener(event, handler);
+  addWindowListener(event, handler, options) {
+    this.window.addEventListener(event, handler, options);
+  }
+
+  /**
+   * Remove event listener from window
+   * @param {string} event - Event name
+   * @param {Function} handler - Event handler
+   * @param {Object} [options] - Event listener options
+   * @public
+   */
+  removeWindowListener(event, handler, options) {
+    this.window.removeEventListener(event, handler, options);
   }
 
   /**
@@ -311,6 +322,116 @@ class BrowserEnvironment {
   clearTimeout(id) {
     this.window.clearTimeout(id);
   }
+
+  /**
+   * Check if Intersection Observer is supported
+   * @returns {boolean} True if supported
+   * @public
+   */
+  supportsIntersectionObserver() {
+    return 'IntersectionObserver' in this.window;
+  }
+
+  /**
+   * Check if History API is supported
+   * @returns {boolean} True if supported
+   * @public
+   */
+  supportsHistoryAPI() {
+    return this.window.history && this.window.history.replaceState;
+  }
+
+  /**
+   * Check if device is mobile based on viewport width
+   * @returns {boolean} True if mobile device
+   * @public
+   */
+  isMobileDevice() {
+    return this.getWindowWidth() < 768;
+  }
+
+  /**
+   * Get current scroll position
+   * @returns {number} Scroll position from top
+   * @public
+   */
+  getScrollTop() {
+    return this.window.pageYOffset || this.document.documentElement.scrollTop || this.document.body.scrollTop || 0;
+  }
+
+  /**
+   * Scroll to specific position with smooth behavior
+   * @param {number} position - Y position to scroll to
+   * @public
+   */
+  scrollToPosition(position) {
+    // Use faster scrolling on mobile for better responsiveness
+    const isMobile = this.window.innerWidth < 1024;
+    
+    if (isMobile) {
+      // Faster scroll for mobile - use requestAnimationFrame for smooth but quick scroll
+      this.fastScrollTo(position);
+    } else {
+      // Standard smooth scroll for desktop
+      this.window.scrollTo({
+        top: position,
+        behavior: 'smooth'
+      });
+    }
+  }
+  
+  fastScrollTo(targetPosition) {
+    const startPosition = this.window.pageYOffset;
+    const distance = targetPosition - startPosition;
+    const duration = Math.min(600, Math.abs(distance) / 2); // Max 600ms, faster for short distances
+    let startTime = null;
+    
+    const animateScroll = (currentTime) => {
+      if (startTime === null) startTime = currentTime;
+      const timeElapsed = currentTime - startTime;
+      const progress = Math.min(timeElapsed / duration, 1);
+      
+      // Ease-out function for smooth deceleration
+      const ease = 1 - Math.pow(1 - progress, 3);
+      const currentPosition = startPosition + (distance * ease);
+      
+      this.window.scrollTo(0, currentPosition);
+      
+      if (progress < 1) {
+        requestAnimationFrame(animateScroll);
+      }
+    };
+    
+    requestAnimationFrame(animateScroll);
+  }
+
+  /**
+   * Get currently focused element
+   * @returns {Element|null} Active element
+   * @public
+   */
+  getActiveElement() {
+    return this.document.activeElement;
+  }
+
+  /**
+   * Create a debounced function
+   * @param {Function} func - Function to debounce
+   * @param {number} wait - Wait time in milliseconds
+   * @returns {Function} Debounced function
+   * @public
+   */
+  debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+      const later = () => {
+        clearTimeout(timeout);
+        func(...args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
+  }
 }
 
 /**
@@ -363,16 +484,22 @@ class ThemeManager {
   }
 
   setupEventListeners() {
-    this.themeToggle.addEventListener('click', () => {
+    // Store event handlers for proper cleanup
+    this.themeToggleHandler = () => {
       this.toggleTheme();
-    });
-
-    this.browser.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+    };
+    
+    this.systemThemeHandler = (e) => {
       if (!storage.get('theme')) {
         this.currentTheme = e.matches ? 'dark' : 'light';
         this.applyTheme(this.currentTheme);
       }
-    });
+    };
+
+    this.themeToggle.addEventListener('click', this.themeToggleHandler);
+
+    this.systemThemeMediaQuery = this.browser.matchMedia('(prefers-color-scheme: dark)');
+    this.systemThemeMediaQuery.addEventListener('change', this.systemThemeHandler);
   }
 
   /**
@@ -489,480 +616,32 @@ class ThemeManager {
   getIsVibeMode() {
     return this.isVibeMode;
   }
-}
-
-/**
- * Heading Generator - Handles TOC generation from content headings
- * Extracts headings from post content and creates navigation structure
- */
-class HeadingGenerator {
-  /**
-   * Create a HeadingGenerator instance
-   * @param {BrowserEnvironment} [browser] - Browser environment for DOM access
-   * @constructor
-   */
-  constructor(browser = new BrowserEnvironment()) {
-    this.browser = browser;
-    this.headings = [];
-  }
 
   /**
-   * Generate table of contents from post content headings
-   * @param {Element} tocList - The TOC list element to populate
-   * @returns {Element[]} Array of heading elements found
+   * Clean up theme manager resources and event listeners
    * @public
    */
-  generateTOC(tocList) {
-    const postContent = this.browser.querySelector('.post-content');
-    if (!postContent) {
-      console.warn('Post content not found');
-      return [];
-    }
-
-    this.headings = postContent.querySelectorAll('h2');
-    
-    if (this.headings.length === 0) {
-      console.log('No headings found for TOC');
-      return [];
-    }
-
-    console.log(`Found ${this.headings.length} headings for TOC`);
-    tocList.innerHTML = '';
-
-    this.headings.forEach((heading, index) => {
-      if (!heading.id) {
-        heading.id = this.generateHeadingId(heading.textContent, index);
-      }
-
-      const li = this.browser.createElement('li');
-      const a = this.browser.createElement('a');
-      
-      a.href = `#${heading.id}`;
-      a.textContent = heading.textContent;
-      a.setAttribute('data-heading-id', heading.id);
-      a.className = `toc-${heading.tagName.toLowerCase()}`;
-      
-      li.appendChild(a);
-      tocList.appendChild(li);
-    });
-
-    return this.headings;
-  }
-
-  /**
-   * Generate a unique ID for a heading
-   * @param {string} text - The heading text content
-   * @param {number} index - Fallback index for uniqueness
-   * @returns {string} Generated heading ID
-   * @private
-   */
-  generateHeadingId(text, index) {
-    let id = text
-      .toLowerCase()
-      .replace(/[^\w\s-]/g, '')
-      .replace(/\s+/g, '-')
-      .replace(/--+/g, '-')
-      .trim()
-      .substring(0, SITE_CONFIG.HEADING_EXCERPT_LENGTH);
-
-    if (!id || this.browser.getElementById(id)) {
-      id = `heading-${index}`;
+  destroy() {
+    // Remove event listeners to prevent memory leaks
+    if (this.themeToggle && this.themeToggleHandler) {
+      this.themeToggle.removeEventListener('click', this.themeToggleHandler);
     }
     
-    return id;
-  }
-
-  /**
-   * Get the generated headings array
-   * @returns {Element[]} Array of heading elements
-   * @public
-   */
-  getHeadings() {
-    return this.headings;
+    if (this.systemThemeMediaQuery && this.systemThemeHandler) {
+      this.systemThemeMediaQuery.removeEventListener('change', this.systemThemeHandler);
+    }
+    
+    // Clear references
+    this.themeToggle = null;
+    this.toggleSlider = null;
+    this.browser = null;
+    this.themeToggleHandler = null;
+    this.systemThemeHandler = null;
+    this.systemThemeMediaQuery = null;
   }
 }
 
-/**
- * Scroll Tracker - Handles scroll-based active heading detection
- * Manages the highlighting of current section in TOC during scroll
- */
-class ScrollTracker {
-  /**
-   * Create a ScrollTracker instance
-   * @param {Element[]} headings - Array of heading elements to track
-   * @param {Element} tocList - TOC list element for updating active states
-   * @param {BrowserEnvironment} [browser] - Browser environment for DOM/Window access
-   * @constructor
-   */
-  constructor(headings, tocList, browser = new BrowserEnvironment()) {
-    this.headings = headings || [];
-    this.tocList = tocList;
-    this.browser = browser;
-    this.activeHeading = null;
-  }
-
-  /**
-   * Initialize scroll tracking with throttled event listener
-   * @public
-   */
-  initScrollTracking() {
-    let isThrottled = false;
-    
-    this.browser.addWindowListener('scroll', () => {
-      if (!isThrottled) {
-        this.updateActiveHeading();
-        isThrottled = true;
-        
-        this.browser.setTimeout(() => {
-          isThrottled = false;
-          // Update one more time in case we missed the final position
-          this.updateActiveHeading();
-        }, SITE_CONFIG.SCROLL_THROTTLE_MS); // ~60fps for smooth tracking
-      }
-    });
-
-    this.updateActiveHeading();
-  }
-
-  /**
-   * Update which heading is currently active based on scroll position
-   * @public
-   */
-  updateActiveHeading() {
-    if (this.headings.length === 0) return;
-
-    const scrollTop = this.browser.getPageYOffset();
-    const windowHeight = this.browser.getWindowHeight();
-    const docHeight = this.browser.getDocumentHeight();
-    
-    let activeId = null;
-
-    // Check if we're near the bottom of the page (within 100px)
-    const isNearBottom = (scrollTop + windowHeight) >= (docHeight - SITE_CONFIG.SCROLL_BOTTOM_THRESHOLD);
-    
-    if (isNearBottom) {
-      // When near bottom, always highlight the last heading
-      activeId = this.headings[this.headings.length - 1].id;
-    } else {
-      // Normal logic for middle of page
-      for (let i = 0; i < this.headings.length; i++) {
-        const heading = this.headings[i];
-        const rect = heading.getBoundingClientRect();
-        
-        if (rect.top <= windowHeight * SITE_CONFIG.SCROLL_ACTIVE_ZONE) {
-          activeId = heading.id;
-        } else {
-          break;
-        }
-      }
-    }
-
-    this.setActiveHeading(activeId);
-  }
-
-  /**
-   * Set the active heading in the TOC
-   * @param {string|null} headingId - ID of the heading to mark as active
-   * @public
-   */
-  setActiveHeading(headingId) {
-    if (this.activeHeading === headingId) return;
-
-    const prevActive = this.tocList.querySelector('.active');
-    if (prevActive) {
-      prevActive.classList.remove('active');
-    }
-
-    if (headingId) {
-      const newActive = this.tocList.querySelector(`a[data-heading-id="${headingId}"]`);
-      if (newActive) {
-        newActive.classList.add('active');
-      }
-    }
-
-    this.activeHeading = headingId;
-  }
-
-  /**
-   * Update the headings array (useful when content changes)
-   * @param {Element[]} headings - New array of heading elements
-   * @public
-   */
-  updateHeadings(headings) {
-    this.headings = headings;
-  }
-}
-
-/**
- * Table of Contents Manager - Orchestrates TOC functionality
- * Coordinates between HeadingGenerator, ScrollTracker, and UI interactions
- */
-class TOCManager {
-  /**
-   * Create a TOCManager instance
-   * @param {BrowserEnvironment} [browser] - Browser environment for DOM/Window access
-   * @constructor
-   */
-  constructor(browser = new BrowserEnvironment()) {
-    this.browser = browser;
-    this.tocToggle = null;
-    this.tocPanel = null;
-    this.tocOverlay = null;
-    this.tocList = null;
-    this.tocHamburger = null;
-    this.tocClose = null;
-    this.isOpen = false;
-    
-    // Initialize helper classes with shared browser environment
-    this.headingGenerator = new HeadingGenerator(browser);
-    this.scrollTracker = null; // Will be initialized after headings are generated
-    
-    this.init();
-  }
-
-  init() {
-    if (this.browser.getReadyState() === 'loading') {
-      this.browser.addDocumentListener('DOMContentLoaded', () => this.setup());
-    } else {
-      this.setup();
-    }
-  }
-
-  setup() {
-    this.tocToggle = this.browser.getElementById('toc-toggle');
-    this.tocPanel = this.browser.getElementById('toc-panel');
-    this.tocOverlay = this.browser.getElementById('toc-overlay');
-    this.tocList = this.browser.getElementById('toc-list');
-    this.tocHamburger = this.browser.getElementById('toc-hamburger');
-    this.tocClose = this.browser.getElementById('toc-close');
-
-    if (!this.tocToggle || !this.tocPanel) {
-      console.log('TOC elements not found - likely not on a blog post page');
-      return;
-    }
-
-    console.log('TOC Manager initializing...');
-    this.generateTOC();
-    this.setupEventListeners();
-    this.initScrollTracking();
-    this.setInitialState();
-    console.log('TOC Manager initialized successfully');
-  }
-
-  /**
-   * Generate table of contents using HeadingGenerator
-   * @public
-   */
-  generateTOC() {
-    const headings = this.headingGenerator.generateTOC(this.tocList);
-    
-    if (headings.length === 0) {
-      this.tocToggle.style.display = 'none';
-      return;
-    }
-
-    // Initialize scroll tracker with the generated headings and shared browser environment
-    this.scrollTracker = new ScrollTracker(headings, this.tocList, this.browser);
-  }
-
-  setupEventListeners() {
-    this.tocToggle.addEventListener('click', (e) => {
-      e.preventDefault();
-      console.log('TOC toggle clicked');
-      this.toggleTOC();
-    });
-
-    if (this.tocOverlay) {
-      this.tocOverlay.addEventListener('click', () => {
-        this.closeTOC();
-      });
-    }
-
-    this.tocList.addEventListener('click', (e) => {
-      if (e.target.tagName === 'A') {
-        e.preventDefault();
-        const headingId = e.target.getAttribute('data-heading-id');
-        this.scrollToHeading(headingId);
-        
-        if (this.browser.getWindowWidth() < SITE_CONFIG.DESKTOP_BREAKPOINT) {
-          this.closeTOC();
-        }
-      }
-    });
-
-    this.browser.addDocumentListener('keydown', (e) => {
-      if (e.key === 'Escape' && this.isOpen) {
-        this.closeTOC();
-      }
-    });
-
-    // Professional viewport management
-    let resizeTimeout;
-    let currentViewportState = this.isDesktop() ? 'desktop' : 'mobile';
-    
-    this.browser.addWindowListener('resize', () => {
-      const newViewportState = this.browser.getWindowWidth() >= SITE_CONFIG.DESKTOP_BREAKPOINT ? 'desktop' : 'mobile';
-      
-      // Only act if viewport actually changed
-      if (currentViewportState !== newViewportState) {
-        // Immediate state management - prevent flash by managing visibility
-        if (newViewportState === 'mobile' && this.isOpen) {
-          // Close TOC immediately when switching to mobile to prevent full-screen flash
-          this.closeTOC();
-        }
-        
-        if (newViewportState === 'desktop') {
-          // Remove mobile overlay when switching to desktop
-          this.tocOverlay.classList.remove('visible');
-        }
-        
-        currentViewportState = newViewportState;
-      }
-      
-      // Debounced cleanup and final state handling
-      this.browser.clearTimeout(resizeTimeout);
-      resizeTimeout = this.browser.setTimeout(() => {
-        this.handleViewportChange();
-      }, SITE_CONFIG.ANIMATION_DEBOUNCE);
-    });
-  }
-
-  /**
-   * Toggle TOC open/closed state
-   * @public
-   */
-  toggleTOC() {
-    console.log('Toggling TOC, currently open:', this.isOpen);
-    if (this.isOpen) {
-      this.closeTOC();
-    } else {
-      this.openTOC();
-    }
-  }
-
-  /**
-   * Open the TOC panel and update UI state
-   * Handles both desktop and mobile display modes
-   * @public
-   */
-  openTOC() {
-    console.log('Opening TOC');
-    this.isOpen = true;
-    this.tocPanel.classList.remove('hidden');
-    this.tocPanel.classList.add('visible');
-    
-    this.tocHamburger.classList.add('hidden');
-    this.tocClose.classList.remove('hidden');
-    
-    if (this.browser.getWindowWidth() < SITE_CONFIG.DESKTOP_BREAKPOINT) {
-      this.tocOverlay.classList.remove('hidden');
-      this.tocOverlay.classList.add('visible');
-      // Focus first TOC link on mobile for better UX
-      const firstLink = this.tocList.querySelector('a');
-      if (firstLink) {
-        this.browser.setTimeout(() => firstLink.focus(), SITE_CONFIG.ANIMATION_FAST);
-      }
-    }
-
-    this.tocToggle.setAttribute('aria-expanded', 'true');
-  }
-
-  /**
-   * Close the TOC panel and update UI state
-   * Returns focus to toggle button for accessibility
-   * @public
-   */
-  closeTOC() {
-    console.log('Closing TOC');
-    this.isOpen = false;
-    this.tocPanel.classList.remove('visible');
-    
-    this.tocHamburger.classList.remove('hidden');
-    this.tocClose.classList.add('hidden');
-    
-    this.tocOverlay.classList.remove('visible');
-    this.tocToggle.setAttribute('aria-expanded', 'false');
-
-    // Return focus to toggle button when closing TOC for accessibility
-    this.tocToggle.focus();
-
-    // Clean timeout for hidden class
-    this.browser.setTimeout(() => {
-      if (!this.isOpen) {
-        this.tocPanel.classList.add('hidden');
-        this.tocOverlay.classList.add('hidden');
-      }
-    }, SITE_CONFIG.ANIMATION_FAST); // Shorter delay to match transition
-  }
-
-  /**
-   * Scroll to a specific heading with smooth animation
-   * @param {string} headingId - ID of the heading to scroll to
-   * @public
-   */
-  scrollToHeading(headingId) {
-    const heading = this.browser.getElementById(headingId);
-    if (heading) {
-      const yOffset = -20; // TODO: Use CSS variable --scroll-offset
-      const y = heading.getBoundingClientRect().top + this.browser.getPageYOffset() + yOffset;
-      
-      this.browser.scrollTo({
-        top: y,
-        behavior: 'smooth'
-      });
-    }
-  }
-
-  /**
-   * Initialize scroll tracking using ScrollTracker
-   * @public
-   */
-  initScrollTracking() {
-    if (this.scrollTracker) {
-      this.scrollTracker.initScrollTracking();
-    }
-  }
-
-  /**
-   * Check if current viewport is desktop size
-   * @returns {boolean} True if desktop viewport
-   * @public
-   */
-  isDesktop() {
-    return this.browser.getWindowWidth() >= SITE_CONFIG.DESKTOP_BREAKPOINT;
-  }
-
-  /**
-   * Set initial TOC state based on viewport size
-   * Desktop: Open by default, Mobile: Closed by default
-   * @public
-   */
-  setInitialState() {
-    // Open TOC by default on desktop, closed on mobile/tablet
-    if (this.isDesktop()) {
-      console.log('Desktop detected - opening TOC by default');
-      this.openTOC();
-    } else {
-      console.log('Mobile/tablet detected - keeping TOC closed by default');
-      // TOC is already closed by default (this.isOpen = false in constructor)
-    }
-  }
-
-  /**
-   * Handle viewport changes and adjust TOC state accordingly
-   * @public
-   */
-  handleViewportChange() {
-    // Auto-open TOC when switching to desktop, auto-close when switching to mobile
-    if (this.isDesktop() && !this.isOpen) {
-      console.log('Switched to desktop viewport - opening TOC');
-      this.openTOC();
-    } else if (!this.isDesktop() && this.isOpen) {
-      console.log('Switched to mobile/tablet viewport - closing TOC');
-      this.closeTOC();
-    }
-  }
-}
+// TOC classes are loaded from toc.js when needed
 
 /**
  * Vibe Check Manager - Handles theme cycling easter egg functionality
@@ -993,6 +672,7 @@ class VibeCheckManager {
     this.imageCache = new Map(); // Cache for loaded images
     this.preloadPromises = new Map(); // Track preloading promises
     this.imageLoadAttempts = new Map(); // Track retry attempts
+    this.activeTimeouts = new Set(); // Track active timeouts for cleanup
     
     // Performance monitoring properties
     this.performanceMetrics = new Map(); // Track operation timing
@@ -1031,13 +711,12 @@ class VibeCheckManager {
       return;
     }
 
-    console.log('Vibe Check Manager initializing...');
     this.setupEventListeners();
-    console.log('Vibe Check Manager initialized successfully');
   }
 
     setupEventListeners() {
-    this.vibeCheckBtn.addEventListener('click', () => {
+    // Store event handlers for proper cleanup
+    this.vibeCheckHandler = () => {
       this.safeExecute(async () => {
         if (!this.isLoaded) {
           await this.loadThemes();
@@ -1045,34 +724,37 @@ class VibeCheckManager {
           this.cycleToNextTheme();
         }
       }, 'theme-switch');
-    });
+    };
+
+    this.backdropClickHandler = () => {
+      this.closePanel();
+    };
+
+    this.closeButtonHandler = () => {
+      this.closePanel();
+    };
+
+    this.escapeKeyHandler = (e) => {
+      if (e.key === 'Escape' && this.isPanelOpen()) {
+        this.closePanel();
+      }
+    };
+
+    // Add event listeners
+    this.vibeCheckBtn.addEventListener('click', this.vibeCheckHandler);
 
     // Close panel when backdrop is clicked
     if (this.vibeBackdrop) {
-      this.vibeBackdrop.addEventListener('click', () => {
-        this.closePanel();
-      });
+      this.vibeBackdrop.addEventListener('click', this.backdropClickHandler);
     }
 
     // Close panel when close button is clicked
     if (this.vibePanelClose) {
-      this.vibePanelClose.addEventListener('click', () => {
-        this.closePanel();
-      });
+      this.vibePanelClose.addEventListener('click', this.closeButtonHandler);
     }
 
     // Close panel when escape key is pressed
-    console.log('Adding vibe panel keydown listener');
-    this.browser.addDocumentListener('keydown', (e) => {
-      console.log('Vibe panel keydown listener fired, key:', e.key);
-      if (e.key === 'Escape') {
-        console.log('Escape pressed, panel open?', this.isPanelOpen());
-        if (this.isPanelOpen()) {
-          console.log('Closing vibe panel via Escape');
-          this.closePanel();
-        }
-      }
-    });
+    this.browser.addDocumentListener('keydown', this.escapeKeyHandler);
 
     // Add touch swipe support for mobile/tablet
     this.setupTouchGestures();
@@ -1084,7 +766,6 @@ class VibeCheckManager {
    */
   async loadThemes() {
     try {
-      console.log('Loading vibe themes...');
       const response = await fetch('vibe-themes/theme-data.json');
       
       if (!response.ok) {
@@ -1102,7 +783,6 @@ class VibeCheckManager {
       this.currentThemeIndex = 0;
       this.showVibeTheme();
       
-      console.log(`Loaded ${this.themes.length} vibe themes`);
     } catch (error) {
       console.error('Error loading vibe themes:', error);
       
@@ -1125,6 +805,7 @@ class VibeCheckManager {
    * @private
    */
   cycleToNextTheme() {
+    // Use modulo operator to wrap around to 0 when reaching end of array
     this.currentThemeIndex = (this.currentThemeIndex + 1) % this.themes.length;
     this.showVibeTheme();
   }
@@ -1139,7 +820,7 @@ class VibeCheckManager {
     const currentTheme = this.themes[this.currentThemeIndex];
     
     // Hide error
-    this.vibeError.classList.add('hidden');
+    this.vibeError.classList.add('is-hidden');
     
     // Set theme title
     this.vibeTitle.textContent = currentTheme.name;
@@ -1154,6 +835,7 @@ class VibeCheckManager {
     this.themeManager.applyVibeTheme(currentTheme.colors);
     
     // Apply special theme styling based on theme name
+    // First remove all existing theme classes to ensure clean state
     this.browser.getBody().classList.remove('synthwave-active', 'desert-pinon-active', 'texas-wildflower-active', 'falling-water-active', 'park-ranger-active', 'craftsman-comfort-active', 'cher-orleans-active', 'star-stuff-active', 'reader-beware-active');
     
     if (currentTheme.name === 'Synthwave Sunset') {
@@ -1181,7 +863,6 @@ class VibeCheckManager {
     const interactionInstructions = this.getInteractionInstructions();
     this.announceToScreenReader(`Applied ${currentTheme.name} theme: ${themeDescription}. Theme panel opened. ${interactionInstructions}`);
     
-    console.log(`Applied vibe theme: ${currentTheme.name}`);
     
     // Preload next theme for smoother transitions
     this.preloadNextTheme();
@@ -1224,7 +905,7 @@ class VibeCheckManager {
    */
   showError(message = 'Unable to load theme') {
     this.vibeError.textContent = message;
-    this.vibeError.classList.remove('hidden');
+    this.vibeError.classList.remove('is-hidden');
     this.openPanel();
     
     // Announce error to screen readers with assertive priority
@@ -1237,8 +918,8 @@ class VibeCheckManager {
    */
   openPanel() {
     if (this.vibePanel && this.vibeBackdrop) {
-      this.vibePanel.classList.remove('hidden');
-      this.vibeBackdrop.classList.remove('hidden');
+      this.vibePanel.classList.remove('is-hidden');
+      this.vibeBackdrop.classList.remove('is-hidden');
       
       // Store the element that was focused before opening the panel
       this.lastFocusedElement = this.browser.getDocument().activeElement;
@@ -1249,7 +930,7 @@ class VibeCheckManager {
         this.vibeBackdrop.classList.add('is-visible');
         
         // Move focus to the close button for keyboard accessibility
-        this.browser.setTimeout(() => {
+        this.createTrackedTimeout(() => {
           if (this.vibePanelClose) {
             this.vibePanelClose.focus();
           }
@@ -1282,9 +963,9 @@ class VibeCheckManager {
       this.announceToScreenReader('Theme panel closed.');
       
       // Hide elements after animation completes
-      this.browser.setTimeout(() => {
-        this.vibePanel.classList.add('hidden');
-        this.vibeBackdrop.classList.add('hidden');
+      this.createTrackedTimeout(() => {
+        this.vibePanel.classList.add('is-hidden');
+        this.vibeBackdrop.classList.add('is-hidden');
       }, SITE_CONFIG.ANIMATION_NORMAL); // Match CSS transition duration
     }
   }
@@ -1309,7 +990,7 @@ class VibeCheckManager {
       if (!this.isPanelOpen() || this.isMobileViewport() === false) return;
       
       // Don't interfere with button clicks
-      if (e.target.closest('.vibe-panel-close') || e.target.closest('.vibe-panel-header')) {
+      if (e.target.closest('.vibe-panel-close')) {
         return;
       }
       
@@ -1415,8 +1096,11 @@ class VibeCheckManager {
    * @public
    */
   reset() {
+    // Clear stored focus to prevent scroll jumping during theme toggle
+    this.lastFocusedElement = null;
+    
     this.closePanel();
-    this.vibeError.classList.add('hidden');
+    this.vibeError.classList.add('is-hidden');
     this.currentThemeIndex = 0;
     
     // Remove special theme styling
@@ -1553,7 +1237,7 @@ class VibeCheckManager {
     this.srAnnouncements.textContent = '';
     
     // Use setTimeout to ensure the clear happens before the new message
-    this.browser.setTimeout(() => {
+    this.createTrackedTimeout(() => {
       this.srAnnouncements.textContent = message;
     }, SITE_CONFIG.ANIMATION_DELAY);
   }
@@ -1595,7 +1279,7 @@ class VibeCheckManager {
         if (currentAttempts < maxAttempts - 1) {
           // Retry after a delay
           this.imageLoadAttempts.set(imagePath, currentAttempts + 1);
-          this.browser.setTimeout(() => {
+          this.createTrackedTimeout(() => {
             this.preloadImage(imagePath, maxAttempts).then(resolve).catch(reject);
           }, SITE_CONFIG.IMAGE_RETRY_BACKOFF * (currentAttempts + 1)); // Exponential backoff
         } else {
@@ -1692,9 +1376,7 @@ class VibeCheckManager {
     this.errorCount++;
     
     // Log performance metrics for debugging
-    if (this.performanceMetrics.size > 0) {
-      console.log('Performance metrics at error:', Object.fromEntries(this.performanceMetrics));
-    }
+    // Performance metrics available for debugging if needed
     
     // Show user-friendly error message
     const userMessage = this.errorCount > 3 
@@ -1791,8 +1473,8 @@ class VibeCheckManager {
       this.isOperationInProgress = true;
       this.startPerformanceTimer(operationName);
       
-      // Show loading for operations that might take time
-      if (showLoading && operationName.includes('theme')) {
+      // Show loading only for user-initiated theme changes, not initial loading
+      if (showLoading && (operationName.includes('changeTheme') || operationName.includes('cycleTheme'))) {
         this.showGlobalLoading();
       }
       
@@ -1809,6 +1491,88 @@ class VibeCheckManager {
       this.isOperationInProgress = false;
       this.hideGlobalLoading();
     }
+  }
+
+  /**
+   * Create a tracked timeout that can be cleaned up
+   * @param {Function} callback - Function to execute after delay
+   * @param {number} delay - Delay in milliseconds
+   * @returns {number} Timeout ID
+   * @private
+   */
+  createTrackedTimeout(callback, delay) {
+    const timeoutId = this.browser.setTimeout(() => {
+      this.activeTimeouts.delete(timeoutId);
+      callback();
+    }, delay);
+    this.activeTimeouts.add(timeoutId);
+    return timeoutId;
+  }
+
+  /**
+   * Clean up vibe check manager resources and event listeners
+   * @public
+   */
+  destroy() {
+    // Remove all event listeners to prevent memory leaks
+    if (this.vibeCheckBtn && this.vibeCheckHandler) {
+      this.vibeCheckBtn.removeEventListener('click', this.vibeCheckHandler);
+    }
+    
+    if (this.vibeBackdrop && this.backdropClickHandler) {
+      this.vibeBackdrop.removeEventListener('click', this.backdropClickHandler);
+    }
+    
+    if (this.vibePanelClose && this.closeButtonHandler) {
+      this.vibePanelClose.removeEventListener('click', this.closeButtonHandler);
+    }
+    
+    if (this.escapeKeyHandler) {
+      this.browser.removeDocumentListener('keydown', this.escapeKeyHandler);
+    }
+    
+    if (this.focusTrapHandler) {
+      this.browser.removeDocumentListener('keydown', this.focusTrapHandler);
+    }
+
+    // Clear all active timeouts to prevent memory leaks
+    this.activeTimeouts.forEach(timeoutId => {
+      this.browser.clearTimeout(timeoutId);
+    });
+    this.activeTimeouts.clear();
+
+    // Clear cached references to prevent memory leaks
+    this.imageCache.clear();
+    this.preloadPromises.clear();
+    this.imageLoadAttempts.clear();
+    this.performanceMetrics.clear();
+
+    // Note: Touch event listeners are added directly to DOM elements
+    // They will be garbage collected when elements are dereferenced
+
+    // Clear all DOM references
+    this.vibeCheckBtn = null;
+    this.vibePanel = null;
+    this.vibeBackdrop = null;
+    this.vibePanelClose = null;
+    this.vibeTitle = null;
+    this.vibeImage = null;
+    this.vibeError = null;
+    this.globalLoading = null;
+    this.srAnnouncements = null;
+    
+    // Clear event handler references
+    this.vibeCheckHandler = null;
+    this.backdropClickHandler = null;
+    this.closeButtonHandler = null;
+    this.escapeKeyHandler = null;
+    this.focusTrapHandler = null;
+    
+    // Clear manager references
+    this.themeManager = null;
+    this.browser = null;
+    this.lastFocusedElement = null;
+
   }
 }
 
@@ -1846,21 +1610,22 @@ class BioCollapseManager {
       return;
     }
 
-    console.log('Bio Collapse Manager initializing...');
     this.setupEventListeners();
-    console.log('Bio Collapse Manager initialized successfully');
   }
 
   setupEventListeners() {
-    this.expandButton.addEventListener('click', (e) => {
+    // Store event handlers for proper cleanup
+    this.expandButtonHandler = (e) => {
       e.preventDefault();
       this.expandBio();
-    });
+    };
 
-    // Optional: Handle window resize to reset state if needed
-    this.browser.addWindowListener('resize', () => {
+    this.resizeHandler = () => {
       this.handleViewportChange();
-    });
+    };
+
+    this.expandButton.addEventListener('click', this.expandButtonHandler);
+    this.browser.addWindowListener('resize', this.resizeHandler);
   }
 
   /**
@@ -1869,8 +1634,7 @@ class BioCollapseManager {
    */
   expandBio() {
     if (this.bioContent) {
-      this.bioContent.classList.add('expanded');
-      console.log('Bio expanded');
+      this.bioContent.classList.add('is-expanded');
     }
   }
 
@@ -1881,8 +1645,31 @@ class BioCollapseManager {
   handleViewportChange() {
     // Reset to collapsed state when switching to desktop
     if (this.browser.getWindowWidth() > SITE_CONFIG.BIO_MOBILE_BREAKPOINT && this.bioContent) {
-      this.bioContent.classList.remove('expanded');
+      this.bioContent.classList.remove('is-expanded');
     }
+  }
+
+  /**
+   * Clean up bio collapse manager resources and event listeners
+   * @public
+   */
+  destroy() {
+    // Remove event listeners to prevent memory leaks
+    if (this.expandButton && this.expandButtonHandler) {
+      this.expandButton.removeEventListener('click', this.expandButtonHandler);
+    }
+    
+    if (this.resizeHandler) {
+      this.browser.removeWindowListener('resize', this.resizeHandler);
+    }
+    
+    // Clear references
+    this.bioContent = null;
+    this.expandButton = null;
+    this.browser = null;
+    this.expandButtonHandler = null;
+    this.resizeHandler = null;
+    
   }
 }
 
@@ -1895,18 +1682,12 @@ class BioCollapseManager {
  * @public
  */
 function initializeApp(browser = new BrowserEnvironment()) {
-  console.log('initializeApp called');
   // Use requestAnimationFrame for better performance
   browser.requestAnimationFrame(() => {
-    console.log('Inside requestAnimationFrame');
     // Always initialize theme manager
     browser.window.themeManager = SafeInit.initialize('ThemeManager', () => new ThemeManager(browser));
     
-    // Only initialize TOC manager on blog post pages
-    const hasTOC = browser.getElementById('toc-panel');
-    if (hasTOC) {
-      browser.window.tocManager = SafeInit.initialize('TOCManager', () => new TOCManager(browser));
-    }
+    // TOC manager is initialized in toc.js when that script loads
     
     // Only initialize bio collapse manager on homepage
     const hasBioContent = browser.querySelector('.bio-content');
@@ -1916,14 +1697,8 @@ function initializeApp(browser = new BrowserEnvironment()) {
     
     // Only initialize vibe check manager on homepage (where button exists)
     const hasVibeCheck = browser.getElementById('vibe-check-btn');
-    console.log('Checking for vibe check button:', !!hasVibeCheck);
-    console.log('Theme manager exists:', !!browser.window.themeManager);
     if (hasVibeCheck && browser.window.themeManager) {
-      console.log('Initializing VibeCheckManager...');
       browser.window.vibeCheckManager = SafeInit.initialize('VibeCheckManager', () => new VibeCheckManager(browser.window.themeManager, browser));
-      console.log('VibeCheckManager created:', !!browser.window.vibeCheckManager);
-    } else {
-      console.log('Skipping VibeCheckManager initialization');
     }
     
     // Add loaded class for transition optimizations
@@ -1934,9 +1709,45 @@ function initializeApp(browser = new BrowserEnvironment()) {
       browser.window.performance.mark('app-initialized');
     }
     
-    console.log('Static website initialized successfully');
   });
 }
+
+/**
+ * Global cleanup function to destroy all managers and prevent memory leaks
+ * Call this before page unload or when reinitializing the application
+ * @public
+ */
+function cleanupApp() {
+  
+  try {
+    // Destroy all managers if they exist
+    if (window.themeManager && typeof window.themeManager.destroy === 'function') {
+      window.themeManager.destroy();
+      window.themeManager = null;
+    }
+    
+    if (window.vibeCheckManager && typeof window.vibeCheckManager.destroy === 'function') {
+      window.vibeCheckManager.destroy();
+      window.vibeCheckManager = null;
+    }
+    
+    if (window.bioCollapseManager && typeof window.bioCollapseManager.destroy === 'function') {
+      window.bioCollapseManager.destroy();
+      window.bioCollapseManager = null;
+    }
+    
+    if (window.tocManager && typeof window.tocManager.destroy === 'function') {
+      window.tocManager.destroy();
+      window.tocManager = null;
+    }
+    
+  } catch (error) {
+    console.error('Error during application cleanup:', error);
+  }
+}
+
+// Automatically cleanup on page unload to prevent memory leaks
+window.addEventListener('beforeunload', cleanupApp);
 
 // Initialize immediately if DOM is ready, otherwise wait
 const browserEnv = new BrowserEnvironment();

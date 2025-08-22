@@ -34,9 +34,10 @@
     <meta name="theme-color" content="#a84d2b">
     <link rel="manifest" href="site.webmanifest">
     
-    <!-- Preload critical resources -->
+    <!-- Preload critical resources for faster loading -->
     <link rel="preload" href="style.css" as="style">
-    <link rel="preload" href="script.js" as="script">
+    <link rel="preload" href="js/core.js" as="script">
+    <link rel="preload" href="css/variables.css" as="style">
     
     <!-- Self-hosted font optimization -->
     <link rel="preload" href="fonts/newsreader-400.woff2" as="font" type="font/woff2" crossorigin>
@@ -45,20 +46,7 @@
     
     <!-- Critical CSS for above-the-fold content -->
     <style>
-    /* Critical styles for immediate render */
-    :root {
-      --background: 49 22% 93%;
-      --foreground: 20 5% 12%;
-      --link: #a84d2b;
-      --muted: 43 8% 88%;
-      --ring: 25 25% 25%;
-    }
-    .dark {
-      --background: 25 15% 8%;
-      --foreground: 43 20% 90%;
-      --link: #a84d2b;
-      --muted: 25 12% 15%;
-    }
+    /* Critical styles for immediate render - CSS variables now centralized in css/variables.css */
     body { 
       margin: 0; 
       font-family: "Newsreader", Georgia, serif; 
@@ -229,7 +217,7 @@
             </footer>
             
             <!-- Slide-up Theme Panel (Hidden by default) -->
-            <div id="vibe-panel" class="vibe-panel hidden">
+            <div id="vibe-panel" class="vibe-panel is-hidden">
                 <div class="vibe-panel-content">
                     <div class="vibe-panel-handle" aria-hidden="true"></div>
                     <div class="vibe-panel-header">
@@ -237,8 +225,8 @@
                         <button id="vibe-panel-close" class="vibe-panel-close" aria-label="Close theme panel. Also works with Escape key, swipe down on mobile, or clicking outside">×</button>
                     </div>
                     <div id="vibe-title" class="vibe-title"></div>
-                    <img id="vibe-image" class="vibe-image" alt="Current vibe theme" />
-                    <div id="vibe-error" class="vibe-error hidden">Unable to load theme</div>
+                    <img id="vibe-image" class="vibe-image" alt="Current vibe theme" loading="lazy" decoding="async" />
+                    <div id="vibe-error" class="vibe-error is-hidden">Unable to load theme</div>
                     <div id="vibe-help" class="vibe-help">
                         <span class="vibe-help-desktop">Press Esc, click ×, or click outside to close</span>
                         <span class="vibe-help-mobile">Swipe down, tap ×, or tap outside to close</span>
@@ -247,19 +235,19 @@
             </div>
             
             <!-- Panel Backdrop -->
-            <div id="vibe-backdrop" class="vibe-backdrop hidden"></div>
+            <div id="vibe-backdrop" class="vibe-backdrop is-hidden"></div>
             
             <!-- ARIA Live Region for Screen Reader Announcements -->
             <div id="sr-announcements" class="sr-only" aria-live="polite" aria-atomic="true"></div>
             
             <!-- Global Loading Indicator -->
-            <div id="global-loading" class="global-loading hidden" aria-hidden="true">
+            <div id="global-loading" class="global-loading is-hidden" aria-hidden="true">
                 <div class="global-loading-spinner"></div>
                 <span class="global-loading-text">Loading theme...</span>
             </div>
         </div>
     </div>
     
-    <script src="script.js" defer></script>
+    <script src="js/core.js" defer></script>
 </body>
 </html> 

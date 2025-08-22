@@ -1,0 +1,250 @@
+/*
+ * CSS VARIABLES & THEME SYSTEM
+ * =============================
+ * 
+ * This file centralizes all CSS custom properties (variables) used throughout the site.
+ * Variables are organized by category and include both global and theme-specific values.
+ * 
+ * ORGANIZATION:
+ * - Global Variables: Layout, timing, breakpoints
+ * - Color System: Base theme colors (light/dark mode)
+ * - Component Variables: Component-specific measurements
+ * - Theme Overrides: Special theme customizations
+ */
+
+/* ============================================================================ */
+/* GLOBAL VARIABLES - Layout, Timing, and Universal Constants                  */
+/* ============================================================================ */
+:root {
+  /* Animation & Transition Durations */
+  --animation-duration: 150ms;
+  --transition-fast: .15s;
+  --transition-normal: .2s;
+  --transition-slow: .3s;
+  --resize-debounce: 50ms;
+  
+  /* Layout Measurements */
+  --scroll-offset: -20px;
+  --radius: .25rem;
+  
+  /* Breakpoints (for reference - not used in CSS) */
+  --mobile-breakpoint: 640px;
+  --bio-mobile-breakpoint: 768px;
+  --desktop-breakpoint: 1024px;
+  
+  /* TOC Component Dimensions */
+  --toc-width-desktop: 16rem;
+  --toc-width-mobile: 100%;
+  --toc-top-desktop: 6rem;
+  --toc-left-desktop: 1rem;
+  --toc-gap-desktop: 1rem;
+  
+  /* Touch Target Minimums */
+  --touch-target-min: 44px;
+  
+  /* Z-Index Scale */
+  --z-overlay: 998;
+  --z-panel: 999;
+  --z-modal: 1000;
+  --z-toast: 1050;
+}
+
+/* ============================================================================ */
+/* COLOR SYSTEM - Light Theme (Default)                                       */
+/* ============================================================================ */
+:root {
+  /* Primary Colors */
+  --background: 49 22% 93%;
+  --foreground: 20 5% 12%;
+  
+  /* Card & Popover */
+  --card: 49 22% 93%;
+  --card-foreground: 20 5% 12%;
+  --popover: 49 22% 93%;
+  --popover-foreground: 20 5% 12%;
+  
+  /* UI Colors */
+  --primary: 20 5% 12%;
+  --primary-foreground: 49 22% 93%;
+  --secondary: 43 8% 88%;
+  --secondary-foreground: 20 5% 12%;
+  --muted: 43 8% 88%;
+  --muted-foreground: 20 5% 12%;
+  
+  /* Accent & Destructive */
+  --accent: 200 50% 40%;
+  --accent-foreground: 49 22% 93%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 49 22% 93%;
+  
+  /* Borders & Inputs */
+  --border: 43 8% 85%;
+  --input: 43 8% 88%;
+  --ring: 25 25% 25%;
+  
+  /* Link Colors */
+  --link: #a84d2b;
+  --link-hover: #b8592e;
+}
+
+/* ============================================================================ */
+/* COLOR SYSTEM - Dark Theme                                                  */
+/* ============================================================================ */
+.dark {
+  /* Primary Colors */
+  --background: 25 15% 8%;
+  --foreground: 43 20% 90%;
+  
+  /* Card & Popover */
+  --card: 25 15% 8%;
+  --card-foreground: 43 20% 90%;
+  --popover: 25 15% 8%;
+  --popover-foreground: 43 20% 90%;
+  
+  /* UI Colors */
+  --primary: 43 20% 90%;
+  --primary-foreground: 25 15% 8%;
+  --secondary: 25 12% 15%;
+  --secondary-foreground: 43 20% 90%;
+  --muted: 25 12% 15%;
+  --muted-foreground: 43 10% 65%;
+  
+  /* Accent & Destructive */
+  --accent: 200 60% 60%;
+  --accent-foreground: 25 15% 8%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 43 20% 90%;
+  
+  /* Borders & Inputs */
+  --border: 25 12% 20%;
+  --input: 25 12% 15%;
+  --ring: 43 20% 90%;
+  
+  /* Link Colors */
+  --link: #e67b4f;
+  --link-hover: #ff8a5c;
+}
+
+/* ============================================================================ */
+/* VIBE THEME VARIABLES - Dynamic Theme System                                */
+/* ============================================================================ */
+
+/* Synthwave Theme Variables */
+body.synthwave-active {
+  --theme-primary: #FF1493;
+  --theme-secondary: #00E5FF;
+  --theme-accent: #FF00FF;
+  --theme-glow-primary: rgba(255, 20, 147, 0.5);
+  --theme-glow-secondary: rgba(0, 229, 255, 0.3);
+  
+  /* Content Section Overrides */
+  --content-border: 1px solid rgba(0, 229, 255, 0.2);
+  --content-border-left: 1px solid rgba(0, 229, 255, 0.2);
+  --content-background: hsl(var(--card));
+}
+
+/* Desert Pinon Theme Variables */
+body.desert-pinon-active {
+  --theme-primary: #40E0D0;
+  --theme-secondary: #E3735E;
+  --theme-accent: #CC5500;
+  
+  /* Content Section Overrides */
+  --content-border: 1px solid rgba(227, 115, 94, 0.3);
+  --content-border-left: 4px solid #40E0D0;
+  --content-background: rgba(208, 181, 154, 0.1);
+}
+
+/* Texas Wildflower Theme Variables */
+body.texas-wildflower-active {
+  --theme-primary: #002D62;
+  --theme-secondary: #B22222;
+  --theme-accent: #FFC513;
+  --theme-sage: #4F7942;
+  
+  /* Content Section Overrides */
+  --content-border: 1px solid rgba(0, 45, 98, 0.2);
+  --content-border-left: 4px solid #002D62;
+  --content-background: rgba(0, 45, 98, 0.03);
+}
+
+/* Falling Water Theme Variables */
+body.falling-water-active {
+  --theme-primary: #9B2B28;
+  --theme-secondary: #7C936E;
+  --theme-accent: #F0C034;
+  --theme-brown: #7B543D;
+  
+  /* Content Section Overrides */
+  --content-border: 1px solid rgba(155, 43, 40, 0.2);
+  --content-border-left: 4px solid #7C936E;
+  --content-background: rgba(124, 147, 110, 0.05);
+}
+
+/* Park Ranger Theme Variables */
+body.park-ranger-active {
+  --theme-primary: #52342C;
+  --theme-secondary: #1D6067;
+  --theme-accent: #DE8C41;
+  --theme-highlight: #84D2E4;
+  --theme-gold: #D4A657;
+  
+  /* Content Section Overrides */
+  --content-border: 1px solid rgba(29, 96, 103, 0.3);
+  --content-border-left: 4px solid #84D2E4;
+  --content-background: rgba(132, 210, 228, 0.05);
+}
+
+/* Craftsman Comfort Theme Variables */
+body.craftsman-comfort-active {
+  --theme-primary: #5C4033;
+  --theme-secondary: #8B4513;
+  --theme-accent: #B87333;
+  --theme-sage: #556B2F;
+  --theme-stone: #8D8478;
+  
+  /* Content Section Overrides */
+  --content-border: 1px solid rgba(92, 64, 51, 0.2);
+  --content-border-left: 4px solid #8B4513;
+  --content-background: rgba(139, 69, 19, 0.04);
+}
+
+/* Reader Beware Theme Variables */
+body.reader-beware-active {
+  --theme-primary: #f9a22c;
+  --theme-secondary: #98d236;
+  --theme-accent: #2c8a8d;
+  --theme-glow-orange: rgba(249, 162, 44, 0.5);
+  --theme-glow-green: rgba(152, 210, 54, 0.5);
+  
+  /* Content Section Overrides */
+  --content-border: 1px solid rgba(152, 210, 54, 0.2);
+  --content-border-left: 3px solid #98d236;
+  --content-background: rgba(0, 0, 0, 0.3);
+}
+
+/* Star Stuff Theme Variables */
+body.star-stuff-active {
+  --theme-primary: #9c62e3;
+  --theme-secondary: #39D0FF;
+  --theme-accent: #ff6b8a;
+  --theme-gold: #ffd700;
+  
+  /* Content Section Overrides */
+  --content-border: 1px solid rgba(156, 98, 227, 0.3);
+  --content-border-left: 4px solid #9c62e3;
+  --content-background: rgba(57, 208, 255, 0.03);
+}
+
+/* Cher Orleans Theme Variables */
+body.cher-orleans-active {
+  --theme-primary: #722f37;
+  --theme-secondary: #f2cc0f;
+  --theme-accent: #9d4edd;
+  --theme-green: #0f7938;
+  
+  /* Content Section Overrides */
+  --content-border: 1px solid rgba(114, 47, 55, 0.3);
+  --content-border-left: 4px solid #722f37;
+  --content-background: rgba(157, 78, 221, 0.05);
+}

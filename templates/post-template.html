@@ -33,6 +33,11 @@
     <link rel="icon" href="../favicon.svg" type="image/svg+xml">
     <meta name="theme-color" content="#a84d2b">
     
+    <!-- Preload critical resources for better performance -->
+    <link rel="preload" href="../style.css" as="style">
+    <link rel="preload" href="../js/core.js" as="script">
+    <link rel="preload" href="../js/toc.js" as="script">
+    
     <!-- Self-hosted font optimization -->
     <link rel="preload" href="../fonts/newsreader-400.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="../fonts/newsreader-600.woff2" as="font" type="font/woff2" crossorigin>
@@ -40,22 +45,7 @@
     
     <!-- Critical CSS for above-the-fold content -->
     <style>
-    /* Critical styles for immediate render */
-    :root {
-      --background: 49 22% 93%;
-      --foreground: 20 5% 12%;
-      --link: #a84d2b;
-      --muted: 43 8% 88%;
-      --ring: 25 25% 25%;
-      --border: 43 8% 85%;
-    }
-    .dark {
-      --background: 25 15% 8%;
-      --foreground: 43 20% 90%;
-      --link: #a84d2b;
-      --muted: 25 12% 15%;
-      --border: 25 12% 20%;
-    }
+    /* Critical styles for immediate render - CSS variables now centralized in ../css/variables.css */
     body { 
       margin: 0; 
       font-family: "Newsreader", Georgia, serif; 
@@ -134,7 +124,7 @@
     <a href="#toc-panel" class="skip-link">Skip to table of contents</a>
 
     <!-- TOC Panel -->
-    <nav id="toc-panel" class="toc-panel hidden" role="navigation" aria-label="Table of Contents">
+    <nav id="toc-panel" class="toc-panel is-hidden" role="navigation" aria-label="Table of Contents">
         <div class="toc-header">
             <h3>Contents</h3>
         </div>
@@ -144,7 +134,7 @@
     </nav>
 
     <!-- TOC Overlay for mobile -->
-    <div id="toc-overlay" class="toc-overlay hidden"></div>
+    <div id="toc-overlay" class="toc-overlay is-hidden"></div>
 
     <div id="root">
         <div id="top">
@@ -165,7 +155,7 @@
                                 <span class="hamburger-line"></span>
                                 <span class="hamburger-line"></span>
                             </span>
-                            <span id="toc-close" class="toc-icon hidden">
+                            <span id="toc-close" class="toc-icon is-hidden">
                                 <span class="close-line"></span>
                                 <span class="close-line"></span>
                             </span>
@@ -224,6 +214,8 @@
         </div>
     </div>
     
-    <script src="../script.js" defer></script>
+    <!-- Performance optimized: Load core.js first (contains initialization), then TOC.js -->
+    <script src="../js/core.js" defer></script>
+    <script src="../js/toc.js" defer></script>
 </body>
 </html> 
