@@ -300,8 +300,16 @@
     };
     </script>
     
-    <link rel="stylesheet" href="../style.css" media="print" onload="this.media='all'; window.analyzeCSS(); this.onload=null;">
-    <noscript><link rel="stylesheet" href="../style.css"></noscript>
+    <!-- Load CSS synchronously to prevent CLS -->
+    <link rel="stylesheet" href="../style.css">
+    <script>
+      // Still run analysis after CSS loads for debugging
+      window.addEventListener('load', function() {
+        if (window.analyzeCSS) {
+          window.analyzeCSS();
+        }
+      });
+    </script>
     
     <!-- IMMEDIATE CLS Baseline Capture -->
     <script>
