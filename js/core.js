@@ -463,24 +463,51 @@ class ThemeManager {
   }
 
   setup() {
+    // CLS DEBUG: Log height during theme setup
+    const logHeight = (step) => {
+      const height = getComputedStyle(this.browser.getBody()).height;
+      console.log(`🔍 CLS DEBUG [THEME_${step}]: height=${height}`);
+    };
+    
+    logHeight('SETUP_START');
+    
     this.themeToggle = this.browser.getElementById('theme-toggle');
     this.toggleSlider = this.browser.getElementById('toggle-slider');
+
+    logHeight('AFTER_ELEMENT_QUERIES');
 
     if (!this.themeToggle) {
       console.warn('Theme toggle button not found');
       return;
     }
 
+    logHeight('BEFORE_INIT_THEME');
     this.initializeTheme();
+    logHeight('AFTER_INIT_THEME');
+    
     this.setupEventListeners();
+    logHeight('SETUP_COMPLETE');
   }
 
   initializeTheme() {
+    const logHeight = (step) => {
+      const height = getComputedStyle(this.browser.getBody()).height;
+      console.log(`🔍 CLS DEBUG [INIT_THEME_${step}]: height=${height}`);
+    };
+    
+    logHeight('START');
+    
     const savedTheme = storage.get('theme');
+    logHeight('AFTER_STORAGE_GET');
+    
     const systemTheme = this.browser.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    logHeight('AFTER_MEDIA_QUERY');
     
     this.currentTheme = savedTheme || systemTheme;
+    logHeight('BEFORE_APPLY_THEME');
+    
     this.applyTheme(this.currentTheme);
+    logHeight('AFTER_APPLY_THEME');
   }
 
   setupEventListeners() {
@@ -1682,34 +1709,68 @@ class BioCollapseManager {
  * @public
  */
 function initializeApp(browser = new BrowserEnvironment()) {
-  // Initialize immediately to prevent timing-based layout shift
-  // The requestAnimationFrame was causing a 239px height difference
-  // between initial render and JavaScript execution on mobile
-  
-  // Always initialize theme manager
-  browser.window.themeManager = SafeInit.initialize('ThemeManager', () => new ThemeManager(browser));
-  
-  // TOC manager is initialized in toc.js when that script loads
-  
-  // Only initialize bio collapse manager on homepage
-  const hasBioContent = browser.querySelector('.bio-content');
-  if (hasBioContent) {
-    browser.window.bioCollapseManager = SafeInit.initialize('BioCollapseManager', () => new BioCollapseManager(browser));
+  // GRANULAR CLS DEBUGGING - Log height at every single step
+  function logHeight(step) {
+    const height = getComputedStyle(browser.getBody()).height;
+    const classes = browser.getBody().className;
+    console.log(`🔍 CLS DEBUG [${step}]: height=${height}, body classes="${classes}"`);
+    return height;
   }
   
-  // Only initialize vibe check manager on homepage (where button exists)
-  const hasVibeCheck = browser.getElementById('vibe-check-btn');
-  if (hasVibeCheck && browser.window.themeManager) {
-    browser.window.vibeCheckManager = SafeInit.initialize('VibeCheckManager', () => new VibeCheckManager(browser.window.themeManager, browser));
-  }
+  console.log('🔍 CLS DEBUG: initializeApp started');
+  logHeight('START');
   
-  // Add loaded class for transition optimizations
-  browser.getBody().classList.add('loaded');
-  
-  // Performance mark for debugging
-  if ('performance' in browser.window && 'mark' in browser.window.performance) {
-    browser.window.performance.mark('app-initialized');
-  }
+  // Use requestAnimationFrame for better performance (restored)
+  browser.requestAnimationFrame(() => {
+    console.log('🔍 CLS DEBUG: requestAnimationFrame callback started');
+    logHeight('RAF_START');
+    
+    // Always initialize theme manager
+    console.log('🔍 CLS DEBUG: About to initialize ThemeManager');
+    logHeight('BEFORE_THEME_MANAGER');
+    
+    browser.window.themeManager = SafeInit.initialize('ThemeManager', () => new ThemeManager(browser));
+    
+    logHeight('AFTER_THEME_MANAGER');
+    console.log('🔍 CLS DEBUG: ThemeManager initialized');
+    
+    // TOC manager is initialized in toc.js when that script loads
+    
+    // Only initialize bio collapse manager on homepage
+    const hasBioContent = browser.querySelector('.bio-content');
+    if (hasBioContent) {
+      console.log('🔍 CLS DEBUG: About to initialize BioCollapseManager');
+      logHeight('BEFORE_BIO_COLLAPSE');
+      browser.window.bioCollapseManager = SafeInit.initialize('BioCollapseManager', () => new BioCollapseManager(browser));
+      logHeight('AFTER_BIO_COLLAPSE');
+      console.log('🔍 CLS DEBUG: BioCollapseManager initialized');
+    }
+    
+    // Only initialize vibe check manager on homepage (where button exists)
+    const hasVibeCheck = browser.getElementById('vibe-check-btn');
+    if (hasVibeCheck && browser.window.themeManager) {
+      console.log('🔍 CLS DEBUG: About to initialize VibeCheckManager');
+      logHeight('BEFORE_VIBE_CHECK');
+      browser.window.vibeCheckManager = SafeInit.initialize('VibeCheckManager', () => new VibeCheckManager(browser.window.themeManager, browser));
+      logHeight('AFTER_VIBE_CHECK');
+      console.log('🔍 CLS DEBUG: VibeCheckManager initialized');
+    }
+    
+    // Add loaded class for transition optimizations
+    console.log('🔍 CLS DEBUG: About to add loaded class to body');
+    logHeight('BEFORE_LOADED_CLASS');
+    browser.getBody().classList.add('loaded');
+    logHeight('AFTER_LOADED_CLASS');
+    console.log('🔍 CLS DEBUG: loaded class added');
+    
+    // Performance mark for debugging
+    if ('performance' in browser.window && 'mark' in browser.window.performance) {
+      browser.window.performance.mark('app-initialized');
+    }
+    
+    logHeight('COMPLETE');
+    console.log('🔍 CLS DEBUG: initializeApp completed');
+  });
 }
 
 /**
