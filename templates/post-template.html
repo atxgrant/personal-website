@@ -52,6 +52,7 @@
       background-color: hsl(var(--background)); 
       color: hsl(var(--foreground));
       font-display: swap;
+      line-height: 24px; /* CRITICAL: Match full CSS to prevent CLS */
     }
     .min-h-screen { min-height: 100vh; }
     .max-w-2xl { max-width: 42rem; }
@@ -87,8 +88,31 @@
     }
     </style>
     
-    <!-- Load remaining CSS synchronously to prevent CLS -->
-    <link rel="stylesheet" href="../style.css">
+    <!-- Restore async CSS loading with detailed CLS debugging -->
+    <link rel="stylesheet" href="../style.css" media="print" onload="
+      console.log('🔍 CSS LOAD: style.css onload fired, about to change media');
+      const beforeStyles = getComputedStyle(document.body);
+      console.log('🔍 CSS LOAD: BEFORE - height:', beforeStyles.height, 'lineHeight:', beforeStyles.lineHeight, 'fontSize:', beforeStyles.fontSize);
+      
+      this.media='all'; 
+      
+      const afterStyles = getComputedStyle(document.body);
+      console.log('🔍 CSS LOAD: AFTER - height:', afterStyles.height, 'lineHeight:', afterStyles.lineHeight, 'fontSize:', afterStyles.fontSize);
+      
+      const heightChange = parseFloat(afterStyles.height) - parseFloat(beforeStyles.height);
+      const lineHeightChange = afterStyles.lineHeight !== beforeStyles.lineHeight;
+      
+      console.log('🔍 CSS LOAD: HEIGHT CHANGE:', heightChange + 'px', 'LINE-HEIGHT CHANGED:', lineHeightChange);
+      
+      if (Math.abs(heightChange) < 5) {
+        console.log('✅ SUCCESS: No significant height change - line-height fix worked!');
+      } else {
+        console.log('❌ STILL SHIFTING: Height changed by', heightChange + 'px - line-height was not the only cause');
+      }
+      
+      this.onload=null;
+    ">
+    <noscript><link rel="stylesheet" href="../style.css"></noscript>
     
     <!-- Structured Data -->
     <script type="application/ld+json">
