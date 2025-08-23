@@ -157,10 +157,12 @@
           const body = document.body;
           const postContent = document.querySelector('.post-content');
           const postTitle = document.querySelector('.post-meta h1');
+          const header = document.querySelector('header, .post-header');
+          const footer = document.querySelector('footer');
           
           // Early return if body doesn't exist yet
           if (!body) {
-            console.log(`🔤 COMPREHENSIVE FOIT [${stage}]: document.body not available yet, skipping measurement`);
+            console.log(`🔤 COMPREHENSIVE CLS [${stage}]: document.body not available yet, skipping measurement`);
             return null;
           }
           
@@ -189,6 +191,8 @@
             bodyWidth: parseFloat(bodyStyles.width),
             postContentHeight: postContent ? postContent.offsetHeight : 0,
             postContentScrollHeight: postContent ? postContent.scrollHeight : 0,
+            headerHeight: header ? header.offsetHeight : 0,
+            footerHeight: footer ? footer.offsetHeight : 0,
             
             // Font properties
             bodyFontFamily: bodyStyles.fontFamily,
@@ -257,40 +261,61 @@
         },
         
         logMeasurement: function(measurement, stage) {
-          console.group(`🔤 COMPREHENSIVE FOIT [${stage}] @${Math.round(measurement.timestamp)}ms`);
+          console.group(`🔤 COMPREHENSIVE CLS [${stage}] @${Math.round(measurement.timestamp)}ms`);
           
-          // Layout info
-          console.log(`📐 LAYOUT: body=${measurement.bodyHeight}px×${measurement.bodyWidth}px, post=${measurement.postContentHeight}px`);
+          // Enhanced layout breakdown
+          console.log(`📐 LAYOUT BREAKDOWN:`);
+          console.log(`   Body: ${measurement.bodyHeight}px × ${measurement.bodyWidth}px`);
+          console.log(`   Post Content: ${measurement.postContentHeight}px (scroll: ${measurement.postContentScrollHeight}px)`);
+          console.log(`   Header: ${measurement.headerHeight || 'N/A'}px`);
+          console.log(`   Footer: ${measurement.footerHeight || 'N/A'}px`);
           
-          // Font info
-          console.log(`🔤 FONTS: body="${measurement.bodyFontFamily}" post="${measurement.postContentFontFamily}"`);
-          console.log(`📊 SIZES: body=${measurement.bodyFontSize}/${measurement.bodyLineHeight}, post=${measurement.postContentFontSize}/${measurement.postContentLineHeight}`);
-          console.log(`⚖️ WEIGHTS: body=${measurement.bodyFontWeight}, post=${measurement.postContentFontWeight}, title=${measurement.titleFontWeight}`);
-          console.log(`📏 SPACING: body=${measurement.bodyLetterSpacing}, post=${measurement.postContentLetterSpacing}`);
+          // Height change analysis with source attribution
+          if (this.measurements.length > 1) {
+            const prev = this.measurements[this.measurements.length - 2];
+            const bodyChange = measurement.bodyHeight - prev.bodyHeight;
+            const postChange = measurement.postContentHeight - prev.postContentHeight;
+            const headerChange = (measurement.headerHeight || 0) - (prev.headerHeight || 0);
+            
+            if (Math.abs(bodyChange) > 1) {
+              console.log(`🔄 HEIGHT CHANGES since ${prev.stage}:`);
+              console.log(`   Body: ${bodyChange > 0 ? '+' : ''}${bodyChange}px`);
+              console.log(`   Post: ${postChange > 0 ? '+' : ''}${postChange}px`);
+              console.log(`   Header: ${headerChange > 0 ? '+' : ''}${headerChange}px`);
+              
+              // Identify primary contributor
+              const changes = [
+                { name: 'Body', value: Math.abs(bodyChange) },
+                { name: 'Post', value: Math.abs(postChange) },
+                { name: 'Header', value: Math.abs(headerChange) }
+              ];
+              const primary = changes.reduce((max, curr) => curr.value > max.value ? curr : max);
+              console.log(`   🎯 PRIMARY CONTRIBUTOR: ${primary.name} (${primary.value}px)`);
+            }
+          }
           
-          // Text rendering measurements
+          // Enhanced font analysis
+          console.log(`🔤 FONT ANALYSIS:`);
+          console.log(`   Family: body="${measurement.bodyFontFamily}" vs post="${measurement.postContentFontFamily}"`);
+          console.log(`   Sizes: body=${measurement.bodyFontSize}/${measurement.bodyLineHeight} vs post=${measurement.postContentFontSize}/${measurement.postContentLineHeight}`);
+          console.log(`   Status: ${measurement.fontsLoading}, N400=${measurement.newsreader400Ready}, N600=${measurement.newsreader600Ready}`);
+          
+          // Text rendering impact
           if (measurement.textDimensions.test0 && measurement.textDimensions.test1) {
             const newsreaderWidth = measurement.textDimensions.test0.width;
             const georgiaWidth = measurement.textDimensions.test1.width;
             const widthDiff = Math.abs(newsreaderWidth - georgiaWidth);
-            console.log(`📝 TEXT RENDERING: Newsreader=${newsreaderWidth}px, Georgia=${georgiaWidth}px, diff=${widthDiff}px`);
+            console.log(`📝 TEXT METRICS: Newsreader=${newsreaderWidth.toFixed(1)}px, Georgia=${georgiaWidth.toFixed(1)}px (Δ${widthDiff.toFixed(1)}px)`);
             
-            if (widthDiff > 10) {
-              console.log(`   🚨 SIGNIFICANT WIDTH DIFFERENCE: ${widthDiff}px - likely causing reflow`);
+            if (widthDiff > 5) {
+              const lines = Math.ceil(measurement.postContentHeight / 35); // Approximate line count
+              const totalWidthImpact = widthDiff * lines;
+              console.log(`   ⚠️ POTENTIAL REFLOW: ${widthDiff.toFixed(1)}px/line × ~${lines} lines = ${totalWidthImpact.toFixed(1)}px potential shift`);
             }
           }
           
-          // Font loading state
-          console.log(`⏳ FONT STATUS: ${measurement.fontsLoading}, N400=${measurement.newsreader400Ready}, N600=${measurement.newsreader600Ready}`);
-          
-          // Network analysis
-          if (measurement.networkTiming.length > 0) {
-            console.log(`🌐 NETWORK: ${measurement.networkTiming.length} font resources`);
-            measurement.networkTiming.forEach(resource => {
-              const cached = resource.duration < 10 ? ' (CACHED)' : '';
-              console.log(`   → ${resource.name.split('/').pop()}: ${Math.round(resource.duration)}ms${cached}`);
-            });
-          }
+          // Timing correlation with core.js
+          console.log(`⏰ TIMING: readyState=${document.readyState}, fonts=${measurement.fontsLoading}`);
           
           console.groupEnd();
         },
@@ -376,15 +401,20 @@
             this.provideSolutions(issues, measurement);
           }
           
-          // Height change analysis
-          if (stage !== 'START') {
-            const heightChange = measurement.bodyHeight - this.initialHeight;
-            if (Math.abs(heightChange) > 10) {
-              console.log(`📏 HEIGHT CHANGE: ${heightChange}px from START`);
-              this.diagnoseHeightChange(measurement, heightChange, issues);
-            }
-          } else {
+          // Height change analysis with proper baseline
+          if (this.measurements.length === 1) {
+            // First measurement - set baseline
             this.initialHeight = measurement.bodyHeight;
+            console.log(`📊 BASELINE SET: ${measurement.bodyHeight}px at ${stage}`);
+          } else {
+            // Compare to baseline
+            const heightChange = measurement.bodyHeight - this.initialHeight;
+            if (Math.abs(heightChange) > 1) {
+              console.log(`📏 TOTAL HEIGHT CHANGE: ${heightChange > 0 ? '+' : ''}${heightChange}px from baseline`);
+              if (Math.abs(heightChange) > 10) {
+                this.diagnoseHeightChange(measurement, heightChange, issues);
+              }
+            }
           }
         },
         
@@ -441,19 +471,32 @@
         }
       };
       
-      // Start comprehensive monitoring when DOM is available
-      if (document.body) {
-        ComprehensiveFOITDetective.measureComprehensive('PAGE_START');
-      } else {
-        // Wait for DOM to be ready
-        if (document.readyState === 'loading') {
-          document.addEventListener('DOMContentLoaded', () => {
-            ComprehensiveFOITDetective.measureComprehensive('PAGE_START');
-          });
+      // CRITICAL: Start monitoring immediately to catch early CLS
+      function startEarlyMonitoring() {
+        if (document.body) {
+          ComprehensiveFOITDetective.measureComprehensive('VERY_EARLY');
+          
+          // Monitor continuously during critical period
+          setTimeout(() => ComprehensiveFOITDetective.measureComprehensive('AFTER_10MS'), 10);
+          setTimeout(() => ComprehensiveFOITDetective.measureComprehensive('AFTER_25MS'), 25);
+          setTimeout(() => ComprehensiveFOITDetective.measureComprehensive('AFTER_50MS'), 50);
+          setTimeout(() => ComprehensiveFOITDetective.measureComprehensive('AFTER_100MS'), 100);
         } else {
-          ComprehensiveFOITDetective.measureComprehensive('PAGE_START');
+          // Retry very quickly if body not available
+          setTimeout(startEarlyMonitoring, 1);
         }
       }
+      
+      // Start immediately
+      startEarlyMonitoring();
+      
+      // Also hook into requestAnimationFrame for frame-level precision
+      requestAnimationFrame(() => {
+        ComprehensiveFOITDetective.measureComprehensive('FIRST_RAF');
+        requestAnimationFrame(() => {
+          ComprehensiveFOITDetective.measureComprehensive('SECOND_RAF');
+        });
+      });
       
       document.addEventListener('DOMContentLoaded', () => {
         ComprehensiveFOITDetective.measureComprehensive('DOM_READY');
