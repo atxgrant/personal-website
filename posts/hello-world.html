@@ -114,6 +114,396 @@
     ">
     <noscript><link rel="stylesheet" href="../style.css"></noscript>
     
+    <!-- Comprehensive FOIT Detective - Catches All Font Loading Issues -->
+    <script>
+      const ComprehensiveFOITDetective = {
+        initialHeight: 0,
+        measurements: [],
+        textSamples: new Map(),
+        fontDescriptors: new Map(),
+        networkTiming: [],
+        startTime: performance.now(),
+        
+        // Create test elements to measure actual font rendering differences
+        createTestElements: function() {
+          const testContainer = document.createElement('div');
+          testContainer.style.cssText = 'position:absolute;top:-1000px;left:-1000px;visibility:hidden;white-space:nowrap;';
+          document.body.appendChild(testContainer);
+          
+          // Test various scenarios
+          const scenarios = [
+            { font: 'Newsreader, Georgia, serif', weight: '400', text: 'The quick brown fox jumps over the lazy dog. 123456789' },
+            { font: 'Georgia, serif', weight: '400', text: 'The quick brown fox jumps over the lazy dog. 123456789' },
+            { font: 'Newsreader, Georgia, serif', weight: '600', text: 'The quick brown fox jumps over the lazy dog. 123456789' }
+          ];
+          
+          scenarios.forEach((scenario, i) => {
+            const span = document.createElement('span');
+            span.style.cssText = `font-family:${scenario.font};font-weight:${scenario.weight};font-size:20px;line-height:1.75;`;
+            span.textContent = scenario.text;
+            span.id = `font-test-${i}`;
+            testContainer.appendChild(span);
+          });
+          
+          return testContainer;
+        },
+        
+        measureComprehensive: function(stage, additionalInfo = {}) {
+          const body = document.body;
+          const postContent = document.querySelector('.post-content');
+          const postTitle = document.querySelector('.post-meta h1');
+          
+          // Get computed styles
+          const bodyStyles = getComputedStyle(body);
+          const postStyles = postContent ? getComputedStyle(postContent) : null;
+          const titleStyles = postTitle ? getComputedStyle(postTitle) : null;
+          
+          // Measure actual rendered text dimensions
+          const testContainer = this.createTestElements();
+          const textMeasurements = this.measureTextDimensions(testContainer);
+          document.body.removeChild(testContainer);
+          
+          // Network performance timing
+          const navigation = performance.getEntriesByType('navigation')[0];
+          const resources = performance.getEntriesByType('resource').filter(r => 
+            r.name.includes('.woff') || r.name.includes('.ttf') || r.name.includes('font')
+          );
+          
+          const measurement = {
+            stage,
+            timestamp: performance.now() - this.startTime,
+            
+            // Layout measurements
+            bodyHeight: parseFloat(bodyStyles.height),
+            bodyWidth: parseFloat(bodyStyles.width),
+            postContentHeight: postContent ? postContent.offsetHeight : 0,
+            postContentScrollHeight: postContent ? postContent.scrollHeight : 0,
+            
+            // Font properties
+            bodyFontFamily: bodyStyles.fontFamily,
+            bodyFontSize: bodyStyles.fontSize,
+            bodyFontWeight: bodyStyles.fontWeight,
+            bodyLineHeight: bodyStyles.lineHeight,
+            bodyLetterSpacing: bodyStyles.letterSpacing,
+            
+            postContentFontFamily: postStyles ? postStyles.fontFamily : 'N/A',
+            postContentFontSize: postStyles ? postStyles.fontSize : 'N/A',
+            postContentFontWeight: postStyles ? postStyles.fontWeight : 'N/A',
+            postContentLineHeight: postStyles ? postStyles.lineHeight : 'N/A',
+            postContentLetterSpacing: postStyles ? postStyles.letterSpacing : 'N/A',
+            
+            titleFontFamily: titleStyles ? titleStyles.fontFamily : 'N/A',
+            titleFontSize: titleStyles ? titleStyles.fontSize : 'N/A',
+            titleFontWeight: titleStyles ? titleStyles.fontWeight : 'N/A',
+            
+            // Actual rendered text dimensions
+            textDimensions: textMeasurements,
+            
+            // Font loading states
+            fontsLoading: document.fonts.status,
+            newsreader400Ready: document.fonts.check('16px Newsreader'),
+            newsreader600Ready: document.fonts.check('600 16px Newsreader'),
+            
+            // Network timing
+            networkTiming: resources.map(r => ({
+              name: r.name,
+              duration: r.duration,
+              transferSize: r.transferSize,
+              status: r.responseStatus || 'unknown'
+            })),
+            
+            // Browser font cache detection
+            fontCacheHit: resources.some(r => r.duration < 10), // Likely cached if very fast
+            
+            ...additionalInfo
+          };
+          
+          this.measurements.push(measurement);
+          this.logMeasurement(measurement, stage);
+          this.detectAllFOITIssues(measurement);
+          
+          return measurement;
+        },
+        
+        measureTextDimensions: function(container) {
+          const measurements = {};
+          
+          for (let i = 0; i < 3; i++) {
+            const span = container.querySelector(`#font-test-${i}`);
+            if (span) {
+              const rect = span.getBoundingClientRect();
+              measurements[`test${i}`] = {
+                width: rect.width,
+                height: rect.height,
+                actualFont: getComputedStyle(span).fontFamily,
+                characterCount: span.textContent.length,
+                widthPerChar: rect.width / span.textContent.length
+              };
+            }
+          }
+          
+          return measurements;
+        },
+        
+        logMeasurement: function(measurement, stage) {
+          console.group(`🔤 COMPREHENSIVE FOIT [${stage}] @${Math.round(measurement.timestamp)}ms`);
+          
+          // Layout info
+          console.log(`📐 LAYOUT: body=${measurement.bodyHeight}px×${measurement.bodyWidth}px, post=${measurement.postContentHeight}px`);
+          
+          // Font info
+          console.log(`🔤 FONTS: body="${measurement.bodyFontFamily}" post="${measurement.postContentFontFamily}"`);
+          console.log(`📊 SIZES: body=${measurement.bodyFontSize}/${measurement.bodyLineHeight}, post=${measurement.postContentFontSize}/${measurement.postContentLineHeight}`);
+          console.log(`⚖️ WEIGHTS: body=${measurement.bodyFontWeight}, post=${measurement.postContentFontWeight}, title=${measurement.titleFontWeight}`);
+          console.log(`📏 SPACING: body=${measurement.bodyLetterSpacing}, post=${measurement.postContentLetterSpacing}`);
+          
+          // Text rendering measurements
+          if (measurement.textDimensions.test0 && measurement.textDimensions.test1) {
+            const newsreaderWidth = measurement.textDimensions.test0.width;
+            const georgiaWidth = measurement.textDimensions.test1.width;
+            const widthDiff = Math.abs(newsreaderWidth - georgiaWidth);
+            console.log(`📝 TEXT RENDERING: Newsreader=${newsreaderWidth}px, Georgia=${georgiaWidth}px, diff=${widthDiff}px`);
+            
+            if (widthDiff > 10) {
+              console.log(`   🚨 SIGNIFICANT WIDTH DIFFERENCE: ${widthDiff}px - likely causing reflow`);
+            }
+          }
+          
+          // Font loading state
+          console.log(`⏳ FONT STATUS: ${measurement.fontsLoading}, N400=${measurement.newsreader400Ready}, N600=${measurement.newsreader600Ready}`);
+          
+          // Network analysis
+          if (measurement.networkTiming.length > 0) {
+            console.log(`🌐 NETWORK: ${measurement.networkTiming.length} font resources`);
+            measurement.networkTiming.forEach(resource => {
+              const cached = resource.duration < 10 ? ' (CACHED)' : '';
+              console.log(`   → ${resource.name.split('/').pop()}: ${Math.round(resource.duration)}ms${cached}`);
+            });
+          }
+          
+          console.groupEnd();
+        },
+        
+        detectAllFOITIssues: function(measurement) {
+          const issues = [];
+          const stage = measurement.stage;
+          
+          // Issue 1: Font family stack conflicts
+          if (measurement.bodyFontFamily !== measurement.postContentFontFamily) {
+            issues.push('FONT_FAMILY_STACK_MISMATCH');
+          }
+          
+          // Issue 2: Fallback font detection
+          const isUsingFallback = !measurement.postContentFontFamily.includes('Newsreader') && 
+                                  measurement.postContentFontFamily.includes('Georgia');
+          if (isUsingFallback) {
+            issues.push('USING_FALLBACK_FONT');
+          }
+          
+          // Issue 3: Font weight/style mismatches during loading
+          if (stage !== 'START' && this.measurements.length > 1) {
+            const prev = this.measurements[this.measurements.length - 2];
+            if (prev.postContentFontWeight !== measurement.postContentFontWeight) {
+              issues.push('FONT_WEIGHT_CHANGED');
+            }
+          }
+          
+          // Issue 4: Font metrics differences (size-adjust issues)
+          if (measurement.textDimensions.test0 && measurement.textDimensions.test1) {
+            const widthDiff = Math.abs(measurement.textDimensions.test0.width - measurement.textDimensions.test1.width);
+            if (widthDiff > 20) {
+              issues.push('FONT_SIZE_ADJUST_NEEDED');
+            }
+          }
+          
+          // Issue 5: Letter spacing differences
+          if (stage !== 'START' && this.measurements.length > 1) {
+            const prev = this.measurements[this.measurements.length - 2];
+            if (prev.postContentLetterSpacing !== measurement.postContentLetterSpacing) {
+              issues.push('LETTER_SPACING_CHANGED');
+            }
+          }
+          
+          // Issue 6: Font loading race conditions
+          if (measurement.networkTiming.length > 1) {
+            const timings = measurement.networkTiming.map(r => r.duration);
+            const maxTiming = Math.max(...timings);
+            const minTiming = Math.min(...timings);
+            if (maxTiming - minTiming > 100) {
+              issues.push('FONT_LOADING_RACE_CONDITION');
+            }
+          }
+          
+          // Issue 7: Font loading blocking render
+          if (stage === 'DOM_READY' && measurement.bodyHeight === 0) {
+            issues.push('FONT_BLOCKING_RENDER');
+          }
+          
+          // Issue 8: Network-related font issues
+          const failedFonts = measurement.networkTiming.filter(r => r.status >= 400);
+          if (failedFonts.length > 0) {
+            issues.push('FONT_NETWORK_ERROR');
+          }
+          
+          // Issue 9: Font cache behavior differences
+          const cachedFonts = measurement.networkTiming.filter(r => r.duration < 10);
+          const uncachedFonts = measurement.networkTiming.filter(r => r.duration >= 100);
+          if (cachedFonts.length > 0 && uncachedFonts.length > 0) {
+            issues.push('MIXED_FONT_CACHE_STATE');
+          }
+          
+          // Issue 10: Line height calculation issues
+          if (stage !== 'START' && this.measurements.length > 1) {
+            const startMeasurement = this.measurements[0];
+            if (measurement.postContentLineHeight !== startMeasurement.postContentLineHeight) {
+              issues.push('LINE_HEIGHT_CALCULATION_CHANGED');
+            }
+          }
+          
+          if (issues.length > 0) {
+            console.log(`🚨 DETECTED ISSUES: ${issues.join(', ')}`);
+            this.provideSolutions(issues, measurement);
+          }
+          
+          // Height change analysis
+          if (stage !== 'START') {
+            const heightChange = measurement.bodyHeight - this.initialHeight;
+            if (Math.abs(heightChange) > 10) {
+              console.log(`📏 HEIGHT CHANGE: ${heightChange}px from START`);
+              this.diagnoseHeightChange(measurement, heightChange, issues);
+            }
+          } else {
+            this.initialHeight = measurement.bodyHeight;
+          }
+        },
+        
+        provideSolutions: function(issues, measurement) {
+          console.group('💡 SUGGESTED SOLUTIONS:');
+          
+          issues.forEach(issue => {
+            switch(issue) {
+              case 'FONT_SIZE_ADJUST_NEEDED':
+                console.log('→ Add font-size-adjust to critical CSS to match Newsreader metrics');
+                break;
+              case 'USING_FALLBACK_FONT':
+                console.log('→ Increase font preload priority or use font-display: block');
+                break;
+              case 'FONT_LOADING_RACE_CONDITION':
+                console.log('→ Preload fonts in specific order or use font-display: optional');
+                break;
+              case 'FONT_NETWORK_ERROR':
+                console.log('→ Check font file availability and CORS headers');
+                break;
+              case 'MIXED_FONT_CACHE_STATE':
+                console.log('→ Ensure consistent font preloading strategy');
+                break;
+              case 'LETTER_SPACING_CHANGED':
+                console.log('→ Match letter-spacing values between fallback and custom font');
+                break;
+              case 'FONT_WEIGHT_CHANGED':
+                console.log('→ Ensure proper font-weight matching in font stack');
+                break;
+              default:
+                console.log(`→ ${issue}: Check font loading strategy`);
+            }
+          });
+          
+          console.groupEnd();
+        },
+        
+        diagnoseHeightChange: function(measurement, heightChange, detectedIssues) {
+          console.group('🔍 HEIGHT CHANGE DIAGNOSIS:');
+          
+          if (detectedIssues.includes('FONT_SIZE_ADJUST_NEEDED')) {
+            console.log(`→ Primary cause: Font size difference (${Math.abs(heightChange)}px shift)`);
+            console.log(`→ Newsreader and Georgia render at different effective sizes`);
+          } else if (detectedIssues.includes('USING_FALLBACK_FONT')) {
+            console.log(`→ Primary cause: Font swap from Georgia to Newsreader`);
+          } else if (detectedIssues.includes('LINE_HEIGHT_CALCULATION_CHANGED')) {
+            console.log(`→ Primary cause: Line-height calculation method changed`);
+          } else {
+            console.log(`→ Cause unclear - ${Math.abs(heightChange)}px shift without obvious font issues`);
+            console.log(`→ Check for: dynamic content, image loading, or CSS changes`);
+          }
+          
+          console.groupEnd();
+        }
+      };
+      
+      // Start comprehensive monitoring
+      ComprehensiveFOITDetective.measureComprehensive('PAGE_START');
+      
+      document.addEventListener('DOMContentLoaded', () => {
+        ComprehensiveFOITDetective.measureComprehensive('DOM_READY');
+      });
+      
+      // Monitor all font loading events
+      document.fonts.addEventListener('loadingdone', (event) => {
+        console.log(`🔤 FONT EVENT: loadingdone - ${event.fontfaces.length} fonts completed`);
+        event.fontfaces.forEach(font => {
+          console.log(`   ✅ LOADED: ${font.family} ${font.weight} ${font.style}`);
+        });
+        ComprehensiveFOITDetective.measureComprehensive('FONT_LOADINGDONE');
+      });
+      
+      document.fonts.addEventListener('loadingerror', (event) => {
+        console.log(`🔤 FONT EVENT: loadingerror - ${event.fontfaces.length} fonts failed`);
+        event.fontfaces.forEach(font => {
+          console.log(`   ❌ FAILED: ${font.family} ${font.weight} - check network/CORS`);
+        });
+        ComprehensiveFOITDetective.measureComprehensive('FONT_LOADINGERROR');
+      });
+      
+      document.fonts.ready.then(() => {
+        ComprehensiveFOITDetective.measureComprehensive('ALL_FONTS_READY');
+        
+        // Final comprehensive analysis
+        console.group('📊 COMPREHENSIVE FOIT ANALYSIS SUMMARY');
+        
+        const measurements = ComprehensiveFOITDetective.measurements;
+        const totalShift = measurements[measurements.length - 1]?.bodyHeight - ComprehensiveFOITDetective.initialHeight;
+        
+        console.log(`📏 Total height change: ${totalShift}px`);
+        console.log(`⏱️ Total font loading time: ${Math.round(measurements[measurements.length - 1]?.timestamp)}ms`);
+        console.log(`🔤 Final font status: ${measurements[measurements.length - 1]?.fontsLoading}`);
+        
+        // Success/failure determination
+        if (Math.abs(totalShift) < 5) {
+          console.log('✅ SUCCESS: FOIT eliminated - no significant layout shift');
+        } else if (Math.abs(totalShift) > 50) {
+          console.log('❌ MAJOR SHIFT: Font loading causing significant CLS');
+          console.log('🔧 Try next: font-size-adjust, preload optimization, or synchronous loading');
+        } else {
+          console.log('⚠️ MINOR SHIFT: Small but measurable font-related CLS detected');
+        }
+        
+        console.groupEnd();
+      });
+      
+      // Track individual font loading with detailed timing
+      if (document.fonts.load) {
+        const fontLoadStart = performance.now();
+        
+        document.fonts.load('16px Newsreader').then(() => {
+          const loadTime = performance.now() - fontLoadStart;
+          console.log(`🔤 Newsreader 400 loaded in ${Math.round(loadTime)}ms`);
+          ComprehensiveFOITDetective.measureComprehensive('NEWSREADER_400_LOADED');
+        }).catch((error) => {
+          console.log('🔤 Newsreader 400 failed to load:', error);
+          ComprehensiveFOITDetective.measureComprehensive('NEWSREADER_400_FAILED');
+        });
+        
+        document.fonts.load('600 16px Newsreader').then(() => {
+          const loadTime = performance.now() - fontLoadStart;
+          console.log(`🔤 Newsreader 600 loaded in ${Math.round(loadTime)}ms`);
+          ComprehensiveFOITDetective.measureComprehensive('NEWSREADER_600_LOADED');
+        }).catch((error) => {
+          console.log('🔤 Newsreader 600 failed to load:', error);
+          ComprehensiveFOITDetective.measureComprehensive('NEWSREADER_600_FAILED');
+        });
+      }
+    </script>
+    
     <!-- Structured Data -->
     <script type="application/ld+json">
     {
