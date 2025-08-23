@@ -43,6 +43,64 @@
     <link rel="preload" href="../fonts/newsreader-600.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="../fonts/newsreader.css">
     
+    <!-- IMMEDIATE Height Capture - Before ANY CSS -->
+    <script>
+      // MutationObserver to catch the exact moment body becomes available
+      window.EARLIEST_HEIGHT = null;
+      window.HEIGHT_TIMELINE = [];
+      
+      const bodyObserver = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.addedNodes.length > 0) {
+            for (const node of mutation.addedNodes) {
+              if (node.tagName === 'BODY') {
+                // Body just appeared! Measure immediately
+                const height = node.offsetHeight || 0;
+                const timestamp = performance.now();
+                
+                if (!window.EARLIEST_HEIGHT) {
+                  window.EARLIEST_HEIGHT = height;
+                  console.log(`🎯 EARLIEST BODY HEIGHT: ${height}px @${Math.round(timestamp)}ms - Captured at body creation!`);
+                }
+                
+                window.HEIGHT_TIMELINE.push({ stage: 'BODY_CREATED', height, timestamp });
+                
+                // Continue monitoring for immediate changes
+                const immediateCheck = () => {
+                  const newHeight = node.offsetHeight;
+                  const newTimestamp = performance.now();
+                  
+                  if (Math.abs(newHeight - height) > 1) {
+                    console.log(`🔥 IMMEDIATE HEIGHT CHANGE: ${height}px → ${newHeight}px (Δ${newHeight - height}px) @${Math.round(newTimestamp)}ms`);
+                    window.HEIGHT_TIMELINE.push({ 
+                      stage: 'IMMEDIATE_CHANGE', 
+                      height: newHeight, 
+                      timestamp: newTimestamp,
+                      change: newHeight - height 
+                    });
+                  }
+                };
+                
+                // Check multiple times in rapid succession
+                setTimeout(immediateCheck, 0);
+                setTimeout(immediateCheck, 1);
+                setTimeout(immediateCheck, 5);
+                
+                bodyObserver.disconnect(); // Stop observing once we found body
+                break;
+              }
+            }
+          }
+        });
+      });
+      
+      // Start observing immediately
+      bodyObserver.observe(document.documentElement, { 
+        childList: true, 
+        subtree: true 
+      });
+    </script>
+
     <!-- Critical CSS for above-the-fold content -->
     <style>
     /* Critical styles for immediate render - CSS variables now centralized in ../css/variables.css */
@@ -153,6 +211,23 @@
       
       // Start capturing immediately
       captureBaseline('SCRIPT_START');
+      
+      // Log correlation with earliest height if available
+      setTimeout(() => {
+        if (window.EARLIEST_HEIGHT && window.HEIGHT_TIMELINE.length > 0) {
+          console.log('📊 HEIGHT TIMELINE CORRELATION:');
+          window.HEIGHT_TIMELINE.forEach(entry => {
+            console.log(`   ${entry.stage}: ${entry.height}px @${Math.round(entry.timestamp)}ms`);
+          });
+          
+          // Compare with our baseline measurements
+          const latestBaseline = window.CLSBaseline.measurements[window.CLSBaseline.measurements.length - 1];
+          if (latestBaseline && window.EARLIEST_HEIGHT !== latestBaseline.height) {
+            const clsAmount = Math.abs(window.EARLIEST_HEIGHT - latestBaseline.height);
+            console.log(`🚨 CONFIRMED CLS: ${window.EARLIEST_HEIGHT}px → ${latestBaseline.height}px = ${clsAmount}px shift!`);
+          }
+        }
+      }, 20);
       
       // Capture at critical moments
       setTimeout(() => captureBaseline('AFTER_1MS'), 1);
