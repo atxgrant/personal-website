@@ -445,13 +445,23 @@ class ThemeManager {
    * @constructor
    */
   constructor(browser = new BrowserEnvironment()) {
+    // CLS DEBUG: Log during constructor
+    const logHeight = (step) => {
+      const height = getComputedStyle(browser.getBody()).height;
+      console.log(`🔍 CLS DEBUG [CONSTRUCTOR_${step}]: height=${height}`);
+    };
+    
+    logHeight('START');
     this.browser = browser;
     this.themeToggle = null;
     this.toggleSlider = null;
     this.currentTheme = 'light';
     this.isVibeMode = false;
     this.originalTheme = 'light'; // Store original theme when entering vibe mode
+    
+    logHeight('BEFORE_INIT');
     this.init();
+    logHeight('AFTER_INIT');
   }
 
   init() {
@@ -1710,14 +1720,31 @@ class BioCollapseManager {
  */
 function initializeApp(browser = new BrowserEnvironment()) {
   // GRANULAR CLS DEBUGGING - Log height at every single step
+  let measurementCount = 0;
   function logHeight(step) {
+    measurementCount++;
+    console.log(`🔍 CLS DEBUG [${step}]: About to measure height (measurement #${measurementCount})`);
     const height = getComputedStyle(browser.getBody()).height;
     const classes = browser.getBody().className;
-    console.log(`🔍 CLS DEBUG [${step}]: height=${height}, body classes="${classes}"`);
+    const readyState = browser.getDocument().readyState;
+    const fontsLoaded = browser.getDocument().fonts ? browser.getDocument().fonts.status : 'unknown';
+    console.log(`🔍 CLS DEBUG [${step}]: height=${height}, body classes="${classes}", readyState=${readyState}, fonts=${fontsLoaded}, measurement #${measurementCount}`);
+    
+    // Check if the act of measuring height triggered reflow
+    if (measurementCount > 1) {
+      console.log(`🔍 CLS DEBUG [${step}]: This is measurement #${measurementCount} - watch for reflow patterns`);
+    }
+    
     return height;
   }
   
   console.log('🔍 CLS DEBUG: initializeApp started');
+  
+  // Check if other scripts are still loading
+  const scripts = Array.from(browser.getDocument().querySelectorAll('script[src]'));
+  const loadingScripts = scripts.filter(s => !s.complete && s.readyState !== 'complete');
+  console.log('🔍 CLS DEBUG: Loading scripts:', loadingScripts.map(s => s.src));
+  
   logHeight('START');
   
   // Use requestAnimationFrame for better performance (restored)
@@ -1729,7 +1756,12 @@ function initializeApp(browser = new BrowserEnvironment()) {
     console.log('🔍 CLS DEBUG: About to initialize ThemeManager');
     logHeight('BEFORE_THEME_MANAGER');
     
-    browser.window.themeManager = SafeInit.initialize('ThemeManager', () => new ThemeManager(browser));
+    browser.window.themeManager = SafeInit.initialize('ThemeManager', () => {
+      logHeight('INSIDE_SAFEINIT_THEME_START');
+      const manager = new ThemeManager(browser);
+      logHeight('INSIDE_SAFEINIT_THEME_END');
+      return manager;
+    });
     
     logHeight('AFTER_THEME_MANAGER');
     console.log('🔍 CLS DEBUG: ThemeManager initialized');
