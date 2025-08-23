@@ -119,6 +119,47 @@
     ">
     <noscript><link rel="stylesheet" href="../style.css"></noscript>
     
+    <!-- IMMEDIATE CLS Baseline Capture -->
+    <script>
+      // Capture baseline immediately when this script runs
+      window.CLSBaseline = {
+        scriptStartTime: performance.now(),
+        measurements: []
+      };
+      
+      function captureBaseline(stage) {
+        if (!document.body) {
+          // Body doesn't exist yet - retry in 1ms
+          setTimeout(() => captureBaseline(stage + '_RETRY'), 1);
+          return;
+        }
+        
+        const timestamp = performance.now() - window.CLSBaseline.scriptStartTime;
+        const height = document.body.offsetHeight || parseFloat(getComputedStyle(document.body).height);
+        const measurement = { stage, timestamp, height };
+        
+        window.CLSBaseline.measurements.push(measurement);
+        console.log(`🏁 BASELINE [${stage}] @${Math.round(timestamp)}ms: ${height}px`);
+        
+        // Check for height changes
+        if (window.CLSBaseline.measurements.length > 1) {
+          const prev = window.CLSBaseline.measurements[window.CLSBaseline.measurements.length - 2];
+          const change = height - prev.height;
+          if (Math.abs(change) > 1) {
+            console.log(`🔥 EARLY CLS DETECTED: ${change > 0 ? '+' : ''}${change}px change from ${prev.stage} to ${stage}`);
+          }
+        }
+      }
+      
+      // Start capturing immediately
+      captureBaseline('SCRIPT_START');
+      
+      // Capture at critical moments
+      setTimeout(() => captureBaseline('AFTER_1MS'), 1);
+      setTimeout(() => captureBaseline('AFTER_2MS'), 2);
+      setTimeout(() => captureBaseline('AFTER_5MS'), 5);
+    </script>
+    
     <!-- Comprehensive FOIT Detective - Catches All Font Loading Issues -->
     <script>
       const ComprehensiveFOITDetective = {
@@ -128,6 +169,7 @@
         fontDescriptors: new Map(),
         networkTiming: [],
         startTime: performance.now(),
+        resizeObserver: null,
         
         // Create test elements to measure actual font rendering differences
         createTestElements: function() {
@@ -468,6 +510,29 @@
           }
           
           console.groupEnd();
+        },
+        
+        // Add ResizeObserver to catch layout changes in real-time
+        startResizeObserver: function() {
+          if (!window.ResizeObserver || !document.body) return;
+          
+          this.resizeObserver = new ResizeObserver((entries) => {
+            for (const entry of entries) {
+              const newHeight = entry.contentRect.height;
+              const timestamp = performance.now() - this.startTime;
+              
+              // Only log if there's a significant change
+              if (Math.abs(newHeight - this.initialHeight) > 5) {
+                console.log(`📏 RESIZE OBSERVED @${Math.round(timestamp)}ms: ${newHeight}px (Δ${newHeight - this.initialHeight}px)`);
+                
+                // Trigger a measurement
+                this.measureComprehensive(`RESIZE_${Math.round(timestamp)}MS`);
+              }
+            }
+          });
+          
+          this.resizeObserver.observe(document.body);
+          console.log('👁️ ResizeObserver started - monitoring body for layout changes');
         }
       };
       
@@ -476,11 +541,18 @@
         if (document.body) {
           ComprehensiveFOITDetective.measureComprehensive('VERY_EARLY');
           
+          // Start ResizeObserver for real-time detection
+          ComprehensiveFOITDetective.startResizeObserver();
+          
           // Monitor continuously during critical period
           setTimeout(() => ComprehensiveFOITDetective.measureComprehensive('AFTER_10MS'), 10);
           setTimeout(() => ComprehensiveFOITDetective.measureComprehensive('AFTER_25MS'), 25);
           setTimeout(() => ComprehensiveFOITDetective.measureComprehensive('AFTER_50MS'), 50);
           setTimeout(() => ComprehensiveFOITDetective.measureComprehensive('AFTER_100MS'), 100);
+          setTimeout(() => ComprehensiveFOITDetective.measureComprehensive('AFTER_200MS'), 200);
+          setTimeout(() => ComprehensiveFOITDetective.measureComprehensive('AFTER_500MS'), 500);
+          setTimeout(() => ComprehensiveFOITDetective.measureComprehensive('AFTER_1000MS'), 1000);
+          setTimeout(() => ComprehensiveFOITDetective.measureComprehensive('AFTER_2000MS'), 2000);
         } else {
           // Retry very quickly if body not available
           setTimeout(startEarlyMonitoring, 1);
