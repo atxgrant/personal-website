@@ -158,6 +158,12 @@
           const postContent = document.querySelector('.post-content');
           const postTitle = document.querySelector('.post-meta h1');
           
+          // Early return if body doesn't exist yet
+          if (!body) {
+            console.log(`🔤 COMPREHENSIVE FOIT [${stage}]: document.body not available yet, skipping measurement`);
+            return null;
+          }
+          
           // Get computed styles
           const bodyStyles = getComputedStyle(body);
           const postStyles = postContent ? getComputedStyle(postContent) : null;
@@ -435,8 +441,19 @@
         }
       };
       
-      // Start comprehensive monitoring
-      ComprehensiveFOITDetective.measureComprehensive('PAGE_START');
+      // Start comprehensive monitoring when DOM is available
+      if (document.body) {
+        ComprehensiveFOITDetective.measureComprehensive('PAGE_START');
+      } else {
+        // Wait for DOM to be ready
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', () => {
+            ComprehensiveFOITDetective.measureComprehensive('PAGE_START');
+          });
+        } else {
+          ComprehensiveFOITDetective.measureComprehensive('PAGE_START');
+        }
+      }
       
       document.addEventListener('DOMContentLoaded', () => {
         ComprehensiveFOITDetective.measureComprehensive('DOM_READY');
