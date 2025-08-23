@@ -1684,7 +1684,10 @@ class BioCollapseManager {
 function initializeApp(browser = new BrowserEnvironment()) {
   // DEBUGGING: Focus on what happens during the 239px height change
   function logState(step) {
-    const height = getComputedStyle(browser.getBody()).height;
+    const body = browser.getBody();
+    const computed = getComputedStyle(body);
+    
+    const height = computed.height;
     const readyState = browser.getDocument().readyState;
     const fontsStatus = browser.getDocument().fonts ? browser.getDocument().fonts.status : 'unknown';
     
@@ -1692,11 +1695,14 @@ function initializeApp(browser = new BrowserEnvironment()) {
     const stylesheets = Array.from(browser.getDocument().styleSheets);
     const loadingCSS = stylesheets.filter(s => !s.disabled && s.href && !s.ownerNode.complete);
     
-    // Check viewport and scroll
-    const scrollY = browser.getWindow().scrollY || 0;
-    const viewportHeight = browser.getWindow().innerHeight;
+    // Track key CSS properties that might cause height changes
+    const margin = `${computed.marginTop}/${computed.marginBottom}`;
+    const padding = `${computed.paddingTop}/${computed.paddingBottom}`;
+    const lineHeight = computed.lineHeight;
+    const fontSize = computed.fontSize;
     
-    console.log(`🔍 [${step}]: height=${height}, fonts=${fontsStatus}, readyState=${readyState}, scrollY=${scrollY}px, viewport=${viewportHeight}px, loadingCSS=${loadingCSS.length}`);
+    console.log(`🔍 [${step}]: height=${height}, fonts=${fontsStatus}, readyState=${readyState}, loadingCSS=${loadingCSS.length}`);
+    console.log(`🔍 [${step}]: margin=${margin}, padding=${padding}, lineHeight=${lineHeight}, fontSize=${fontSize}`);
     
     return height;
   }

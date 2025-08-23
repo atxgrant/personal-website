@@ -87,8 +87,16 @@
     }
     </style>
     
-    <!-- Load remaining CSS synchronously to prevent CLS -->
-    <link rel="stylesheet" href="../style.css">
+    <!-- Restore async CSS loading with detailed CLS debugging -->
+    <link rel="stylesheet" href="../style.css" media="print" onload="
+      console.log('🔍 CSS LOAD: style.css onload fired, about to change media');
+      console.log('🔍 CSS LOAD: height before media change:', getComputedStyle(document.body).height);
+      this.media='all'; 
+      console.log('🔍 CSS LOAD: height after media change:', getComputedStyle(document.body).height);
+      console.log('🔍 CSS LOAD: media changed to all, CSS now active');
+      this.onload=null;
+    ">
+    <noscript><link rel="stylesheet" href="../style.css"></noscript>
     
     <!-- Structured Data -->
     <script type="application/ld+json">
