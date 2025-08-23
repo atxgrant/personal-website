@@ -288,6 +288,9 @@
           const postStyles = postContent ? getComputedStyle(postContent) : null;
           const titleStyles = postTitle ? getComputedStyle(postTitle) : null;
           
+          // Granular CSS property tracking for layout-affecting properties
+          const cssProperties = this.trackCSSProperties(body, postContent, postTitle);
+          
           // Measure actual rendered text dimensions
           const testContainer = this.createTestElements();
           const textMeasurements = this.measureTextDimensions(testContainer);
@@ -330,6 +333,9 @@
             
             // Actual rendered text dimensions
             textDimensions: textMeasurements,
+            
+            // Granular CSS property tracking
+            cssProperties: cssProperties,
             
             // Font loading states
             fontsLoading: document.fonts.status,
@@ -377,6 +383,50 @@
           return measurements;
         },
         
+        trackCSSProperties: function(body, postContent, postTitle) {
+          const properties = {};
+          
+          // Layout-affecting properties to track
+          const layoutProps = [
+            'margin', 'marginTop', 'marginRight', 'marginBottom', 'marginLeft',
+            'padding', 'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft',
+            'lineHeight', 'fontSize', 'fontFamily', 'fontWeight', 'letterSpacing',
+            'width', 'height', 'minHeight', 'maxHeight', 'minWidth', 'maxWidth',
+            'display', 'position', 'top', 'right', 'bottom', 'left',
+            'border', 'borderTop', 'borderRight', 'borderBottom', 'borderLeft',
+            'boxSizing', 'textAlign', 'verticalAlign', 'wordSpacing'
+          ];
+          
+          // Track body properties
+          if (body) {
+            const bodyStyles = getComputedStyle(body);
+            properties.body = {};
+            layoutProps.forEach(prop => {
+              properties.body[prop] = bodyStyles.getPropertyValue(prop);
+            });
+          }
+          
+          // Track post content properties  
+          if (postContent) {
+            const postStyles = getComputedStyle(postContent);
+            properties.postContent = {};
+            layoutProps.forEach(prop => {
+              properties.postContent[prop] = postStyles.getPropertyValue(prop);
+            });
+          }
+          
+          // Track post title properties
+          if (postTitle) {
+            const titleStyles = getComputedStyle(postTitle);
+            properties.postTitle = {};
+            layoutProps.forEach(prop => {
+              properties.postTitle[prop] = titleStyles.getPropertyValue(prop);
+            });
+          }
+          
+          return properties;
+        },
+        
         logMeasurement: function(measurement, stage) {
           console.group(`🔤 COMPREHENSIVE CLS [${stage}] @${Math.round(measurement.timestamp)}ms`);
           
@@ -408,6 +458,9 @@
               ];
               const primary = changes.reduce((max, curr) => curr.value > max.value ? curr : max);
               console.log(`   🎯 PRIMARY CONTRIBUTOR: ${primary.name} (${primary.value}px)`);
+              
+              // GRANULAR CSS PROPERTY ANALYSIS
+              this.logCSSPropertyChanges(prev, measurement, stage);
             }
           }
           
@@ -433,6 +486,165 @@
           
           // Timing correlation with core.js
           console.log(`⏰ TIMING: readyState=${document.readyState}, fonts=${measurement.fontsLoading}`);
+          
+          console.groupEnd();
+        },
+        
+        logCSSPropertyChanges: function(prevMeasurement, currentMeasurement, stage) {
+          console.group('🔧 CSS PROPERTY CHANGES ANALYSIS:');
+          
+          const elements = ['body', 'postContent', 'postTitle'];
+          const importantLayoutProps = [
+            'lineHeight', 'fontSize', 'fontFamily', 'fontWeight', 
+            'marginTop', 'marginBottom', 'paddingTop', 'paddingBottom',
+            'height', 'minHeight', 'border', 'letterSpacing'
+          ];
+          
+          let totalChanges = 0;
+          
+          elements.forEach(element => {
+            const prevProps = prevMeasurement.cssProperties?.[element];
+            const currentProps = currentMeasurement.cssProperties?.[element];
+            
+            if (!prevProps || !currentProps) return;
+            
+            const elementChanges = [];
+            
+            importantLayoutProps.forEach(prop => {
+              const prevValue = prevProps[prop];
+              const currentValue = currentProps[prop];
+              
+              if (prevValue !== currentValue) {
+                elementChanges.push({
+                  property: prop,
+                  from: prevValue,
+                  to: currentValue,
+                  isLayoutAffecting: this.isLayoutAffectingChange(prop, prevValue, currentValue)
+                });
+                totalChanges++;
+              }
+            });
+            
+            if (elementChanges.length > 0) {
+              console.log(`📝 ${element.toUpperCase()} CHANGES:`);
+              elementChanges.forEach(change => {
+                const impact = change.isLayoutAffecting ? '🚨 LAYOUT IMPACT' : '📊 STYLE ONLY';
+                console.log(`   ${change.property}: "${change.from}" → "${change.to}" ${impact}`);
+              });
+            }
+          });
+          
+          if (totalChanges === 0) {
+            console.log('✅ NO CSS PROPERTY CHANGES - Layout shift caused by other factors');
+            console.log('   → Check: dynamic content, image loading, or browser reflow');
+          } else {
+            console.log(`📊 TOTAL CSS CHANGES: ${totalChanges} properties modified`);
+            
+            // Provide specific recommendations based on detected changes
+            this.provideCSSChangeSolutions(prevMeasurement, currentMeasurement);
+          }
+          
+          console.groupEnd();
+        },
+        
+        isLayoutAffectingChange: function(property, prevValue, currentValue) {
+          // Properties that directly affect layout
+          const layoutProperties = [
+            'lineHeight', 'fontSize', 'fontFamily', 'fontWeight', 
+            'margin', 'marginTop', 'marginBottom', 'padding', 'paddingTop', 'paddingBottom',
+            'height', 'minHeight', 'width', 'minWidth', 'border', 'letterSpacing', 'wordSpacing'
+          ];
+          
+          if (!layoutProperties.some(prop => property.includes(prop))) {
+            return false;
+          }
+          
+          // Special handling for specific properties
+          if (property === 'lineHeight') {
+            // Convert to numeric for comparison
+            const prevNumeric = this.parseLineHeight(prevValue);
+            const currentNumeric = this.parseLineHeight(currentValue);
+            return Math.abs(prevNumeric - currentNumeric) > 0.1;
+          }
+          
+          if (property === 'fontSize') {
+            // Extract numeric part for comparison
+            const prevPx = parseFloat(prevValue);
+            const currentPx = parseFloat(currentValue);
+            return Math.abs(prevPx - currentPx) > 0.5;
+          }
+          
+          if (property === 'fontFamily') {
+            // Font family changes almost always affect layout
+            return prevValue !== currentValue;
+          }
+          
+          return true; // Default to layout-affecting for safety
+        },
+        
+        parseLineHeight: function(lineHeightValue) {
+          if (!lineHeightValue || lineHeightValue === 'normal') {
+            return 1.2; // Browser default
+          }
+          
+          // Handle pixel values
+          if (lineHeightValue.includes('px')) {
+            return parseFloat(lineHeightValue);
+          }
+          
+          // Handle unitless values (most common)
+          const numeric = parseFloat(lineHeightValue);
+          if (!isNaN(numeric)) {
+            return numeric;
+          }
+          
+          return 1.2; // Fallback
+        },
+        
+        provideCSSChangeSolutions: function(prevMeasurement, currentMeasurement) {
+          console.group('💡 CSS CHANGE SOLUTIONS:');
+          
+          const prevBody = prevMeasurement.cssProperties?.body;
+          const currentBody = currentMeasurement.cssProperties?.body;
+          const prevPost = prevMeasurement.cssProperties?.postContent;
+          const currentPost = currentMeasurement.cssProperties?.postContent;
+          
+          // Line-height mismatch
+          if (prevBody?.lineHeight !== currentBody?.lineHeight || 
+              prevPost?.lineHeight !== currentPost?.lineHeight) {
+            console.log('🎯 LINE-HEIGHT MISMATCH DETECTED:');
+            console.log('   → Update critical CSS to match final line-height values');
+            console.log(`   → Body: Set to "${currentBody?.lineHeight}"`);
+            if (currentPost?.lineHeight) {
+              console.log(`   → Post content: Set to "${currentPost.lineHeight}"`);
+            }
+          }
+          
+          // Font family changes
+          if (prevBody?.fontFamily !== currentBody?.fontFamily) {
+            console.log('🔤 FONT FAMILY CHANGE DETECTED:');
+            console.log('   → Use font-display: block to prevent swapping');
+            console.log('   → Or add size-adjust to fallback font in critical CSS');
+          }
+          
+          // Font size changes
+          if (prevBody?.fontSize !== currentBody?.fontSize ||
+              prevPost?.fontSize !== currentPost?.fontSize) {
+            console.log('📏 FONT SIZE CHANGE DETECTED:');
+            console.log('   → Ensure critical CSS font sizes match full CSS');
+            console.log('   → Check for responsive font size conflicts');
+          }
+          
+          // Margin/padding changes
+          const marginPaddingChanged = ['marginTop', 'marginBottom', 'paddingTop', 'paddingBottom']
+            .some(prop => prevBody?.[prop] !== currentBody?.[prop] || 
+                          prevPost?.[prop] !== currentPost?.[prop]);
+          
+          if (marginPaddingChanged) {
+            console.log('📦 SPACING CHANGE DETECTED:');
+            console.log('   → Sync margin/padding values between critical and full CSS');
+            console.log('   → Check for CSS cascade conflicts');
+          }
           
           console.groupEnd();
         },

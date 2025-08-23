@@ -43,6 +43,64 @@
     <link rel="preload" href="../fonts/newsreader-600.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="../fonts/newsreader.css">
     
+    <!-- IMMEDIATE Height Capture - Before ANY CSS -->
+    <script>
+      // MutationObserver to catch the exact moment body becomes available
+      window.EARLIEST_HEIGHT = null;
+      window.HEIGHT_TIMELINE = [];
+      
+      const bodyObserver = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.addedNodes.length > 0) {
+            for (const node of mutation.addedNodes) {
+              if (node.tagName === 'BODY') {
+                // Body just appeared! Measure immediately
+                const height = node.offsetHeight || 0;
+                const timestamp = performance.now();
+                
+                if (!window.EARLIEST_HEIGHT) {
+                  window.EARLIEST_HEIGHT = height;
+                  console.log(`🎯 EARLIEST BODY HEIGHT: ${height}px @${Math.round(timestamp)}ms - Captured at body creation!`);
+                }
+                
+                window.HEIGHT_TIMELINE.push({ stage: 'BODY_CREATED', height, timestamp });
+                
+                // Continue monitoring for immediate changes
+                const immediateCheck = () => {
+                  const newHeight = node.offsetHeight;
+                  const newTimestamp = performance.now();
+                  
+                  if (Math.abs(newHeight - height) > 1) {
+                    console.log(`🔥 IMMEDIATE HEIGHT CHANGE: ${height}px → ${newHeight}px (Δ${newHeight - height}px) @${Math.round(newTimestamp)}ms`);
+                    window.HEIGHT_TIMELINE.push({ 
+                      stage: 'IMMEDIATE_CHANGE', 
+                      height: newHeight, 
+                      timestamp: newTimestamp,
+                      change: newHeight - height 
+                    });
+                  }
+                };
+                
+                // Check multiple times in rapid succession
+                setTimeout(immediateCheck, 0);
+                setTimeout(immediateCheck, 1);
+                setTimeout(immediateCheck, 5);
+                
+                bodyObserver.disconnect(); // Stop observing once we found body
+                break;
+              }
+            }
+          }
+        });
+      });
+      
+      // Start observing immediately
+      bodyObserver.observe(document.documentElement, { 
+        childList: true, 
+        subtree: true 
+      });
+    </script>
+    
     <!-- Critical CSS for above-the-fold content -->
     <style>
     /* Critical styles for immediate render - CSS variables now centralized in ../css/variables.css */
@@ -119,6 +177,64 @@
     ">
     <noscript><link rel="stylesheet" href="../style.css"></noscript>
     
+    <!-- IMMEDIATE CLS Baseline Capture -->
+    <script>
+      // Capture baseline immediately when this script runs
+      window.CLSBaseline = {
+        scriptStartTime: performance.now(),
+        measurements: []
+      };
+      
+      function captureBaseline(stage) {
+        if (!document.body) {
+          // Body doesn't exist yet - retry in 1ms
+          setTimeout(() => captureBaseline(stage + '_RETRY'), 1);
+          return;
+        }
+        
+        const timestamp = performance.now() - window.CLSBaseline.scriptStartTime;
+        const height = document.body.offsetHeight || parseFloat(getComputedStyle(document.body).height);
+        const measurement = { stage, timestamp, height };
+        
+        window.CLSBaseline.measurements.push(measurement);
+        console.log(`🏁 BASELINE [${stage}] @${Math.round(timestamp)}ms: ${height}px`);
+        
+        // Check for height changes
+        if (window.CLSBaseline.measurements.length > 1) {
+          const prev = window.CLSBaseline.measurements[window.CLSBaseline.measurements.length - 2];
+          const change = height - prev.height;
+          if (Math.abs(change) > 1) {
+            console.log(`🔥 EARLY CLS DETECTED: ${change > 0 ? '+' : ''}${change}px change from ${prev.stage} to ${stage}`);
+          }
+        }
+      }
+      
+      // Start capturing immediately
+      captureBaseline('SCRIPT_START');
+      
+      // Log correlation with earliest height if available
+      setTimeout(() => {
+        if (window.EARLIEST_HEIGHT && window.HEIGHT_TIMELINE.length > 0) {
+          console.log('📊 HEIGHT TIMELINE CORRELATION:');
+          window.HEIGHT_TIMELINE.forEach(entry => {
+            console.log(`   ${entry.stage}: ${entry.height}px @${Math.round(entry.timestamp)}ms`);
+          });
+          
+          // Compare with our baseline measurements
+          const latestBaseline = window.CLSBaseline.measurements[window.CLSBaseline.measurements.length - 1];
+          if (latestBaseline && window.EARLIEST_HEIGHT !== latestBaseline.height) {
+            const clsAmount = Math.abs(window.EARLIEST_HEIGHT - latestBaseline.height);
+            console.log(`🚨 CONFIRMED CLS: ${window.EARLIEST_HEIGHT}px → ${latestBaseline.height}px = ${clsAmount}px shift!`);
+          }
+        }
+      }, 20);
+      
+      // Capture at critical moments
+      setTimeout(() => captureBaseline('AFTER_1MS'), 1);
+      setTimeout(() => captureBaseline('AFTER_2MS'), 2);
+      setTimeout(() => captureBaseline('AFTER_5MS'), 5);
+    </script>
+    
     <!-- Comprehensive FOIT Detective - Catches All Font Loading Issues -->
     <script>
       const ComprehensiveFOITDetective = {
@@ -128,6 +244,7 @@
         fontDescriptors: new Map(),
         networkTiming: [],
         startTime: performance.now(),
+        resizeObserver: null,
         
         // Create test elements to measure actual font rendering differences
         createTestElements: function() {
@@ -157,10 +274,12 @@
           const body = document.body;
           const postContent = document.querySelector('.post-content');
           const postTitle = document.querySelector('.post-meta h1');
+          const header = document.querySelector('header, .post-header');
+          const footer = document.querySelector('footer');
           
           // Early return if body doesn't exist yet
           if (!body) {
-            console.log(`🔤 COMPREHENSIVE FOIT [${stage}]: document.body not available yet, skipping measurement`);
+            console.log(`🔤 COMPREHENSIVE CLS [${stage}]: document.body not available yet, skipping measurement`);
             return null;
           }
           
@@ -168,6 +287,9 @@
           const bodyStyles = getComputedStyle(body);
           const postStyles = postContent ? getComputedStyle(postContent) : null;
           const titleStyles = postTitle ? getComputedStyle(postTitle) : null;
+          
+          // Granular CSS property tracking for layout-affecting properties
+          const cssProperties = this.trackCSSProperties(body, postContent, postTitle);
           
           // Measure actual rendered text dimensions
           const testContainer = this.createTestElements();
@@ -189,6 +311,8 @@
             bodyWidth: parseFloat(bodyStyles.width),
             postContentHeight: postContent ? postContent.offsetHeight : 0,
             postContentScrollHeight: postContent ? postContent.scrollHeight : 0,
+            headerHeight: header ? header.offsetHeight : 0,
+            footerHeight: footer ? footer.offsetHeight : 0,
             
             // Font properties
             bodyFontFamily: bodyStyles.fontFamily,
@@ -209,6 +333,9 @@
             
             // Actual rendered text dimensions
             textDimensions: textMeasurements,
+            
+            // Granular CSS property tracking
+            cssProperties: cssProperties,
             
             // Font loading states
             fontsLoading: document.fonts.status,
@@ -256,40 +383,267 @@
           return measurements;
         },
         
+        trackCSSProperties: function(body, postContent, postTitle) {
+          const properties = {};
+          
+          // Layout-affecting properties to track
+          const layoutProps = [
+            'margin', 'marginTop', 'marginRight', 'marginBottom', 'marginLeft',
+            'padding', 'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft',
+            'lineHeight', 'fontSize', 'fontFamily', 'fontWeight', 'letterSpacing',
+            'width', 'height', 'minHeight', 'maxHeight', 'minWidth', 'maxWidth',
+            'display', 'position', 'top', 'right', 'bottom', 'left',
+            'border', 'borderTop', 'borderRight', 'borderBottom', 'borderLeft',
+            'boxSizing', 'textAlign', 'verticalAlign', 'wordSpacing'
+          ];
+          
+          // Track body properties
+          if (body) {
+            const bodyStyles = getComputedStyle(body);
+            properties.body = {};
+            layoutProps.forEach(prop => {
+              properties.body[prop] = bodyStyles.getPropertyValue(prop);
+            });
+          }
+          
+          // Track post content properties  
+          if (postContent) {
+            const postStyles = getComputedStyle(postContent);
+            properties.postContent = {};
+            layoutProps.forEach(prop => {
+              properties.postContent[prop] = postStyles.getPropertyValue(prop);
+            });
+          }
+          
+          // Track post title properties
+          if (postTitle) {
+            const titleStyles = getComputedStyle(postTitle);
+            properties.postTitle = {};
+            layoutProps.forEach(prop => {
+              properties.postTitle[prop] = titleStyles.getPropertyValue(prop);
+            });
+          }
+          
+          return properties;
+        },
+        
         logMeasurement: function(measurement, stage) {
-          console.group(`🔤 COMPREHENSIVE FOIT [${stage}] @${Math.round(measurement.timestamp)}ms`);
+          console.group(`🔤 COMPREHENSIVE CLS [${stage}] @${Math.round(measurement.timestamp)}ms`);
           
-          // Layout info
-          console.log(`📐 LAYOUT: body=${measurement.bodyHeight}px×${measurement.bodyWidth}px, post=${measurement.postContentHeight}px`);
+          // Enhanced layout breakdown
+          console.log(`📐 LAYOUT BREAKDOWN:`);
+          console.log(`   Body: ${measurement.bodyHeight}px × ${measurement.bodyWidth}px`);
+          console.log(`   Post Content: ${measurement.postContentHeight}px (scroll: ${measurement.postContentScrollHeight}px)`);
+          console.log(`   Header: ${measurement.headerHeight || 'N/A'}px`);
+          console.log(`   Footer: ${measurement.footerHeight || 'N/A'}px`);
           
-          // Font info
-          console.log(`🔤 FONTS: body="${measurement.bodyFontFamily}" post="${measurement.postContentFontFamily}"`);
-          console.log(`📊 SIZES: body=${measurement.bodyFontSize}/${measurement.bodyLineHeight}, post=${measurement.postContentFontSize}/${measurement.postContentLineHeight}`);
-          console.log(`⚖️ WEIGHTS: body=${measurement.bodyFontWeight}, post=${measurement.postContentFontWeight}, title=${measurement.titleFontWeight}`);
-          console.log(`📏 SPACING: body=${measurement.bodyLetterSpacing}, post=${measurement.postContentLetterSpacing}`);
+          // Height change analysis with source attribution
+          if (this.measurements.length > 1) {
+            const prev = this.measurements[this.measurements.length - 2];
+            const bodyChange = measurement.bodyHeight - prev.bodyHeight;
+            const postChange = measurement.postContentHeight - prev.postContentHeight;
+            const headerChange = (measurement.headerHeight || 0) - (prev.headerHeight || 0);
+            
+            if (Math.abs(bodyChange) > 1) {
+              console.log(`🔄 HEIGHT CHANGES since ${prev.stage}:`);
+              console.log(`   Body: ${bodyChange > 0 ? '+' : ''}${bodyChange}px`);
+              console.log(`   Post: ${postChange > 0 ? '+' : ''}${postChange}px`);
+              console.log(`   Header: ${headerChange > 0 ? '+' : ''}${headerChange}px`);
+              
+              // Identify primary contributor
+              const changes = [
+                { name: 'Body', value: Math.abs(bodyChange) },
+                { name: 'Post', value: Math.abs(postChange) },
+                { name: 'Header', value: Math.abs(headerChange) }
+              ];
+              const primary = changes.reduce((max, curr) => curr.value > max.value ? curr : max);
+              console.log(`   🎯 PRIMARY CONTRIBUTOR: ${primary.name} (${primary.value}px)`);
+              
+              // GRANULAR CSS PROPERTY ANALYSIS
+              this.logCSSPropertyChanges(prev, measurement, stage);
+            }
+          }
           
-          // Text rendering measurements
+          // Enhanced font analysis
+          console.log(`🔤 FONT ANALYSIS:`);
+          console.log(`   Family: body="${measurement.bodyFontFamily}" vs post="${measurement.postContentFontFamily}"`);
+          console.log(`   Sizes: body=${measurement.bodyFontSize}/${measurement.bodyLineHeight} vs post=${measurement.postContentFontSize}/${measurement.postContentLineHeight}`);
+          console.log(`   Status: ${measurement.fontsLoading}, N400=${measurement.newsreader400Ready}, N600=${measurement.newsreader600Ready}`);
+          
+          // Text rendering impact
           if (measurement.textDimensions.test0 && measurement.textDimensions.test1) {
             const newsreaderWidth = measurement.textDimensions.test0.width;
             const georgiaWidth = measurement.textDimensions.test1.width;
             const widthDiff = Math.abs(newsreaderWidth - georgiaWidth);
-            console.log(`📝 TEXT RENDERING: Newsreader=${newsreaderWidth}px, Georgia=${georgiaWidth}px, diff=${widthDiff}px`);
+            console.log(`📝 TEXT METRICS: Newsreader=${newsreaderWidth.toFixed(1)}px, Georgia=${georgiaWidth.toFixed(1)}px (Δ${widthDiff.toFixed(1)}px)`);
             
-            if (widthDiff > 10) {
-              console.log(`   🚨 SIGNIFICANT WIDTH DIFFERENCE: ${widthDiff}px - likely causing reflow`);
+            if (widthDiff > 5) {
+              const lines = Math.ceil(measurement.postContentHeight / 35); // Approximate line count
+              const totalWidthImpact = widthDiff * lines;
+              console.log(`   ⚠️ POTENTIAL REFLOW: ${widthDiff.toFixed(1)}px/line × ~${lines} lines = ${totalWidthImpact.toFixed(1)}px potential shift`);
             }
           }
           
-          // Font loading state
-          console.log(`⏳ FONT STATUS: ${measurement.fontsLoading}, N400=${measurement.newsreader400Ready}, N600=${measurement.newsreader600Ready}`);
+          // Timing correlation with core.js
+          console.log(`⏰ TIMING: readyState=${document.readyState}, fonts=${measurement.fontsLoading}`);
           
-          // Network analysis
-          if (measurement.networkTiming.length > 0) {
-            console.log(`🌐 NETWORK: ${measurement.networkTiming.length} font resources`);
-            measurement.networkTiming.forEach(resource => {
-              const cached = resource.duration < 10 ? ' (CACHED)' : '';
-              console.log(`   → ${resource.name.split('/').pop()}: ${Math.round(resource.duration)}ms${cached}`);
+          console.groupEnd();
+        },
+        
+        logCSSPropertyChanges: function(prevMeasurement, currentMeasurement, stage) {
+          console.group('🔧 CSS PROPERTY CHANGES ANALYSIS:');
+          
+          const elements = ['body', 'postContent', 'postTitle'];
+          const importantLayoutProps = [
+            'lineHeight', 'fontSize', 'fontFamily', 'fontWeight', 
+            'marginTop', 'marginBottom', 'paddingTop', 'paddingBottom',
+            'height', 'minHeight', 'border', 'letterSpacing'
+          ];
+          
+          let totalChanges = 0;
+          
+          elements.forEach(element => {
+            const prevProps = prevMeasurement.cssProperties?.[element];
+            const currentProps = currentMeasurement.cssProperties?.[element];
+            
+            if (!prevProps || !currentProps) return;
+            
+            const elementChanges = [];
+            
+            importantLayoutProps.forEach(prop => {
+              const prevValue = prevProps[prop];
+              const currentValue = currentProps[prop];
+              
+              if (prevValue !== currentValue) {
+                elementChanges.push({
+                  property: prop,
+                  from: prevValue,
+                  to: currentValue,
+                  isLayoutAffecting: this.isLayoutAffectingChange(prop, prevValue, currentValue)
+                });
+                totalChanges++;
+              }
             });
+            
+            if (elementChanges.length > 0) {
+              console.log(`📝 ${element.toUpperCase()} CHANGES:`);
+              elementChanges.forEach(change => {
+                const impact = change.isLayoutAffecting ? '🚨 LAYOUT IMPACT' : '📊 STYLE ONLY';
+                console.log(`   ${change.property}: "${change.from}" → "${change.to}" ${impact}`);
+              });
+            }
+          });
+          
+          if (totalChanges === 0) {
+            console.log('✅ NO CSS PROPERTY CHANGES - Layout shift caused by other factors');
+            console.log('   → Check: dynamic content, image loading, or browser reflow');
+          } else {
+            console.log(`📊 TOTAL CSS CHANGES: ${totalChanges} properties modified`);
+            
+            // Provide specific recommendations based on detected changes
+            this.provideCSSChangeSolutions(prevMeasurement, currentMeasurement);
+          }
+          
+          console.groupEnd();
+        },
+        
+        isLayoutAffectingChange: function(property, prevValue, currentValue) {
+          // Properties that directly affect layout
+          const layoutProperties = [
+            'lineHeight', 'fontSize', 'fontFamily', 'fontWeight', 
+            'margin', 'marginTop', 'marginBottom', 'padding', 'paddingTop', 'paddingBottom',
+            'height', 'minHeight', 'width', 'minWidth', 'border', 'letterSpacing', 'wordSpacing'
+          ];
+          
+          if (!layoutProperties.some(prop => property.includes(prop))) {
+            return false;
+          }
+          
+          // Special handling for specific properties
+          if (property === 'lineHeight') {
+            // Convert to numeric for comparison
+            const prevNumeric = this.parseLineHeight(prevValue);
+            const currentNumeric = this.parseLineHeight(currentValue);
+            return Math.abs(prevNumeric - currentNumeric) > 0.1;
+          }
+          
+          if (property === 'fontSize') {
+            // Extract numeric part for comparison
+            const prevPx = parseFloat(prevValue);
+            const currentPx = parseFloat(currentValue);
+            return Math.abs(prevPx - currentPx) > 0.5;
+          }
+          
+          if (property === 'fontFamily') {
+            // Font family changes almost always affect layout
+            return prevValue !== currentValue;
+          }
+          
+          return true; // Default to layout-affecting for safety
+        },
+        
+        parseLineHeight: function(lineHeightValue) {
+          if (!lineHeightValue || lineHeightValue === 'normal') {
+            return 1.2; // Browser default
+          }
+          
+          // Handle pixel values
+          if (lineHeightValue.includes('px')) {
+            return parseFloat(lineHeightValue);
+          }
+          
+          // Handle unitless values (most common)
+          const numeric = parseFloat(lineHeightValue);
+          if (!isNaN(numeric)) {
+            return numeric;
+          }
+          
+          return 1.2; // Fallback
+        },
+        
+        provideCSSChangeSolutions: function(prevMeasurement, currentMeasurement) {
+          console.group('💡 CSS CHANGE SOLUTIONS:');
+          
+          const prevBody = prevMeasurement.cssProperties?.body;
+          const currentBody = currentMeasurement.cssProperties?.body;
+          const prevPost = prevMeasurement.cssProperties?.postContent;
+          const currentPost = currentMeasurement.cssProperties?.postContent;
+          
+          // Line-height mismatch
+          if (prevBody?.lineHeight !== currentBody?.lineHeight || 
+              prevPost?.lineHeight !== currentPost?.lineHeight) {
+            console.log('🎯 LINE-HEIGHT MISMATCH DETECTED:');
+            console.log('   → Update critical CSS to match final line-height values');
+            console.log(`   → Body: Set to "${currentBody?.lineHeight}"`);
+            if (currentPost?.lineHeight) {
+              console.log(`   → Post content: Set to "${currentPost.lineHeight}"`);
+            }
+          }
+          
+          // Font family changes
+          if (prevBody?.fontFamily !== currentBody?.fontFamily) {
+            console.log('🔤 FONT FAMILY CHANGE DETECTED:');
+            console.log('   → Use font-display: block to prevent swapping');
+            console.log('   → Or add size-adjust to fallback font in critical CSS');
+          }
+          
+          // Font size changes
+          if (prevBody?.fontSize !== currentBody?.fontSize ||
+              prevPost?.fontSize !== currentPost?.fontSize) {
+            console.log('📏 FONT SIZE CHANGE DETECTED:');
+            console.log('   → Ensure critical CSS font sizes match full CSS');
+            console.log('   → Check for responsive font size conflicts');
+          }
+          
+          // Margin/padding changes
+          const marginPaddingChanged = ['marginTop', 'marginBottom', 'paddingTop', 'paddingBottom']
+            .some(prop => prevBody?.[prop] !== currentBody?.[prop] || 
+                          prevPost?.[prop] !== currentPost?.[prop]);
+          
+          if (marginPaddingChanged) {
+            console.log('📦 SPACING CHANGE DETECTED:');
+            console.log('   → Sync margin/padding values between critical and full CSS');
+            console.log('   → Check for CSS cascade conflicts');
           }
           
           console.groupEnd();
@@ -376,15 +730,20 @@
             this.provideSolutions(issues, measurement);
           }
           
-          // Height change analysis
-          if (stage !== 'START') {
-            const heightChange = measurement.bodyHeight - this.initialHeight;
-            if (Math.abs(heightChange) > 10) {
-              console.log(`📏 HEIGHT CHANGE: ${heightChange}px from START`);
-              this.diagnoseHeightChange(measurement, heightChange, issues);
-            }
-          } else {
+          // Height change analysis with proper baseline
+          if (this.measurements.length === 1) {
+            // First measurement - set baseline
             this.initialHeight = measurement.bodyHeight;
+            console.log(`📊 BASELINE SET: ${measurement.bodyHeight}px at ${stage}`);
+          } else {
+            // Compare to baseline
+            const heightChange = measurement.bodyHeight - this.initialHeight;
+            if (Math.abs(heightChange) > 1) {
+              console.log(`📏 TOTAL HEIGHT CHANGE: ${heightChange > 0 ? '+' : ''}${heightChange}px from baseline`);
+              if (Math.abs(heightChange) > 10) {
+                this.diagnoseHeightChange(measurement, heightChange, issues);
+              }
+            }
           }
         },
         
@@ -438,22 +797,65 @@
           }
           
           console.groupEnd();
+        },
+        
+        // Add ResizeObserver to catch layout changes in real-time
+        startResizeObserver: function() {
+          if (!window.ResizeObserver || !document.body) return;
+          
+          this.resizeObserver = new ResizeObserver((entries) => {
+            for (const entry of entries) {
+              const newHeight = entry.contentRect.height;
+              const timestamp = performance.now() - this.startTime;
+              
+              // Only log if there's a significant change
+              if (Math.abs(newHeight - this.initialHeight) > 5) {
+                console.log(`📏 RESIZE OBSERVED @${Math.round(timestamp)}ms: ${newHeight}px (Δ${newHeight - this.initialHeight}px)`);
+                
+                // Trigger a measurement
+                this.measureComprehensive(`RESIZE_${Math.round(timestamp)}MS`);
+              }
+            }
+          });
+          
+          this.resizeObserver.observe(document.body);
+          console.log('👁️ ResizeObserver started - monitoring body for layout changes');
         }
       };
       
-      // Start comprehensive monitoring when DOM is available
-      if (document.body) {
-        ComprehensiveFOITDetective.measureComprehensive('PAGE_START');
-      } else {
-        // Wait for DOM to be ready
-        if (document.readyState === 'loading') {
-          document.addEventListener('DOMContentLoaded', () => {
-            ComprehensiveFOITDetective.measureComprehensive('PAGE_START');
-          });
+      // CRITICAL: Start monitoring immediately to catch early CLS
+      function startEarlyMonitoring() {
+        if (document.body) {
+          ComprehensiveFOITDetective.measureComprehensive('VERY_EARLY');
+          
+          // Start ResizeObserver for real-time detection
+          ComprehensiveFOITDetective.startResizeObserver();
+          
+          // Monitor continuously during critical period
+          setTimeout(() => ComprehensiveFOITDetective.measureComprehensive('AFTER_10MS'), 10);
+          setTimeout(() => ComprehensiveFOITDetective.measureComprehensive('AFTER_25MS'), 25);
+          setTimeout(() => ComprehensiveFOITDetective.measureComprehensive('AFTER_50MS'), 50);
+          setTimeout(() => ComprehensiveFOITDetective.measureComprehensive('AFTER_100MS'), 100);
+          setTimeout(() => ComprehensiveFOITDetective.measureComprehensive('AFTER_200MS'), 200);
+          setTimeout(() => ComprehensiveFOITDetective.measureComprehensive('AFTER_500MS'), 500);
+          setTimeout(() => ComprehensiveFOITDetective.measureComprehensive('AFTER_1000MS'), 1000);
+          setTimeout(() => ComprehensiveFOITDetective.measureComprehensive('AFTER_2000MS'), 2000);
         } else {
-          ComprehensiveFOITDetective.measureComprehensive('PAGE_START');
+          // Retry very quickly if body not available
+          setTimeout(startEarlyMonitoring, 1);
         }
       }
+      
+      // Start immediately
+      startEarlyMonitoring();
+      
+      // Also hook into requestAnimationFrame for frame-level precision
+      requestAnimationFrame(() => {
+        ComprehensiveFOITDetective.measureComprehensive('FIRST_RAF');
+        requestAnimationFrame(() => {
+          ComprehensiveFOITDetective.measureComprehensive('SECOND_RAF');
+        });
+      });
       
       document.addEventListener('DOMContentLoaded', () => {
         ComprehensiveFOITDetective.measureComprehensive('DOM_READY');
