@@ -445,23 +445,13 @@ class ThemeManager {
    * @constructor
    */
   constructor(browser = new BrowserEnvironment()) {
-    // CLS DEBUG: Log during constructor
-    const logHeight = (step) => {
-      const height = getComputedStyle(browser.getBody()).height;
-      console.log(`🔍 CLS DEBUG [CONSTRUCTOR_${step}]: height=${height}`);
-    };
-    
-    logHeight('START');
     this.browser = browser;
     this.themeToggle = null;
     this.toggleSlider = null;
     this.currentTheme = 'light';
     this.isVibeMode = false;
     this.originalTheme = 'light'; // Store original theme when entering vibe mode
-    
-    logHeight('BEFORE_INIT');
     this.init();
-    logHeight('AFTER_INIT');
   }
 
   init() {
@@ -473,51 +463,24 @@ class ThemeManager {
   }
 
   setup() {
-    // CLS DEBUG: Log height during theme setup
-    const logHeight = (step) => {
-      const height = getComputedStyle(this.browser.getBody()).height;
-      console.log(`🔍 CLS DEBUG [THEME_${step}]: height=${height}`);
-    };
-    
-    logHeight('SETUP_START');
-    
     this.themeToggle = this.browser.getElementById('theme-toggle');
     this.toggleSlider = this.browser.getElementById('toggle-slider');
-
-    logHeight('AFTER_ELEMENT_QUERIES');
 
     if (!this.themeToggle) {
       console.warn('Theme toggle button not found');
       return;
     }
 
-    logHeight('BEFORE_INIT_THEME');
     this.initializeTheme();
-    logHeight('AFTER_INIT_THEME');
-    
     this.setupEventListeners();
-    logHeight('SETUP_COMPLETE');
   }
 
   initializeTheme() {
-    const logHeight = (step) => {
-      const height = getComputedStyle(this.browser.getBody()).height;
-      console.log(`🔍 CLS DEBUG [INIT_THEME_${step}]: height=${height}`);
-    };
-    
-    logHeight('START');
-    
     const savedTheme = storage.get('theme');
-    logHeight('AFTER_STORAGE_GET');
-    
     const systemTheme = this.browser.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    logHeight('AFTER_MEDIA_QUERY');
     
     this.currentTheme = savedTheme || systemTheme;
-    logHeight('BEFORE_APPLY_THEME');
-    
     this.applyTheme(this.currentTheme);
-    logHeight('AFTER_APPLY_THEME');
   }
 
   setupEventListeners() {
@@ -1719,89 +1682,32 @@ class BioCollapseManager {
  * @public
  */
 function initializeApp(browser = new BrowserEnvironment()) {
-  // GRANULAR CLS DEBUGGING - Log height at every single step
-  let measurementCount = 0;
-  function logHeight(step) {
-    measurementCount++;
-    console.log(`🔍 CLS DEBUG [${step}]: About to measure height (measurement #${measurementCount})`);
-    const height = getComputedStyle(browser.getBody()).height;
-    const classes = browser.getBody().className;
-    const readyState = browser.getDocument().readyState;
-    const fontsLoaded = browser.getDocument().fonts ? browser.getDocument().fonts.status : 'unknown';
-    console.log(`🔍 CLS DEBUG [${step}]: height=${height}, body classes="${classes}", readyState=${readyState}, fonts=${fontsLoaded}, measurement #${measurementCount}`);
-    
-    // Check if the act of measuring height triggered reflow
-    if (measurementCount > 1) {
-      console.log(`🔍 CLS DEBUG [${step}]: This is measurement #${measurementCount} - watch for reflow patterns`);
-    }
-    
-    return height;
-  }
-  
-  console.log('🔍 CLS DEBUG: initializeApp started');
-  
-  // Check if other scripts are still loading
-  const scripts = Array.from(browser.getDocument().querySelectorAll('script[src]'));
-  const loadingScripts = scripts.filter(s => !s.complete && s.readyState !== 'complete');
-  console.log('🔍 CLS DEBUG: Loading scripts:', loadingScripts.map(s => s.src));
-  
-  logHeight('START');
-  
-  // Use requestAnimationFrame for better performance (restored)
+  // Use requestAnimationFrame for better performance
   browser.requestAnimationFrame(() => {
-    console.log('🔍 CLS DEBUG: requestAnimationFrame callback started');
-    logHeight('RAF_START');
-    
     // Always initialize theme manager
-    console.log('🔍 CLS DEBUG: About to initialize ThemeManager');
-    logHeight('BEFORE_THEME_MANAGER');
-    
-    browser.window.themeManager = SafeInit.initialize('ThemeManager', () => {
-      logHeight('INSIDE_SAFEINIT_THEME_START');
-      const manager = new ThemeManager(browser);
-      logHeight('INSIDE_SAFEINIT_THEME_END');
-      return manager;
-    });
-    
-    logHeight('AFTER_THEME_MANAGER');
-    console.log('🔍 CLS DEBUG: ThemeManager initialized');
+    browser.window.themeManager = SafeInit.initialize('ThemeManager', () => new ThemeManager(browser));
     
     // TOC manager is initialized in toc.js when that script loads
     
     // Only initialize bio collapse manager on homepage
     const hasBioContent = browser.querySelector('.bio-content');
     if (hasBioContent) {
-      console.log('🔍 CLS DEBUG: About to initialize BioCollapseManager');
-      logHeight('BEFORE_BIO_COLLAPSE');
       browser.window.bioCollapseManager = SafeInit.initialize('BioCollapseManager', () => new BioCollapseManager(browser));
-      logHeight('AFTER_BIO_COLLAPSE');
-      console.log('🔍 CLS DEBUG: BioCollapseManager initialized');
     }
     
     // Only initialize vibe check manager on homepage (where button exists)
     const hasVibeCheck = browser.getElementById('vibe-check-btn');
     if (hasVibeCheck && browser.window.themeManager) {
-      console.log('🔍 CLS DEBUG: About to initialize VibeCheckManager');
-      logHeight('BEFORE_VIBE_CHECK');
       browser.window.vibeCheckManager = SafeInit.initialize('VibeCheckManager', () => new VibeCheckManager(browser.window.themeManager, browser));
-      logHeight('AFTER_VIBE_CHECK');
-      console.log('🔍 CLS DEBUG: VibeCheckManager initialized');
     }
     
     // Add loaded class for transition optimizations
-    console.log('🔍 CLS DEBUG: About to add loaded class to body');
-    logHeight('BEFORE_LOADED_CLASS');
     browser.getBody().classList.add('loaded');
-    logHeight('AFTER_LOADED_CLASS');
-    console.log('🔍 CLS DEBUG: loaded class added');
     
     // Performance mark for debugging
     if ('performance' in browser.window && 'mark' in browser.window.performance) {
       browser.window.performance.mark('app-initialized');
     }
-    
-    logHeight('COMPLETE');
-    console.log('🔍 CLS DEBUG: initializeApp completed');
   });
 }
 
