@@ -192,8 +192,9 @@
         criticalCSSApplied: true,
         asyncCSSApplied: false
       };
-    </script>
-    <link rel="stylesheet" href="../style.css" media="print" onload="
+      
+      // Define the CSS analysis function
+      window.analyzeCSS = function() {
       const cssApplyStartTime = performance.now();
       const timeSinceCSSRequest = cssApplyStartTime - window.CSS_LOAD_METRICS.cssRequestTime;
       console.log('🎯 CSS TIMING: onload fired ' + Math.round(timeSinceCSSRequest) + 'ms after CSS request');
@@ -224,8 +225,7 @@
         
         console.log('📸 CRITICAL CSS STATE (BEFORE):', JSON.stringify(criticalStyles, null, 2));
         
-        // Apply async CSS
-        this.media='all';
+        // Note: CSS has already been applied by the onload handler
         window.CSS_LOAD_METRICS.asyncCSSApplied = true;
         const cssAppliedTime = performance.now() - cssApplyStartTime;
         
@@ -296,11 +296,11 @@
         console.groupEnd();
       } else {
         console.log('🔍 CSS LOAD: document.body not available yet');
-        this.media='all';
       }
-      
-      this.onload=null;
-    ">
+    };
+    </script>
+    
+    <link rel="stylesheet" href="../style.css" media="print" onload="this.media='all'; window.analyzeCSS(); this.onload=null;">
     <noscript><link rel="stylesheet" href="../style.css"></noscript>
     
     <!-- IMMEDIATE CLS Baseline Capture -->
