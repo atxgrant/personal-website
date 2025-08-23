@@ -445,13 +445,16 @@ class ThemeManager {
    * @constructor
    */
   constructor(browser = new BrowserEnvironment()) {
+    console.log('🔍 CLS DEBUG: ThemeManager constructor started');
     this.browser = browser;
     this.themeToggle = null;
     this.toggleSlider = null;
     this.currentTheme = 'light';
     this.isVibeMode = false;
     this.originalTheme = 'light'; // Store original theme when entering vibe mode
+    console.log('🔍 CLS DEBUG: About to call ThemeManager.init()');
     this.init();
+    console.log('🔍 CLS DEBUG: ThemeManager constructor completed');
   }
 
   init() {
@@ -463,6 +466,7 @@ class ThemeManager {
   }
 
   setup() {
+    console.log('🔍 CLS DEBUG: ThemeManager.setup() started');
     this.themeToggle = this.browser.getElementById('theme-toggle');
     this.toggleSlider = this.browser.getElementById('toggle-slider');
 
@@ -471,16 +475,28 @@ class ThemeManager {
       return;
     }
 
+    console.log('🔍 CLS DEBUG: About to call initializeTheme()');
     this.initializeTheme();
+    console.log('🔍 CLS DEBUG: About to call setupEventListeners()');
     this.setupEventListeners();
+    console.log('🔍 CLS DEBUG: ThemeManager.setup() completed');
   }
 
   initializeTheme() {
+    console.log('🔍 CLS DEBUG: initializeTheme() started');
+    console.log('🔍 CLS DEBUG: body classes before theme init:', this.browser.getBody().className);
+    console.log('🔍 CLS DEBUG: html classes before theme init:', this.browser.getDocumentElement().className);
+    
     const savedTheme = storage.get('theme');
     const systemTheme = this.browser.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     
     this.currentTheme = savedTheme || systemTheme;
+    console.log('🔍 CLS DEBUG: Determined theme:', this.currentTheme);
+    console.log('🔍 CLS DEBUG: About to apply theme');
     this.applyTheme(this.currentTheme);
+    console.log('🔍 CLS DEBUG: Theme applied');
+    console.log('🔍 CLS DEBUG: body classes after theme init:', this.browser.getBody().className);
+    console.log('🔍 CLS DEBUG: html classes after theme init:', this.browser.getDocumentElement().className);
   }
 
   setupEventListeners() {
@@ -1682,33 +1698,51 @@ class BioCollapseManager {
  * @public
  */
 function initializeApp(browser = new BrowserEnvironment()) {
+  // CLS DEBUGGING: Log initial state
+  console.log('🔍 CLS DEBUG: initializeApp started');
+  console.log('🔍 CLS DEBUG: body classes before:', browser.getBody().className);
+  console.log('🔍 CLS DEBUG: body computed height before:', getComputedStyle(browser.getBody()).height);
+  
   // Use requestAnimationFrame for better performance
   browser.requestAnimationFrame(() => {
+    console.log('🔍 CLS DEBUG: requestAnimationFrame callback started');
+    
     // Always initialize theme manager
+    console.log('🔍 CLS DEBUG: About to initialize ThemeManager');
     browser.window.themeManager = SafeInit.initialize('ThemeManager', () => new ThemeManager(browser));
+    console.log('🔍 CLS DEBUG: ThemeManager initialized, body classes:', browser.getBody().className);
     
     // TOC manager is initialized in toc.js when that script loads
     
     // Only initialize bio collapse manager on homepage
     const hasBioContent = browser.querySelector('.bio-content');
     if (hasBioContent) {
+      console.log('🔍 CLS DEBUG: About to initialize BioCollapseManager');
       browser.window.bioCollapseManager = SafeInit.initialize('BioCollapseManager', () => new BioCollapseManager(browser));
+      console.log('🔍 CLS DEBUG: BioCollapseManager initialized');
     }
     
     // Only initialize vibe check manager on homepage (where button exists)
     const hasVibeCheck = browser.getElementById('vibe-check-btn');
     if (hasVibeCheck && browser.window.themeManager) {
+      console.log('🔍 CLS DEBUG: About to initialize VibeCheckManager');
       browser.window.vibeCheckManager = SafeInit.initialize('VibeCheckManager', () => new VibeCheckManager(browser.window.themeManager, browser));
+      console.log('🔍 CLS DEBUG: VibeCheckManager initialized, body classes:', browser.getBody().className);
     }
     
     // Add loaded class for transition optimizations
+    console.log('🔍 CLS DEBUG: About to add loaded class to body');
+    console.log('🔍 CLS DEBUG: body computed height before loaded:', getComputedStyle(browser.getBody()).height);
     browser.getBody().classList.add('loaded');
+    console.log('🔍 CLS DEBUG: loaded class added, body classes:', browser.getBody().className);
+    console.log('🔍 CLS DEBUG: body computed height after loaded:', getComputedStyle(browser.getBody()).height);
     
     // Performance mark for debugging
     if ('performance' in browser.window && 'mark' in browser.window.performance) {
       browser.window.performance.mark('app-initialized');
     }
     
+    console.log('🔍 CLS DEBUG: initializeApp completed');
   });
 }
 
