@@ -1682,10 +1682,35 @@ class BioCollapseManager {
  * @public
  */
 function initializeApp(browser = new BrowserEnvironment()) {
-  // Use requestAnimationFrame for better performance
+  // DEBUGGING: Focus on what happens during the 239px height change
+  function logState(step) {
+    const height = getComputedStyle(browser.getBody()).height;
+    const readyState = browser.getDocument().readyState;
+    const fontsStatus = browser.getDocument().fonts ? browser.getDocument().fonts.status : 'unknown';
+    
+    // Check for any CSS that might be loading
+    const stylesheets = Array.from(browser.getDocument().styleSheets);
+    const loadingCSS = stylesheets.filter(s => !s.disabled && s.href && !s.ownerNode.complete);
+    
+    // Check viewport and scroll
+    const scrollY = browser.getWindow().scrollY || 0;
+    const viewportHeight = browser.getWindow().innerHeight;
+    
+    console.log(`🔍 [${step}]: height=${height}, fonts=${fontsStatus}, readyState=${readyState}, scrollY=${scrollY}px, viewport=${viewportHeight}px, loadingCSS=${loadingCSS.length}`);
+    
+    return height;
+  }
+  
+  console.log('🚨 CLS DEBUG: The 239px shift happens between START and RAF_START');
+  logState('START');
+  
+  // Use requestAnimationFrame for better performance  
   browser.requestAnimationFrame(() => {
-    // Always initialize theme manager
+    logState('RAF_START');
+    
+    // The height already changed by now - let's see if we do anything that changes it further
     browser.window.themeManager = SafeInit.initialize('ThemeManager', () => new ThemeManager(browser));
+    logState('AFTER_THEME_MANAGER');
     
     // TOC manager is initialized in toc.js when that script loads
     
@@ -1693,21 +1718,26 @@ function initializeApp(browser = new BrowserEnvironment()) {
     const hasBioContent = browser.querySelector('.bio-content');
     if (hasBioContent) {
       browser.window.bioCollapseManager = SafeInit.initialize('BioCollapseManager', () => new BioCollapseManager(browser));
+      logState('AFTER_BIO_MANAGER');
     }
     
     // Only initialize vibe check manager on homepage (where button exists)
     const hasVibeCheck = browser.getElementById('vibe-check-btn');
     if (hasVibeCheck && browser.window.themeManager) {
       browser.window.vibeCheckManager = SafeInit.initialize('VibeCheckManager', () => new VibeCheckManager(browser.window.themeManager, browser));
+      logState('AFTER_VIBE_MANAGER');
     }
     
     // Add loaded class for transition optimizations
     browser.getBody().classList.add('loaded');
+    logState('AFTER_LOADED_CLASS');
     
     // Performance mark for debugging
     if ('performance' in browser.window && 'mark' in browser.window.performance) {
       browser.window.performance.mark('app-initialized');
     }
+    
+    logState('COMPLETE');
   });
 }
 
