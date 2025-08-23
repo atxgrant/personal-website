@@ -48,6 +48,7 @@
       // MutationObserver to catch the exact moment body becomes available
       window.EARLIEST_HEIGHT = null;
       window.HEIGHT_TIMELINE = [];
+      window.ELEMENT_TIMELINE = {}; // Track individual element heights
       
       const bodyObserver = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
@@ -61,6 +62,22 @@
                 if (!window.EARLIEST_HEIGHT) {
                   window.EARLIEST_HEIGHT = height;
                   console.log(`🎯 EARLIEST BODY HEIGHT: ${height}px @${Math.round(timestamp)}ms - Captured at body creation!`);
+                  
+                  // Capture initial element heights
+                  const elements = ['h1', '.post-content', '.post-meta', 'header', 'footer', 'p'];
+                  elements.forEach(selector => {
+                    const elem = node.querySelector(selector);
+                    if (elem) {
+                      if (!window.ELEMENT_TIMELINE[selector]) {
+                        window.ELEMENT_TIMELINE[selector] = [];
+                      }
+                      window.ELEMENT_TIMELINE[selector].push({
+                        height: elem.offsetHeight,
+                        timestamp,
+                        stage: 'INITIAL'
+                      });
+                    }
+                  });
                 }
                 
                 window.HEIGHT_TIMELINE.push({ stage: 'BODY_CREATED', height, timestamp });
@@ -77,6 +94,28 @@
                       height: newHeight, 
                       timestamp: newTimestamp,
                       change: newHeight - height 
+                    });
+                    
+                    // Track which elements changed
+                    const elements = ['h1', '.post-content', '.post-meta', 'header', 'footer'];
+                    elements.forEach(selector => {
+                      const elem = node.querySelector(selector);
+                      if (elem) {
+                        const elemHeight = elem.offsetHeight;
+                        if (!window.ELEMENT_TIMELINE[selector]) {
+                          window.ELEMENT_TIMELINE[selector] = [];
+                        }
+                        const lastHeight = window.ELEMENT_TIMELINE[selector].slice(-1)[0]?.height || 0;
+                        if (Math.abs(elemHeight - lastHeight) > 1) {
+                          window.ELEMENT_TIMELINE[selector].push({
+                            height: elemHeight,
+                            timestamp: newTimestamp,
+                            stage: 'CHANGED',
+                            change: elemHeight - lastHeight
+                          });
+                          console.log(`   📦 ${selector}: ${lastHeight}px → ${elemHeight}px (Δ${elemHeight - lastHeight}px)`);
+                        }
+                      }
                     });
                   }
                 };
@@ -146,30 +185,117 @@
     }
     </style>
     
-    <!-- Restore async CSS loading with detailed CLS debugging -->
+    <!-- Enhanced async CSS loading with comprehensive debugging -->
+    <script>
+      window.CSS_LOAD_METRICS = {
+        cssRequestTime: performance.now(),
+        criticalCSSApplied: true,
+        asyncCSSApplied: false
+      };
+    </script>
     <link rel="stylesheet" href="../style.css" media="print" onload="
-      console.log('🔍 CSS LOAD: style.css onload fired, about to change media');
+      const cssApplyStartTime = performance.now();
+      const timeSinceCSSRequest = cssApplyStartTime - window.CSS_LOAD_METRICS.cssRequestTime;
+      console.log('🎯 CSS TIMING: onload fired ' + Math.round(timeSinceCSSRequest) + 'ms after CSS request');
+      
       if (document.body) {
-        const beforeStyles = getComputedStyle(document.body);
-        console.log('🔍 CSS LOAD: BEFORE - height:', beforeStyles.height, 'lineHeight:', beforeStyles.lineHeight, 'fontSize:', beforeStyles.fontSize);
+        // Capture critical CSS values (before async CSS applies)
+        const criticalElements = {
+          body: document.body,
+          postContent: document.querySelector('.post-content'),
+          postMeta: document.querySelector('.post-meta'),
+          postTitle: document.querySelector('.post-meta h1')
+        };
         
-        this.media='all'; 
+        const criticalStyles = {};
+        const propsToTrack = ['height', 'lineHeight', 'fontSize', 'border', 'borderTop', 'borderBottom', 
+                              'margin', 'marginTop', 'marginBottom', 'padding', 'paddingTop', 'paddingBottom'];
         
-        const afterStyles = getComputedStyle(document.body);
-        console.log('🔍 CSS LOAD: AFTER - height:', afterStyles.height, 'lineHeight:', afterStyles.lineHeight, 'fontSize:', afterStyles.fontSize);
+        // Capture BEFORE state
+        Object.entries(criticalElements).forEach(([key, elem]) => {
+          if (elem) {
+            const styles = getComputedStyle(elem);
+            criticalStyles[key] = {};
+            propsToTrack.forEach(prop => {
+              criticalStyles[key][prop] = styles[prop];
+            });
+          }
+        });
         
-        const heightChange = parseFloat(afterStyles.height) - parseFloat(beforeStyles.height);
-        const lineHeightChange = afterStyles.lineHeight !== beforeStyles.lineHeight;
+        console.log('📸 CRITICAL CSS STATE (BEFORE):', JSON.stringify(criticalStyles, null, 2));
         
-        console.log('🔍 CSS LOAD: HEIGHT CHANGE:', heightChange + 'px', 'LINE-HEIGHT CHANGED:', lineHeightChange);
+        // Apply async CSS
+        this.media='all';
+        window.CSS_LOAD_METRICS.asyncCSSApplied = true;
+        const cssAppliedTime = performance.now() - cssApplyStartTime;
         
-        if (Math.abs(heightChange) < 5) {
-          console.log('✅ SUCCESS: No significant height change - line-height fix worked!');
-        } else {
-          console.log('❌ STILL SHIFTING: Height changed by', heightChange + 'px - line-height was not the only cause');
+        // Capture AFTER state
+        const finalStyles = {};
+        const changes = {};
+        
+        Object.entries(criticalElements).forEach(([key, elem]) => {
+          if (elem) {
+            const styles = getComputedStyle(elem);
+            finalStyles[key] = {};
+            changes[key] = [];
+            
+            propsToTrack.forEach(prop => {
+              finalStyles[key][prop] = styles[prop];
+              if (criticalStyles[key] && criticalStyles[key][prop] !== styles[prop]) {
+                changes[key].push({
+                  property: prop,
+                  before: criticalStyles[key][prop],
+                  after: styles[prop]
+                });
+              }
+            });
+          }
+        });
+        
+        console.log('📸 FINAL CSS STATE (AFTER):', JSON.stringify(finalStyles, null, 2));
+        
+        // Analyze changes
+        console.group('🔬 CSS CRITICAL → FINAL ANALYSIS');
+        console.log('⏱️ CSS applied in:', Math.round(cssAppliedTime) + 'ms');
+        
+        let totalHeightChange = 0;
+        Object.entries(changes).forEach(([element, elementChanges]) => {
+          if (elementChanges.length > 0) {
+            console.group(`📝 ${element.toUpperCase()} CHANGES:`);
+            elementChanges.forEach(change => {
+              const isCritical = ['height', 'border', 'borderTop', 'borderBottom', 'marginTop', 'marginBottom'].includes(change.property);
+              console.log(`  ${change.property}: \"${change.before}\" → \"${change.after}\" ${isCritical ? '🚨 CRITICAL' : ''}`);
+              
+              if (change.property === 'height') {
+                const diff = parseFloat(change.after) - parseFloat(change.before);
+                totalHeightChange += diff;
+              }
+            });
+            console.groupEnd();
+          }
+        });
+        
+        console.log('📊 TOTAL HEIGHT CHANGE:', totalHeightChange + 'px');
+        
+        // Identify root cause
+        const borderChanges = Object.values(changes).flat().filter(c => c.property.includes('border'));
+        const marginChanges = Object.values(changes).flat().filter(c => c.property.includes('margin'));
+        const paddingChanges = Object.values(changes).flat().filter(c => c.property.includes('padding'));
+        
+        if (borderChanges.length > 0) {
+          console.log('🎯 ROOT CAUSE: Border properties not in critical CSS');
+          console.log('   FIX: Add border declarations to critical CSS');
         }
+        if (marginChanges.length > 0) {
+          console.log('🎯 ROOT CAUSE: Margin differences between critical and final CSS');
+        }
+        if (paddingChanges.length > 0) {
+          console.log('🎯 ROOT CAUSE: Padding differences between critical and final CSS');
+        }
+        
+        console.groupEnd();
       } else {
-        console.log('🔍 CSS LOAD: document.body not available yet, just changing media');
+        console.log('🔍 CSS LOAD: document.body not available yet');
         this.media='all';
       }
       
@@ -225,6 +351,22 @@
           if (latestBaseline && window.EARLIEST_HEIGHT !== latestBaseline.height) {
             const clsAmount = Math.abs(window.EARLIEST_HEIGHT - latestBaseline.height);
             console.log(`🚨 CONFIRMED CLS: ${window.EARLIEST_HEIGHT}px → ${latestBaseline.height}px = ${clsAmount}px shift!`);
+            
+            // Show element-level breakdown
+            if (Object.keys(window.ELEMENT_TIMELINE).length > 0) {
+              console.group('📦 ELEMENT-LEVEL BREAKDOWN:');
+              Object.entries(window.ELEMENT_TIMELINE).forEach(([selector, timeline]) => {
+                if (timeline.length > 1) {
+                  const first = timeline[0];
+                  const last = timeline[timeline.length - 1];
+                  const totalChange = last.height - first.height;
+                  if (Math.abs(totalChange) > 1) {
+                    console.log(`  ${selector}: ${first.height}px → ${last.height}px (Δ${totalChange}px)`);
+                  }
+                }
+              });
+              console.groupEnd();
+            }
           }
         }
       }, 20);
@@ -882,23 +1024,55 @@
         ComprehensiveFOITDetective.measureComprehensive('ALL_FONTS_READY');
         
         // Final comprehensive analysis
-        console.group('📊 COMPREHENSIVE FOIT ANALYSIS SUMMARY');
+        console.group('📊 COMPREHENSIVE CLS ROOT CAUSE ANALYSIS');
         
         const measurements = ComprehensiveFOITDetective.measurements;
         const totalShift = measurements[measurements.length - 1]?.bodyHeight - ComprehensiveFOITDetective.initialHeight;
         
         console.log(`📏 Total height change: ${totalShift}px`);
-        console.log(`⏱️ Total font loading time: ${Math.round(measurements[measurements.length - 1]?.timestamp)}ms`);
-        console.log(`🔤 Final font status: ${measurements[measurements.length - 1]?.fontsLoading}`);
+        console.log(`⏱️ Total measurement time: ${Math.round(measurements[measurements.length - 1]?.timestamp)}ms`);
         
-        // Success/failure determination
-        if (Math.abs(totalShift) < 5) {
-          console.log('✅ SUCCESS: FOIT eliminated - no significant layout shift');
-        } else if (Math.abs(totalShift) > 50) {
-          console.log('❌ MAJOR SHIFT: Font loading causing significant CLS');
-          console.log('🔧 Try next: font-size-adjust, preload optimization, or synchronous loading');
+        // Analyze CSS vs Font timing
+        const cssApplied = window.CSS_LOAD_METRICS?.asyncCSSApplied;
+        const fontsLoaded = measurements[measurements.length - 1]?.fontsLoading === 'loaded';
+        
+        console.group('🎯 ROOT CAUSE DETERMINATION:');
+        if (cssApplied && Math.abs(totalShift) > 50) {
+          console.log('❌ CSS ASYNC LOADING is causing CLS');
+          console.log('   → Critical CSS doesn\'t match final CSS');
+          console.log('   → Border, margin, or padding properties differ');
+          console.log('   SOLUTION: Update critical CSS to match final styles');
+        } else if (!fontsLoaded && Math.abs(totalShift) > 50) {
+          console.log('❌ FONT LOADING is causing CLS');
+          console.log('   → Fonts still loading when layout shifts occur');
+          console.log('   SOLUTION: Use font-display: optional or preload fonts');
+        } else if (Math.abs(totalShift) < 5) {
+          console.log('✅ NO SIGNIFICANT CLS DETECTED');
         } else {
-          console.log('⚠️ MINOR SHIFT: Small but measurable font-related CLS detected');
+          console.log('⚠️ MINOR CLS from multiple factors');
+        }
+        console.groupEnd();
+        
+        // Show property differences if available
+        if (measurements.length > 1) {
+          const firstMeasurement = measurements[0];
+          const lastMeasurement = measurements[measurements.length - 1];
+          
+          if (firstMeasurement.cssProperties && lastMeasurement.cssProperties) {
+            console.group('🔍 KEY CSS PROPERTY DIFFERENCES:');
+            ['body', 'postContent'].forEach(element => {
+              const first = firstMeasurement.cssProperties[element];
+              const last = lastMeasurement.cssProperties[element];
+              if (first && last) {
+                ['border', 'marginTop', 'marginBottom', 'paddingTop', 'paddingBottom'].forEach(prop => {
+                  if (first[prop] !== last[prop]) {
+                    console.log(`${element}.${prop}: "${first[prop]}" → "${last[prop]}"`);
+                  }
+                });
+              }
+            });
+            console.groupEnd();
+          }
         }
         
         console.groupEnd();
