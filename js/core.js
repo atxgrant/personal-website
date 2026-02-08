@@ -1349,7 +1349,7 @@ class VibeCheckManager {
     // Global error handler for JavaScript errors
     this.browser.addWindowListener('error', (event) => {
       // Only handle errors related to our theme system
-      if (event.filename && (event.filename.includes('script.js') || 
+      if (event.filename && (event.filename.includes('core.js') ||
           event.message.toLowerCase().includes('theme') || 
           event.message.toLowerCase().includes('vibe'))) {
         console.error('JavaScript error in theme system:', event.error);
