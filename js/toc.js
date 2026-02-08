@@ -242,7 +242,7 @@ class ScrollTracker {
       this.scrollTimeout = this.browser.setTimeout(() => {
         this.updateActiveHeading();
         this.isScrolling = false;
-      }, SITE_CONFIG.SCROLL_THROTTLE);
+      }, SITE_CONFIG.SCROLL_THROTTLE_MS);
     };
 
     this.browser.addWindowListener('scroll', handleScroll, { passive: true });
@@ -634,7 +634,7 @@ class TOCManager {
 
     // Calculate scroll position with offset for fixed header
     const rect = targetElement.getBoundingClientRect();
-    const offsetTop = rect.top + this.browser.getScrollTop() - (SITE_CONFIG.SCROLL_OFFSET || 80);
+    const offsetTop = rect.top + this.browser.getScrollTop() - SITE_CONFIG.SCROLL_OFFSET;
     
 
     // Pause scroll tracking to prevent interference from viewport center detection
@@ -723,7 +723,7 @@ class TOCManager {
 
     // Listen for resize events
     this.browser.addWindowListener('resize', () => {
-      this.browser.debounce(handleResize, SITE_CONFIG.RESIZE_DEBOUNCE)();
+      this.browser.debounce(handleResize, SITE_CONFIG.ANIMATION_DEBOUNCE)();
     });
   }
 

@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://atxgrant.github.io/personal-website/</loc>
-    <lastmod>2025-01-27</lastmod>
+    <loc>https://grantheimbach.com/</loc>
+    <lastmod>2025-08-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://atxgrant.github.io/personal-website/posts/hello-world.html</loc>
+    <loc>https://grantheimbach.com/posts/ai-navigation-vs-acceleration.html</loc>
+    <lastmod>2025-08-27</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://grantheimbach.com/posts/hello-world.html</loc>
     <lastmod>2025-08-02</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>

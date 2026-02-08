@@ -175,4 +175,4 @@ This project is open source and available under the [MIT License](LICENSE).
 ## Connect
 
 - **LinkedIn**: [Grant Heimbach](https://www.linkedin.com/in/grantheimbach/)
-- **Website**: [Live Site](https://atxgrant.github.io/personal-website/)
+- **Website**: [Live Site](https://grantheimbach.com/)
