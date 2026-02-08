@@ -467,7 +467,6 @@ class ThemeManager {
     this.toggleSlider = this.browser.getElementById('toggle-slider');
 
     if (!this.themeToggle) {
-      console.warn('Theme toggle button not found');
       return;
     }
 
@@ -707,7 +706,6 @@ class VibeCheckManager {
     this.globalLoading = this.browser.getElementById('global-loading');
 
     if (!this.vibeCheckBtn) {
-      console.log('Vibe Check button not found - likely not on homepage');
       return;
     }
 
@@ -1606,7 +1604,6 @@ class BioCollapseManager {
     this.expandButton = this.browser.querySelector('.bio-expand-btn');
 
     if (!this.bioContent || !this.expandButton) {
-      console.log('Bio collapse elements not found - bio collapse functionality disabled');
       return;
     }
 
@@ -1682,68 +1679,26 @@ class BioCollapseManager {
  * @public
  */
 function initializeApp(browser = new BrowserEnvironment()) {
-  // DEBUGGING: Focus on what happens during the 239px height change
-  function logState(step) {
-    const body = browser.getBody();
-    const computed = getComputedStyle(body);
-    
-    const height = computed.height;
-    const readyState = browser.getDocument().readyState;
-    const fontsStatus = browser.getDocument().fonts ? browser.getDocument().fonts.status : 'unknown';
-    
-    // Check for any CSS that might be loading
-    const stylesheets = Array.from(browser.getDocument().styleSheets);
-    const loadingCSS = stylesheets.filter(s => !s.disabled && s.href && !s.ownerNode.complete);
-    
-    // Track key CSS properties that might cause height changes
-    const margin = `${computed.marginTop}/${computed.marginBottom}`;
-    const padding = `${computed.paddingTop}/${computed.paddingBottom}`;
-    const lineHeight = computed.lineHeight;
-    const fontSize = computed.fontSize;
-    
-    console.log(`🔍 [${step}]: height=${height}, fonts=${fontsStatus}, readyState=${readyState}, loadingCSS=${loadingCSS.length}`);
-    console.log(`🔍 [${step}]: margin=${margin}, padding=${padding}, lineHeight=${lineHeight}, fontSize=${fontSize}`);
-    
-    return height;
-  }
-  
-  console.log('🚨 CLS DEBUG: The 239px shift happens between START and RAF_START');
-  logState('START');
-  
-  // Use requestAnimationFrame for better performance  
+  // Use requestAnimationFrame for better performance
   browser.requestAnimationFrame(() => {
-    logState('RAF_START');
-    
-    // The height already changed by now - let's see if we do anything that changes it further
     browser.window.themeManager = SafeInit.initialize('ThemeManager', () => new ThemeManager(browser));
-    logState('AFTER_THEME_MANAGER');
-    
+
     // TOC manager is initialized in toc.js when that script loads
-    
+
     // Only initialize bio collapse manager on homepage
     const hasBioContent = browser.querySelector('.bio-content');
     if (hasBioContent) {
       browser.window.bioCollapseManager = SafeInit.initialize('BioCollapseManager', () => new BioCollapseManager(browser));
-      logState('AFTER_BIO_MANAGER');
     }
-    
+
     // Only initialize vibe check manager on homepage (where button exists)
     const hasVibeCheck = browser.getElementById('vibe-check-btn');
     if (hasVibeCheck && browser.window.themeManager) {
       browser.window.vibeCheckManager = SafeInit.initialize('VibeCheckManager', () => new VibeCheckManager(browser.window.themeManager, browser));
-      logState('AFTER_VIBE_MANAGER');
     }
-    
+
     // Add loaded class for transition optimizations
     browser.getBody().classList.add('loaded');
-    logState('AFTER_LOADED_CLASS');
-    
-    // Performance mark for debugging
-    if ('performance' in browser.window && 'mark' in browser.window.performance) {
-      browser.window.performance.mark('app-initialized');
-    }
-    
-    logState('COMPLETE');
   });
 }
 
