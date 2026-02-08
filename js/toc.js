@@ -438,7 +438,6 @@ class TOCManager {
 
     // TOC is optional - only initialize if elements are present
     if (!this.tocContainer || !this.contentElement) {
-      console.log('TOC elements not found - TOC functionality disabled');
       return;
     }
 
