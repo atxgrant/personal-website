@@ -674,8 +674,6 @@ class VibeCheckManager {
     this.imageLoadAttempts = new Map(); // Track retry attempts
     this.activeTimeouts = new Set(); // Track active timeouts for cleanup
     
-    // Performance monitoring properties
-    this.performanceMetrics = new Map(); // Track operation timing
     this.errorCount = 0; // Track error frequency
     this.lastErrorTime = null; // Prevent error spam
     this.isOperationInProgress = false; // Prevent concurrent operations
@@ -1396,42 +1394,6 @@ class VibeCheckManager {
   }
 
   /**
-   * Start performance timing for an operation
-   * @param {string} operation - Name of the operation
-   * @private
-   */
-  startPerformanceTimer(operation) {
-    const startTime = this.browser.window.performance ? 
-      this.browser.window.performance.now() : Date.now();
-    this.performanceMetrics.set(`${operation}_start`, startTime);
-  }
-
-  /**
-   * End performance timing for an operation and log results
-   * @param {string} operation - Name of the operation
-   * @private
-   */
-  endPerformanceTimer(operation) {
-    if (!this.browser.window.performance) return;
-    
-    const endTime = this.browser.window.performance.now();
-    const startTime = this.performanceMetrics.get(`${operation}_start`);
-    
-    if (startTime) {
-      const duration = endTime - startTime;
-      this.performanceMetrics.set(`${operation}_duration`, duration);
-      
-      // Log slow operations (>500ms) for optimization
-      if (duration > 500) {
-        console.warn(`Slow theme operation detected: ${operation} took ${duration.toFixed(2)}ms`);
-      }
-      
-      // Clean up start time
-      this.performanceMetrics.delete(`${operation}_start`);
-    }
-  }
-
-  /**
    * Show global loading indicator
    * @param {string} [message='Loading theme...'] - Loading message to display
    * @private
@@ -1473,20 +1435,16 @@ class VibeCheckManager {
     
     try {
       this.isOperationInProgress = true;
-      this.startPerformanceTimer(operationName);
-      
+
       // Show loading only for user-initiated theme changes, not initial loading
       if (showLoading && (operationName.includes('changeTheme') || operationName.includes('cycleTheme'))) {
         this.showGlobalLoading();
       }
       
       const result = await operation();
-      
-      this.endPerformanceTimer(operationName);
       return result;
-      
+
     } catch (error) {
-      this.endPerformanceTimer(operationName);
       this.handleSystemError(error, operationName);
       throw error;
     } finally {
@@ -1547,7 +1505,6 @@ class VibeCheckManager {
     this.imageCache.clear();
     this.preloadPromises.clear();
     this.imageLoadAttempts.clear();
-    this.performanceMetrics.clear();
 
     // Note: Touch event listeners are added directly to DOM elements
     // They will be garbage collected when elements are dereferenced
