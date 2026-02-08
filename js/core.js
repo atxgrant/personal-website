@@ -4,6 +4,7 @@ const SITE_CONFIG = {
   SCROLL_ACTIVE_ZONE: 0.3,        // 30% from top triggers active heading
   SCROLL_BOTTOM_THRESHOLD: 100,   // px from bottom to consider "at bottom"
   SCROLL_THROTTLE_MS: 16,          // ~60fps throttling for scroll events
+  SCROLL_OFFSET: 80,               // px - Offset for fixed header when scrolling to headings
   
   // Breakpoints
   DESKTOP_BREAKPOINT: 1024,        // px - Desktop vs mobile/tablet
@@ -1102,7 +1103,7 @@ class VibeCheckManager {
     this.currentThemeIndex = 0;
     
     // Remove special theme styling
-    this.browser.getBody().classList.remove('synthwave-active', 'desert-pinon-active', 'texas-wildflower-active', 'falling-water-active', 'park-ranger-active', 'craftsman-comfort-active');
+    this.browser.getBody().classList.remove('synthwave-active', 'desert-pinon-active', 'texas-wildflower-active', 'falling-water-active', 'park-ranger-active', 'craftsman-comfort-active', 'cher-orleans-active', 'star-stuff-active', 'reader-beware-active');
   }
 
   /**
@@ -1199,6 +1200,9 @@ class VibeCheckManager {
       'Texas Wildflower': 'bright and cheerful with cream backgrounds and deep blue text, featuring golden yellow links that reflect the vibrant wildflower fields of Texas',
       'Falling Water': 'inspired by Frank Lloyd Wright\'s architectural masterpiece, with warm cream backgrounds, Cherokee red text, and golden accents that blend natural elements with modernist design',
       'Park Ranger': 'evokes WPA National Park poster art with warm beige backgrounds, dark brown text, and sky blue accents that capture the spirit of America\'s national parks',
+      'Cher Orleans': 'channels the spirit of Mardi Gras with deep purple backgrounds, golden text, and rich green accents that capture the festive energy and mystery of New Orleans',
+      'Star Stuff': 'a cosmic voyage through deep navy space with glowing cyan text, purple nebula highlights, and pink accents inspired by the wonder of the universe',
+      'Reader Beware': 'a spooky Goosebumps-inspired palette with near-black backgrounds, eerie green text, and orange accents that evoke vintage horror paperback covers',
       'Craftsman Comfort': 'celebrates Arts and Crafts architecture with warm cream backgrounds, rich brown text, and copper-bronze accents that embody handcrafted quality and natural materials'
     };
     
