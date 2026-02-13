@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Performance & Security -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <title>The Bottleneck Isn't the Code - Grant Heimbach</title>
+    <meta name="description" content="AI coding tools busted the wrong dam. The real bottleneck is meetings, coordination, and slow decisions — not code." />
+    <meta name="author" content="Grant Heimbach" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://grantheimbach.com/posts/the-bottleneck-isnt-the-code.html">
+    <meta property="og:title" content="The Bottleneck Isn't the Code - Grant Heimbach">
+    <meta property="og:description" content="AI coding tools busted the wrong dam. The real bottleneck is meetings, coordination, and slow decisions — not code.">
+    <meta property="og:site_name" content="Grant Heimbach">
+    <meta property="article:author" content="Grant Heimbach">
+    <meta property="article:published_time" content="2026-02-13T00:00:00Z">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://grantheimbach.com/posts/the-bottleneck-isnt-the-code.html">
+    <meta property="twitter:title" content="The Bottleneck Isn't the Code - Grant Heimbach">
+    <meta property="twitter:description" content="AI coding tools busted the wrong dam. The real bottleneck is meetings, coordination, and slow decisions — not code.">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://grantheimbach.com/posts/the-bottleneck-isnt-the-code.html">
+
+    <!-- Optimized Favicon (SVG-first approach) -->
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+    <meta name="theme-color" content="#a84d2b">
+
+    <!-- Preload critical resources for better performance -->
+    <link rel="preload" href="../style.css" as="style">
+    <link rel="preload" href="../js/core.js" as="script">
+    <link rel="preload" href="../js/toc.js" as="script">
+
+    <!-- Self-hosted font optimization -->
+    <link rel="preload" href="../fonts/newsreader-400.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="../fonts/newsreader-600.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="../fonts/newsreader.css">
+
+
+    <!-- Critical CSS for above-the-fold content -->
+    <style>
+    /* Critical styles for immediate render - CSS variables now centralized in ../css/variables.css */
+    body {
+      margin: 0;
+      font-family: "Newsreader", Georgia, serif;
+      background-color: hsl(var(--background));
+      color: hsl(var(--foreground));
+      font-display: swap;
+      line-height: 24px; /* CRITICAL: Match full CSS to prevent CLS */
+    }
+    .min-h-screen { min-height: 100vh; }
+    .max-w-2xl { max-width: 42rem; }
+    .mx-auto { margin-left: auto; margin-right: auto; }
+    .px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+    .py-8 { padding-top: 2rem; padding-bottom: 2rem; }
+    .flex { display: flex; }
+    .items-center { align-items: center; }
+    .justify-between { justify-content: space-between; }
+    .flex-grow { flex-grow: 1; }
+    .gap-3 { gap: 0.75rem; }
+    .mb-8 { margin-bottom: 2rem; }
+    .mb-4 { margin-bottom: 1rem; }
+    .text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
+    .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+    .font-serif { font-family: "Newsreader", Georgia, serif; }
+    .text-foreground { color: hsl(var(--foreground)); }
+    .academic-link { color: var(--link); text-decoration: underline; }
+    .skip-link { position: absolute; top: -40px; left: 6px; background: hsl(var(--foreground)); color: hsl(var(--background)); padding: 8px 16px; z-index: 1000; }
+    .skip-link:focus { top: 6px; }
+
+    /* Post-specific critical styles */
+    .post-meta { border-bottom: 1px solid hsl(var(--border)); padding-bottom: 1.5rem; margin-bottom: 2rem; }
+    .post-content { font-size: 1.25rem; line-height: 1.75; color: hsl(var(--foreground)); max-width: 70ch; }
+
+    @media (min-width: 640px) {
+      .sm\:py-12 { padding-top: 3rem; padding-bottom: 3rem; }
+      .sm\:text-4xl { font-size: 2.25rem; line-height: 2.5rem; }
+      .sm\:mb-12 { margin-bottom: 3rem; }
+    }
+    @media (min-width: 768px) {
+      .post-meta h1 { font-size: 3.875rem; }
+    }
+    </style>
+
+    <!-- Load CSS synchronously to prevent CLS -->
+    <link rel="stylesheet" href="../style.css">
+
+
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "The Bottleneck Isn't the Code",
+      "description": "AI coding tools busted the wrong dam. The real bottleneck is meetings, coordination, and slow decisions — not code.",
+      "author": {
+        "@type": "Person",
+        "name": "Grant Heimbach",
+        "url": "https://grantheimbach.com/"
+      },
+      "publisher": {
+        "@type": "Person",
+        "name": "Grant Heimbach"
+      },
+      "datePublished": "2026-02-13T00:00:00Z",
+      "dateModified": "2026-02-13T00:00:00Z",
+      "url": "https://grantheimbach.com/posts/the-bottleneck-isnt-the-code.html",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://grantheimbach.com/posts/the-bottleneck-isnt-the-code.html"
+      },
+      "keywords": "AI, developer productivity, organizational overhead, meetings, software development, developer experience, agentic AI, product management"
+    }
+    </script>
+</head>
+<body>
+    <!-- Skip Links for Keyboard Navigation -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <a href="#toc-panel" class="skip-link">Skip to table of contents</a>
+
+    <!-- TOC Panel -->
+    <nav id="toc-panel" class="toc-panel is-hidden" role="navigation" aria-label="Table of Contents">
+        <div class="toc-header">
+            <h3>Contents</h3>
+        </div>
+        <ul id="toc-list" class="toc-list">
+            <!-- Auto-generated from post headings -->
+        </ul>
+    </nav>
+
+    <!-- TOC Overlay for mobile -->
+    <div id="toc-overlay" class="toc-overlay is-hidden"></div>
+
+    <div id="root">
+        <div id="top">
+        <div class="min-h-screen bg-background">
+            <div class="max-w-2xl mx-auto px-6 py-8 sm:py-12">
+
+                <!-- Header with Name and Dark Mode Toggle -->
+                <header class="post-header flex items-center mb-8 sm:mb-12">
+                    <div class="text-3xl sm:text-4xl font-serif text-foreground flex-grow">
+                        <a href="../index.html" class="academic-link" style="text-decoration: none;">Grant Heimbach</a>
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        <!-- TOC Toggle Button -->
+                        <button id="toc-toggle" class="toc-toggle" aria-label="Toggle table of contents">
+                            <span id="toc-hamburger" class="toc-icon">
+                                <span class="hamburger-line"></span>
+                                <span class="hamburger-line"></span>
+                                <span class="hamburger-line"></span>
+                            </span>
+                            <span id="toc-close" class="toc-icon is-hidden">
+                                <span class="close-line"></span>
+                                <span class="close-line"></span>
+                            </span>
+                        </button>
+
+                        <!-- Dark Mode Toggle Button -->
+                        <button
+                            id="theme-toggle"
+                            class="relative inline-flex h-6 w-11 items-center rounded-full bg-muted transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                            aria-label="Toggle dark mode"
+                            aria-checked="false"
+                            role="switch"
+                        >
+                            <span id="toggle-slider" class="inline-block h-4 w-4 transform rounded-full bg-foreground transition duration-200 translate-x-1">
+
+                            </span>
+                        </button>
+                    </div>
+                </header>
+
+                <!-- Post Title -->
+                <div class="post-meta mb-8">
+                    <h1 class="text-3xl sm:text-4xl font-serif text-foreground mb-4">The Bottleneck Isn't the Code</h1>
+                    <div class="text-sm text-muted-foreground">
+                        <time datetime="2026-02-13">February 13, 2026</time>
+                        <div class="reading-time">6 min read</div>
+                    </div>
+                </div>
+
+                <!-- Post Content -->
+                <article id="main-content" class="post-content" role="main">
+                    <p>Think of a software organization as a river system. Ideas, decisions, and coordination flow from upstream, through a series of dams — constraints that control how much work actually reaches customers downstream.</p>
+
+<p>AI has blown up one of those dams. Code that used to take days takes hours. Features that took sprints take afternoons. The coding dam is wide open.</p>
+
+<p>So where's the flood of value reaching customers? Companies have invested heavily in AI coding tools, but most aren't seeing the downstream impact they expected. The river isn't flowing faster. Something else is holding it back.</p>
+
+<p>That's because the coding dam was never the biggest constraint on the river. Upstream, there's a much larger dam — built from meetings, coordination overhead, slow decisions, and knowledge trapped in people's heads. That dam is still standing. And it's the one that actually determines how much value reaches your customers.</p>
+
+<p>The industry is celebrating that it busted a dam. It busted the wrong one.</p>
+
+<h2>Where the Time Goes</h2>
+
+<p>The data tells a clear story: coding was never where the time went.</p>
+
+<p>Developers spend only 16% of their time on actual application development¹. The rest? Meetings, planning, documentation, waiting for reviews, searching for information, and context switching between tools. At large companies, developers spend over 12 hours per week in meetings alone². The organizational dam isn't just standing. It's getting bigger.</p>
+
+<p>DX's research puts a dollar figure on it: developers lose a full day every week to organizational inefficiencies. For a company with 1,000 developers, that's $18.5 million in lost productivity annually³ — not from slow code, but from slow everything else.</p>
+
+<p>The coding dam was always one of the smaller dams on the river. AI blew it wide open, and the industry celebrated. But the water still isn't reaching customers any faster, because the massive dam upstream — the one controlling how teams coordinate, make decisions, and share knowledge — hasn't moved at all.</p>
+
+<p>¹ <a href="https://www.infoworld.com/article/3831759/developers-spend-most-of-their-time-not-coding-idc-report.html" class="academic-link">Developers Spend Most of Their Time Not Coding: IDC Report</a><br>
+² <a href="https://www.computerworld.com/article/1612747/for-developers-too-many-meetings-too-little-focus-time.html" class="academic-link">For Developers, Too Many Meetings, Too Little Focus Time</a><br>
+³ <a href="https://getdx.com/report/state-of-developer-experience-report/" class="academic-link">DX State of Developer Experience Report</a></p>
+
+<h2>The Real Dam</h2>
+
+<p>So what does this upstream dam actually look like?</p>
+
+<p>Meetings that don't need to happen. Decisions that take weeks when they should take days. Knowledge locked in people's heads instead of flowing through the system. Cross-team coordination overhead that grows geometrically with company size — at 50 engineers, you have 1,225 potential communication paths⁴, and that's before you add the product managers, designers, and stakeholders.</p>
+
+<p>DX's research into what actually drives developer productivity found three dimensions that matter most: feedback loops, cognitive load, and flow state⁵. All organizational. None about coding speed. John Cutler puts it more bluntly — an uncomfortable percentage of all salary spend goes to context switching, handoffs, and meetings about coordinating dependencies⁶. And 78% of workers say meetings make it hard to get their actual work done⁷.</p>
+
+<p>Atlassian's research captured the paradox: 68% of developers save over 10 hours a week using AI tools, but they lose an equivalent amount to organizational inefficiencies⁸. The time AI gives back, the system takes away.</p>
+
+<p>⁴ <a href="https://fullscale.io/blog/engineering-team-scaling-challenges/" class="academic-link">Engineering Team Scaling Challenges</a><br>
+⁵ <a href="https://queue.acm.org/detail.cfm?id=3595878" class="academic-link">DevEx: What Actually Drives Productivity</a><br>
+⁶ <a href="https://cutlefish.substack.com/p/tbm-243-capital-inefficiency" class="academic-link">TBM 243: Capital Inefficiency</a><br>
+⁷ <a href="https://www.atlassian.com/blog/workplace-woes-meetings" class="academic-link">Workplace Woes: Meetings</a><br>
+⁸ <a href="https://www.atlassian.com/teams/software-development/state-of-developer-experience-2025" class="academic-link">Atlassian State of Developer Experience 2025</a></p>
+
+<h2>Busting the Right Dam</h2>
+
+<p>So what does it look like to direct AI at the right dam?</p>
+
+<p>Start with meetings — the single largest controllable drain on productive time. The fix isn't just "have fewer meetings." It's replacing low-value synchronous time with better asynchronous infrastructure. Status meetings become async video updates. AI-generated meeting summaries and action items flow into searchable documentation, so decisions don't get relitigated and knowledge doesn't require another meeting to reshare.</p>
+
+<p>Then protect the time you've freed up. Developers switch tasks 13 times per hour⁹ and need 23 minutes to recover from each interruption¹⁰. Fewer meetings means nothing if real-time notifications fill the gap. Calendar tools that block focus time are a start, but they don't stop Slack from breaking flow during those blocks.</p>
+
+<p>The frontier is agentic. A quality gate on meetings — AI that reviews calendar invites for clear goals and agendas before accepting, the way CI/CD gates code before it ships. A gatekeeper for attention — an agent that triages all incoming interruptions based on urgency and your current focus state, so better information flow doesn't just become more noise. These aren't science fiction. They're the logical next step.</p>
+
+<p>But redirecting AI at the right dam isn't enough on its own. How you bust it matters just as much.</p>
+
+<p>⁹ <a href="https://link.springer.com/book/10.1007/978-1-4842-4221-6" class="academic-link">Rethinking Productivity in Software Engineering</a><br>
+¹⁰ <a href="https://ics.uci.edu/~gmark/chi08-mark.pdf" class="academic-link">The Cost of Interrupted Work: More Speed and Stress</a></p>
+
+<h2>Watch for Floods</h2>
+
+<p>We already have a cautionary tale. Look at what's happening downstream of the coding dam.</p>
+
+<p>Teams using AI coding tools are completing more tasks and merging more pull requests — but PR review time has increased 91%¹¹. The downstream channels simply can't absorb the volume. Sixty-three percent of organizations say they ship code faster since adopting AI, yet 45% of deployments involving AI-generated code cause production problems¹². More water, more damage.</p>
+
+<p>And it's not just the coding dam creating this flood. The industry is opening new tributaries — asking product managers and designers to code with AI tools, adding more water sources to a river system that was already overwhelmed. More volume, same channels.</p>
+
+<p>Speed without system design doesn't create flow. It creates floods.</p>
+
+<p>¹¹ <a href="https://www.faros.ai/blog/ai-software-engineering" class="academic-link">The AI Productivity Paradox</a><br>
+¹² <a href="https://www.harness.io/blog/the-ai-velocity-paradox" class="academic-link">The AI Velocity Paradox</a></p>
+
+<h2>Build the Spillways First</h2>
+
+<p>That's the lesson to carry forward as we turn to the organizational dam.</p>
+
+<p>The solutions have dependencies. Proactive knowledge agents that surface information to you throughout the day sound powerful — but without the flow gatekeeper to control when and how that information arrives, you've just added another source of interruptions. Another tributary into an already overwhelmed system. The order matters: build the channels and spillways first, then open the dam.</p>
+
+<p>That's the principle. Don't just bust dams. Redesign the river system around them.</p>
+
+<h2>Redesign the River System</h2>
+
+<p>The companies that win in the AI era won't be the ones that code fastest. They'll be the ones that redesign the river system so speed is actually useful.</p>
+
+<p>AI isn't failing us. It's exposing an organizational design problem that was always there — one we could ignore when everything was slow, but can't hide from now that one dam is wide open. In my <a href="ai-navigation-vs-acceleration.html" class="academic-link">last post</a> I argued that AI should navigate before it accelerates. This is the other half: when you accelerate, make sure the river system can handle the speed.</p>
+
+<p>Look at your own organization. Where's the real dam? And how can you redesign your system and thoughtfully bust it?</p>
+
+<h2>Sources Referenced</h2>
+
+<ol>
+<li>IDC — <a href="https://www.infoworld.com/article/3831759/developers-spend-most-of-their-time-not-coding-idc-report.html" class="academic-link">Developers Spend Most of Their Time Not Coding</a></li>
+<li>Clockwise — <a href="https://www.computerworld.com/article/1612747/for-developers-too-many-meetings-too-little-focus-time.html" class="academic-link">For Developers, Too Many Meetings, Too Little Focus Time</a></li>
+<li>DX — <a href="https://getdx.com/report/state-of-developer-experience-report/" class="academic-link">State of Developer Experience Report</a></li>
+<li>Full Scale — <a href="https://fullscale.io/blog/engineering-team-scaling-challenges/" class="academic-link">Engineering Team Scaling Challenges</a></li>
+<li>Noda, Storey, Forsgren &amp; Greiler — <a href="https://queue.acm.org/detail.cfm?id=3595878" class="academic-link">DevEx: What Actually Drives Productivity</a></li>
+<li>John Cutler — <a href="https://cutlefish.substack.com/p/tbm-243-capital-inefficiency" class="academic-link">TBM 243: Capital Inefficiency</a></li>
+<li>Atlassian — <a href="https://www.atlassian.com/blog/workplace-woes-meetings" class="academic-link">Workplace Woes: Meetings</a></li>
+<li>Atlassian — <a href="https://www.atlassian.com/teams/software-development/state-of-developer-experience-2025" class="academic-link">State of Developer Experience 2025</a></li>
+<li>Rethinking Productivity in Software Engineering — <a href="https://link.springer.com/book/10.1007/978-1-4842-4221-6" class="academic-link">Springer</a></li>
+<li>Gloria Mark — <a href="https://ics.uci.edu/~gmark/chi08-mark.pdf" class="academic-link">The Cost of Interrupted Work: More Speed and Stress</a></li>
+<li>Faros AI — <a href="https://www.faros.ai/blog/ai-software-engineering" class="academic-link">The AI Productivity Paradox</a></li>
+<li>Harness — <a href="https://www.harness.io/blog/the-ai-velocity-paradox" class="academic-link">The AI Velocity Paradox</a></li>
+</ol>
+                </article>
+
+                <!-- Post Navigation -->
+                <nav class="post-navigation" role="navigation" aria-label="Post navigation">
+                    <a href="#top" class="academic-link">&uarr; Back to top</a>
+                </nav>
+            </div>
+
+            <!-- Footer -->
+            <footer class="flex justify-center py-8">
+                <a
+                    href="https://www.linkedin.com/in/grantheimbach/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-muted-foreground hover:text-link transition-colors duration-200"
+                    aria-label="LinkedIn Profile"
+                >
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                    </svg>
+                </a>
+            </footer>
+        </div>
+        </div>
+    </div>
+
+    <!-- Performance optimized: Load core.js first (contains initialization), then TOC.js -->
+    <script src="../js/core.js" defer></script>
+    <script src="../js/toc.js" defer></script>
+</body>
+</html>
