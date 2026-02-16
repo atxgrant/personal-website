@@ -1639,6 +1639,95 @@ class BioCollapseManager {
  * @function
  * @public
  */
+/**
+ * Clarity Tracker - Fires custom Clarity events for key user interactions
+ * Tracks: theme toggle, Change Vibe button, individual vibe themes, LinkedIn click, article clicks
+ */
+class ClarityTracker {
+  constructor(browser = new BrowserEnvironment()) {
+    this.browser = browser;
+    this.handlers = [];
+    this.init();
+  }
+
+  init() {
+    if (this.browser.getReadyState() === 'loading') {
+      this.browser.addDocumentListener('DOMContentLoaded', () => this.setup());
+    } else {
+      this.setup();
+    }
+  }
+
+  fire(eventName) {
+    if (typeof window.clarity === 'function') {
+      window.clarity('event', eventName);
+    }
+  }
+
+  setup() {
+    // Theme toggle (dark/light)
+    const themeToggle = this.browser.getElementById('theme-toggle');
+    if (themeToggle) {
+      const handler = () => {
+        const isDark = this.browser.getDocumentElement().classList.contains('dark');
+        this.fire(isDark ? 'theme_switch_light' : 'theme_switch_dark');
+      };
+      themeToggle.addEventListener('click', handler);
+      this.handlers.push({ el: themeToggle, type: 'click', handler });
+    }
+
+    // Change Vibe button
+    const vibeBtn = this.browser.getElementById('vibe-check-btn');
+    if (vibeBtn) {
+      const handler = () => this.fire('vibe_change');
+      vibeBtn.addEventListener('click', handler);
+      this.handlers.push({ el: vibeBtn, type: 'click', handler });
+    }
+
+    // Individual vibe theme applied — listen for title updates in the vibe panel
+    const vibeTitle = this.browser.getElementById('vibe-title');
+    if (vibeTitle) {
+      const observer = new MutationObserver(() => {
+        const name = vibeTitle.textContent.trim();
+        if (name) {
+          const slug = name.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
+          this.fire(`vibe_theme_${slug}`);
+        }
+      });
+      observer.observe(vibeTitle, { childList: true, characterData: true, subtree: true });
+      this.vibeObserver = observer;
+    }
+
+    // LinkedIn click
+    const linkedin = this.browser.getElementById('linkedin-icon');
+    if (linkedin) {
+      const handler = () => this.fire('linkedin_click');
+      linkedin.addEventListener('click', handler);
+      this.handlers.push({ el: linkedin, type: 'click', handler });
+    }
+
+    // Article link clicks (homepage post list)
+    this.browser.querySelectorAll('.posts-list a').forEach(link => {
+      const slug = link.getAttribute('href').replace('posts/', '').replace('.html', '');
+      const handler = () => this.fire(`article_click_${slug}`);
+      link.addEventListener('click', handler);
+      this.handlers.push({ el: link, type: 'click', handler });
+    });
+  }
+
+  destroy() {
+    this.handlers.forEach(({ el, type, handler }) => {
+      el.removeEventListener(type, handler);
+    });
+    this.handlers = [];
+    if (this.vibeObserver) {
+      this.vibeObserver.disconnect();
+      this.vibeObserver = null;
+    }
+    this.browser = null;
+  }
+}
+
 function initializeApp(browser = new BrowserEnvironment()) {
   // Use requestAnimationFrame for better performance
   browser.requestAnimationFrame(() => {
@@ -1657,6 +1746,8 @@ function initializeApp(browser = new BrowserEnvironment()) {
     if (hasVibeCheck && browser.window.themeManager) {
       browser.window.vibeCheckManager = SafeInit.initialize('VibeCheckManager', () => new VibeCheckManager(browser.window.themeManager, browser));
     }
+
+    browser.window.clarityTracker = SafeInit.initialize('ClarityTracker', () => new ClarityTracker(browser));
 
     // Add loaded class for transition optimizations
     browser.getBody().classList.add('loaded');
@@ -1691,7 +1782,12 @@ function cleanupApp() {
       window.tocManager.destroy();
       window.tocManager = null;
     }
-    
+
+    if (window.clarityTracker && typeof window.clarityTracker.destroy === 'function') {
+      window.clarityTracker.destroy();
+      window.clarityTracker = null;
+    }
+
   } catch (error) {
     console.error('Error during application cleanup:', error);
   }
