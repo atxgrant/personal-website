@@ -852,27 +852,99 @@ class TOCManager {
   }
 }
 
+/**
+ * Scroll Depth Tracker - Fires Clarity custom events at 25%, 50%, 75%, and 100% scroll depth
+ * Only runs on post/article pages. Each milestone fires once per page load.
+ */
+class ScrollDepthTracker {
+  constructor(browser = new BrowserEnvironment()) {
+    this.browser = browser;
+    this.milestones = [25, 50, 75, 100];
+    this.fired = new Set();
+    this.scrollTimeout = null;
+    this.init();
+  }
+
+  init() {
+    if (this.browser.getReadyState() === 'loading') {
+      this.browser.addDocumentListener('DOMContentLoaded', () => this.setup());
+    } else {
+      this.setup();
+    }
+  }
+
+  setup() {
+    this.scrollHandler = () => {
+      if (this.scrollTimeout) {
+        this.browser.clearTimeout(this.scrollTimeout);
+      }
+      this.scrollTimeout = this.browser.setTimeout(() => {
+        this.checkDepth();
+      }, SITE_CONFIG.SCROLL_THROTTLE_MS);
+    };
+
+    this.browser.addWindowListener('scroll', this.scrollHandler, { passive: true });
+  }
+
+  checkDepth() {
+    if (this.fired.size === this.milestones.length) return;
+
+    const scrollTop = this.browser.getScrollTop();
+    const windowHeight = this.browser.getWindowHeight();
+    const documentHeight = this.browser.getDocumentHeight();
+    const scrollableHeight = documentHeight - windowHeight;
+
+    if (scrollableHeight <= 0) return;
+
+    const percent = Math.round((scrollTop / scrollableHeight) * 100);
+
+    this.milestones.forEach(milestone => {
+      if (!this.fired.has(milestone) && percent >= milestone) {
+        this.fired.add(milestone);
+        if (typeof window.clarity === 'function') {
+          window.clarity('event', `scroll_depth_${milestone}`);
+        }
+      }
+    });
+  }
+
+  destroy() {
+    if (this.scrollHandler) {
+      this.browser.removeWindowListener('scroll', this.scrollHandler);
+    }
+    if (this.scrollTimeout) {
+      this.browser.clearTimeout(this.scrollTimeout);
+    }
+    this.fired.clear();
+    this.browser = null;
+    this.scrollHandler = null;
+  }
+}
+
 // Export classes for potential external use (though not required for this setup)
 if (typeof window !== 'undefined') {
   window.HeadingGenerator = HeadingGenerator;
   window.ScrollTracker = ScrollTracker;
   window.TOCManager = TOCManager;
-  
+  window.ScrollDepthTracker = ScrollDepthTracker;
+
   // Initialize TOC manager if we're on a page with TOC elements
   const hasTOC = document.getElementById('toc-panel');
   if (hasTOC) {
     // Use the same browser environment from core.js if available, or create new one
     const browserEnv = window.browserEnv || new BrowserEnvironment();
-    
+
     // Initialize TOC manager using SafeInit if available
     if (typeof SafeInit !== 'undefined') {
       window.tocManager = SafeInit.initialize('TOCManager', () => new TOCManager(browserEnv));
+      window.scrollDepthTracker = SafeInit.initialize('ScrollDepthTracker', () => new ScrollDepthTracker(browserEnv));
     } else {
       // Fallback if SafeInit not available
       try {
         window.tocManager = new TOCManager(browserEnv);
+        window.scrollDepthTracker = new ScrollDepthTracker(browserEnv);
       } catch (error) {
-        console.warn('TOC Manager failed to initialize:', error);
+        console.warn('TOC/ScrollDepth Manager failed to initialize:', error);
       }
     }
   }
